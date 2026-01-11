@@ -1,4 +1,5 @@
 class World {
+  background = new Background();
   character = new Character();
   enemies = [
     new PufferFish(this.character),
@@ -16,12 +17,21 @@ class World {
   draw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
+    this.drawBackground(this.background);
     this.drawObject(this.character);
 
     this.enemies.forEach(enemy => {
       this.drawObject(enemy);
     });
   }
+
+
+drawBackground() {
+  const bg = this.background;
+  if (!bg.img || !bg.img.complete) return;
+
+  this.ctx.drawImage(bg.img, 0, 0, this.canvas.width, this.canvas.height);
+}
 
 
   drawObject(mo) {
