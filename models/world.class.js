@@ -19,19 +19,20 @@ class World {
   draw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-    this.backgroundObjects.forEach(bg => {
-      this.drawObject(bg);
-    });
-    
-    this.drawObject(this.character);
+    this.addObjectToMap(this.backgroundObjects);
+    this.addToMap(this.character);
+    this.addObjectToMap(this.enemies);
+  }
 
-    this.enemies.forEach(enemy => {
-      this.drawObject(enemy);
+
+  addObjectToMap(objects) {
+    objects.forEach(obj => {
+      this.addToMap(obj);
     });
   }
 
 
-  drawObject(mo) {
+  addToMap(mo) {
     if (!mo.img || !mo.img.complete) return;
 
     this.ctx.drawImage(
@@ -42,4 +43,5 @@ class World {
       mo.height
     );
   }
+
 }
