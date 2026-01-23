@@ -5,6 +5,7 @@ class World {
   character = new Character();
   enemies = [
     new PufferFish(this.character),
+    new PufferFish(this.character),
     new PufferFish(this.character)
   ];
   ctx;
