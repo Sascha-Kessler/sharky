@@ -5,16 +5,15 @@ let canvas;
 let world;
 let keyboard = new Keyboard();
 
-window.addEventListener('keydown', (event) => {
+window.addEventListener("keydown", (event) => {
   keyboard.key[event.code] = true;
-  console.log(event.code, 'true');
+  console.log(event.code, "true");
 });
 
-window.addEventListener('keyup', (event) => {
+window.addEventListener("keyup", (event) => {
   keyboard.key[event.code] = false;
-  console.log(event.code, 'false');
+  console.log(event.code, "false");
 });
-
 
 function init() {
   canvas = document.getElementById("canvas");
@@ -27,13 +26,11 @@ function init() {
   window.addEventListener("resize", resizeCanvas);
 }
 
-
 function gameLoop() {
   world.update();
   world.draw();
   requestAnimationFrame(gameLoop);
 }
-
 
 function resizeCanvas() {
   const scaleX = window.innerWidth / GAME_WIDTH;
