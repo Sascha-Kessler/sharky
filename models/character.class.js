@@ -15,8 +15,9 @@ class Character extends MovableObject {
   speedX = 0;
   speedY = 0;
 
-  constructor() {
+  constructor(keyboard, world) {
     super();
+    this.world = world;
     this.keyboard = keyboard;
     this.loadImage("../img/1.Sharkie/3.Swim/1.png");
     this.loadImages(this.IMAGES_SWIMMING);
@@ -33,6 +34,12 @@ class Character extends MovableObject {
   }
 
   update() {
+    this.clampToWorld();
+
+    if (this.x === 0 || this.x + this.width === this.world.width) {
+      this.speedX = 0;
+    }
+
     if (this.keyboard.isPressed("ArrowRight")) {
       this.speedX = 5;
     } else if (this.keyboard.isPressed("ArrowLeft")) {
@@ -50,5 +57,20 @@ class Character extends MovableObject {
       this.speedY = 0;
     }
     this.y += this.speedY;
+  }
+
+  clampToWorld() {
+    if (this.x < 0) {
+      this.x = 0;
+    }
+    if (this.x + this.width > this.world.width) {
+      this.x = this.world.width - this.width;
+    }
+    if (this.y < 0) {
+      this.y = 0;
+    }
+    if (this.y + this.height > this.world.height) {
+      this.y = this.world.height - this.height;
+    }
   }
 }

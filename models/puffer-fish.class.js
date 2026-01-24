@@ -9,9 +9,11 @@ class PufferFish extends MovableObject {
     "../img/2.Enemy/1.Puffer fish (3 color options)/1.Swim/1.swim5.png",
   ];
   currentImage = 0;
+  speedX = -0.15 - Math.random() * 1.25;
 
-  constructor(character) {
+  constructor(character, world) {
     super();
+    this.world = world;
     this.loadImage(
       "../img/2.Enemy/1.Puffer fish (3 color options)/1.Swim/1.swim1.png",
     );
@@ -21,17 +23,24 @@ class PufferFish extends MovableObject {
     this.x = minX + Math.random() * (GAME_WIDTH - minX - this.width);
     this.y = Math.random() * 300;
 
-    this.speed = 0.15 + Math.random() * 1.25;
     this.animate();
   }
 
   animate() {
-    this.moveLeft();
     setInterval(() => {
       let i = this.currentImage % this.IMAGES_SWIMMING.length;
       let path = this.IMAGES_SWIMMING[i];
       this.img = this.imageCache[path];
       this.currentImage++;
     }, 200);
+    console.log(this.speedX);
+  }
+
+  update() {
+    this.x += this.speedX;
+
+    if (this.x <= 0 || this.x + this.width >= this.world.width) {
+      this.speedX *= -1;
+    }
   }
 }

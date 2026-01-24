@@ -3,7 +3,7 @@ const GAME_HEIGHT = 480;
 
 let canvas;
 let world;
-let keyboard = new Keyboard();
+let keyboard;
 
 window.addEventListener("keydown", (event) => {
   keyboard.key[event.code] = true;
@@ -18,8 +18,8 @@ window.addEventListener("keyup", (event) => {
 function init() {
   canvas = document.getElementById("canvas");
   resizeCanvas();
-
-  world = new World(canvas);
+  keyboard = new Keyboard();
+  world = new World(canvas, keyboard);
 
   requestAnimationFrame(gameLoop);
 

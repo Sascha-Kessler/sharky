@@ -5,11 +5,6 @@ class MovableObject {
   speedX = 0;
   speedY = 0;
 
-  update() {
-    this.x += this.speedX;
-    this.y -= this.speedY;
-  }
-
   loadImage(path) {
     this.img = new Image();
     this.img.src = path;

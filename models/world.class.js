@@ -1,26 +1,39 @@
 class World {
-  backgroundObjects = [
-    new BackgroundObject('../img/3. Background/Light/1.png')
-  ];
-  character = new Character();
-  enemies = [
-    new PufferFish(this.character),
-    new PufferFish(this.character),
-    new PufferFish(this.character)
-  ];
+  backgroundObjects;
+  character;
+  enemies;
   ctx;
 
-
-  constructor(canvas) {
+  constructor(canvas, keyboard) {
     this.canvas = canvas;
-    this.ctx = canvas.getContext('2d');
+    this.keyboard = keyboard;
+    this.ctx = canvas.getContext("2d");
+
+    this.backgroundObjects = [
+      new BackgroundObject("../img/3. Background/Light/1.png"),
+    ];
+
+    this.character = new Character(this.keyboard, this);
+
+    this.enemies = [
+      new PufferFish(this.character, this),
+      new PufferFish(this.character, this),
+      new PufferFish(this.character, this),
+    ];
   }
 
+  get width() {
+    return this.canvas.width;
+  }
+
+  get height() {
+    return this.canvas.height;
+  }
 
   update() {
     this.character.update();
+    this.enemies.forEach((enemy) => enemy.update());
   }
-
 
   draw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -30,24 +43,12 @@ class World {
     this.addObjectToMap(this.enemies);
   }
 
-
   addObjectToMap(objects) {
-    objects.forEach(obj => {
-      this.addToMap(obj);
-    });
+    objects.forEach((obj) => this.addToMap(obj));
   }
-
 
   addToMap(mo) {
     if (!mo.img || !mo.img.complete) return;
-
-    this.ctx.drawImage(
-      mo.img,
-      mo.x,
-      mo.y,
-      mo.width,
-      mo.height
-    );
+    this.ctx.drawImage(mo.img, mo.x, mo.y, mo.width, mo.height);
   }
-
 }
