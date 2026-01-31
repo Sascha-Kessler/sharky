@@ -36,14 +36,12 @@ class Character extends MovableObject {
   update() {
     this.clampToWorld();
 
-    if (this.x === 0 || this.x + this.width === this.world.width) {
-      this.speedX = 0;
-    }
-
     if (this.keyboard.isPressed("ArrowRight")) {
       this.speedX = 5;
+      this.otherDirection = false;
     } else if (this.keyboard.isPressed("ArrowLeft")) {
       this.speedX = -5;
+      this.otherDirection = true;
     } else {
       this.speedX = 0;
     }
