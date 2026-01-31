@@ -46,6 +46,7 @@ class Character extends MovableObject {
       this.speedX = 0;
     }
     this.x += this.speedX;
+    this.world.camera_x = -this.x;
 
     if (this.keyboard.isPressed("ArrowUp")) {
       this.speedY = -5;

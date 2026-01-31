@@ -3,6 +3,7 @@ class World {
   character;
   enemies;
   ctx;
+  camera_x = 0;
 
   constructor(canvas, keyboard) {
     this.canvas = canvas;
@@ -10,7 +11,8 @@ class World {
     this.ctx = canvas.getContext("2d");
 
     this.backgroundObjects = [
-      new BackgroundObject("../img/3. Background/Light/1.png"),
+      new BackgroundObject("../img/3. Background/Light/1.png", 0),
+      new BackgroundObject("../img/3. Background/Light/2.png", canvas.width),
     ];
 
     this.character = new Character(this.keyboard, this);
@@ -23,7 +25,7 @@ class World {
   }
 
   get width() {
-    return this.canvas.width;
+    return Math.max(...this.backgroundObjects.map((bg) => bg.x + bg.width));
   }
 
   get height() {
@@ -38,9 +40,11 @@ class World {
   draw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
+    this.ctx.translate(this.camera_x, 0);
     this.addObjectToMap(this.backgroundObjects);
     this.addToMap(this.character);
     this.addObjectToMap(this.enemies);
+    this.ctx.translate(-this.camera_x, 0);
   }
 
   addObjectToMap(objects) {
