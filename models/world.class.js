@@ -1,27 +1,24 @@
 class World {
-  backgroundObjects;
+  backgroundObjects = [];
   character;
-  enemies;
+  enemies = [];
   ctx;
   camera_x = 0;
 
-  constructor(canvas, keyboard) {
+  constructor(canvas, keyboard, level) {
     this.canvas = canvas;
     this.keyboard = keyboard;
     this.ctx = canvas.getContext("2d");
 
-    this.backgroundObjects = [
-      new BackgroundObject("../img/3. Background/Light/1.png", 0),
-      new BackgroundObject("../img/3. Background/Light/2.png", canvas.width),
-    ];
+    // Inhalte aus dem Level
+    this.backgroundObjects = level.backgroundObjects;
+    this.enemies = level.enemies;
 
+    // Spielfigur
     this.character = new Character(this.keyboard, this);
 
-    this.enemies = [
-      new PufferFish(this.character, this),
-      new PufferFish(this.character, this),
-      new PufferFish(this.character, this),
-    ];
+    // Enemies verkabeln
+    this.enemies.forEach((e) => e.setWorld(this));
   }
 
   get width() {

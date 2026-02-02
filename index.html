@@ -1,25 +1,33 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sharky</title>
-    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="./style.css" />
 
-    <script src="./models/world.class.js"></script>
-
+    <!-- 1) Basis / Utilities -->
     <script src="./models/movable-objects.class.js"></script>
     <script src="./models/keyboard.class.js"></script>
+
+    <!-- 2) Game Objects (die von Level benutzt werden) -->
     <script src="./models/background.class.js"></script>
     <script src="./models/character.class.js"></script>
     <script src="./models/puffer-fish.class.js"></script>
 
+    <!-- 3) Level-Logik + Level-Daten -->
+    <script src="./models/level.class.js"></script>
+    <script src="./levels/level1.js"></script>
+
+    <!-- 4) World (benutzt level1) -->
+    <script src="./models/world.class.js"></script>
+
+    <!-- 5) Game init/loop (erst ganz am Ende) -->
     <script src="./js/game.js"></script>
-</head>
-<body onload="init()">
+  </head>
 
+  <body onload="init()">
     <h1>Sharky</h1>
-
     <canvas id="canvas"></canvas>
-</body>
+  </body>
 </html>

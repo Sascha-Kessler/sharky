@@ -18,12 +18,12 @@ window.addEventListener("keyup", (event) => {
 function init() {
   canvas = document.getElementById("canvas");
   resizeCanvas();
+
   keyboard = new Keyboard();
-  world = new World(canvas, keyboard);
+  const level1 = createLevel1(canvas);
+  world = new World(canvas, keyboard, level1);
 
   requestAnimationFrame(gameLoop);
-
-  window.addEventListener("resize", resizeCanvas);
 }
 
 function gameLoop() {
