@@ -46,7 +46,7 @@ class Character extends MovableObject {
       this.speedX = 0;
     }
     this.x += this.speedX;
-    this.world.camera_x = -this.x;
+    this.world.camera_x = -this.x + 100;
 
     if (this.keyboard.isPressed("ArrowUp")) {
       this.speedY = -5;
@@ -59,11 +59,11 @@ class Character extends MovableObject {
   }
 
   clampToWorld() {
-    if (this.x < 0) {
-      this.x = 0;
+    if (this.x < 150) {
+      this.x = 150;
     }
-    if (this.x + this.width > this.world.width) {
-      this.x = this.world.width - this.width;
+    if (this.x > this.world.level.level_end_x) {
+      this.x = this.world.level.level_end_x;
     }
     if (this.y < 0) {
       this.y = 0;

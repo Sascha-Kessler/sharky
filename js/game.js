@@ -7,12 +7,10 @@ let keyboard;
 
 window.addEventListener("keydown", (event) => {
   keyboard.key[event.code] = true;
-  console.log(event.code, "true");
 });
 
 window.addEventListener("keyup", (event) => {
   keyboard.key[event.code] = false;
-  console.log(event.code, "false");
 });
 
 function init() {
@@ -20,9 +18,9 @@ function init() {
   resizeCanvas();
 
   keyboard = new Keyboard();
-  const level1 = createLevel1(canvas);
+  const level1 = createLevel1();
   world = new World(canvas, keyboard, level1);
-
+  window.addEventListener("resize", resizeCanvas);
   requestAnimationFrame(gameLoop);
 }
 
