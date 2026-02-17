@@ -1,5 +1,8 @@
 class World {
   character;
+  healthbar;
+  poisonbar;
+  coinbar;
   ctx;
   camera_x = 0;
 
@@ -16,6 +19,9 @@ class World {
 
     // Spielfigur
     this.character = new Character(this.keyboard, this);
+    this.healthbar = new Healthbar();
+    this.poisonbar = new Poisonbar();
+    this.coinbar = new Coinbar();
 
     // Enemies verkabeln
     this.enemies.forEach((e) => e.setWorld(this));
@@ -40,6 +46,9 @@ class World {
     this.ctx.translate(this.camera_x, 0);
     this.addObjectToMap(this.level.backgroundObjects);
     this.addToMap(this.character);
+    this.addToMap(this.healthbar);
+    this.addToMap(this.poisonbar);
+    this.addToMap(this.coinbar);
     this.addObjectToMap(this.level.enemies);
     this.addObjectToMap(this.coin);
     this.ctx.translate(-this.camera_x, 0);
