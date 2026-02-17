@@ -9,5 +9,7 @@ function createLevel1() {
       new BackgroundObject("../img/3. Background/Light/1.png", 2 * TILE_WIDTH),
       new BackgroundObject("../img/3. Background/Light/2.png", 3 * TILE_WIDTH),
     ],
+
+    [new Coin(), new Coin(), new Coin(), new Coin()],
   );
 }

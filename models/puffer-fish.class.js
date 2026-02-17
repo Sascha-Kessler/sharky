@@ -14,8 +14,19 @@ class PufferFish extends MovableObject {
   constructor() {
     super();
     this.loadImage(this.IMAGES_SWIMMING[0]);
+    this.loadImages(this.IMAGES_SWIMMING);
     this.x = 800 + Math.random() * 400;
     this.y = Math.random() * (GAME_HEIGHT - this.height);
+    this.animate();
+  }
+
+  animate() {
+    setInterval(() => {
+      let i = this.currentImage % this.IMAGES_SWIMMING.length;
+      let path = this.IMAGES_SWIMMING[i];
+      this.img = this.imageCache[path];
+      this.currentImage++;
+    }, 200);
   }
 
   setWorld(world) {
@@ -34,11 +45,6 @@ class PufferFish extends MovableObject {
     // Optional: wenn offscreen links -> respawn rechts
     if (this.x + this.width < 0) {
       this.x = this.world.canvas.width + 200 + Math.random() * 600;
-    }
-
-    // Animation (falls du playAnimation hast)
-    if (this.playAnimation) {
-      this.playAnimation(this.IMAGES_SWIMMING);
     }
   }
 }

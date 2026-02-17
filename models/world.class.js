@@ -12,6 +12,7 @@ class World {
     // Inhalte aus dem Level
     this.backgroundObjects = level.backgroundObjects;
     this.enemies = level.enemies;
+    this.coin = level.coin;
 
     // Spielfigur
     this.character = new Character(this.keyboard, this);
@@ -40,6 +41,7 @@ class World {
     this.addObjectToMap(this.level.backgroundObjects);
     this.addToMap(this.character);
     this.addObjectToMap(this.level.enemies);
+    this.addObjectToMap(this.coin);
     this.ctx.translate(-this.camera_x, 0);
   }
 
