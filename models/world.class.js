@@ -19,7 +19,7 @@ class World {
 
     // Spielfigur
     this.character = new Character(this.keyboard, this);
-    this.healthbar = new Healthbar();
+    this.healthbar = new Healthbar(this.character);
     this.poisonbar = new Poisonbar();
     this.coinbar = new Coinbar();
 
@@ -38,20 +38,43 @@ class World {
   update() {
     this.character.update();
     this.enemies.forEach((enemy) => enemy.update());
+    this.checkCollisions();
+  }
+
+  checkCollisions() {
+    this.level.enemies.forEach((enemy) => {
+      if (this.character.isColliding(enemy)) {
+        if (!this.character.isHurtCooldownActive()) {
+          this.character.lastHit = Date.now();
+          this.character.health -= 20;
+          this.character.hurt();
+          this.healthbar.healthbarUpdate(this.character.health);
+          if (this.character.health == 0) {
+            this.character.die();
+          }
+        }
+      }
+    });
   }
 
   draw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
+    // ===== Welt mit Kamera =====
+    this.ctx.save();
     this.ctx.translate(this.camera_x, 0);
-    this.addObjectToMap(this.level.backgroundObjects);
-    this.addToMap(this.character);
+
+    this.addObjectToMap(this.level.backgroundObjects); // Hintergrund
+    this.addObjectToMap(this.level.coin); // Coins
+    this.addObjectToMap(this.level.enemies); // Enemies
+    this.addToMap(this.character); // Character vorne
+
+    this.ctx.restore();
+
+    // ===== UI ohne Kamera (HUD) =====
     this.addToMap(this.healthbar);
     this.addToMap(this.poisonbar);
     this.addToMap(this.coinbar);
-    this.addObjectToMap(this.level.enemies);
-    this.addObjectToMap(this.coin);
-    this.ctx.translate(-this.camera_x, 0);
   }
 
   addObjectToMap(objects) {
@@ -60,13 +83,18 @@ class World {
 
   addToMap(mo) {
     if (!mo.img || !mo.img.complete) return;
+
     if (mo.otherDirection) {
       this.flipImage(mo);
     }
-    this.ctx.drawImage(mo.img, mo.x, mo.y, mo.width, mo.height);
+
+    mo.draw(this.ctx);
+
     if (mo.otherDirection) {
       this.flipImageBack(mo);
     }
+
+    mo.drawFrame(this.ctx);
   }
 
   flipImage(mo) {
