@@ -2,7 +2,7 @@ class Healthbar extends MovableObject {
   height = 60;
   width = 180;
   y = 0;
-  x = 80;
+  x = 0;
   IMAGES_HEALTHBAR = [
     "../img/4. Marcadores/green/Life/0_  copia3.png",
     "../img/4. Marcadores/green/Life/20_ copia4.png",

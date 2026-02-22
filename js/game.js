@@ -7,6 +7,7 @@ let keyboard;
 
 window.addEventListener("keydown", (event) => {
   keyboard.key[event.code] = true;
+  console.log(event.code);
 });
 
 window.addEventListener("keyup", (event) => {

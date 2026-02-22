@@ -1,13 +1,8 @@
 class PufferFish extends MovableObject {
+  IMAGES_SWIMMING = PUFFERFISH_IMAGES.SWIMMING;
   height = 60;
   width = 60;
-  IMAGES_SWIMMING = [
-    "../img/2.Enemy/1.Puffer fish (3 color options)/1.Swim/1.swim1.png",
-    "../img/2.Enemy/1.Puffer fish (3 color options)/1.Swim/1.swim2.png",
-    "../img/2.Enemy/1.Puffer fish (3 color options)/1.Swim/1.swim3.png",
-    "../img/2.Enemy/1.Puffer fish (3 color options)/1.Swim/1.swim4.png",
-    "../img/2.Enemy/1.Puffer fish (3 color options)/1.Swim/1.swim5.png",
-  ];
+
   currentImage = 0;
   speedX = -0.15 - Math.random() * 1.25;
 

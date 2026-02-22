@@ -1,5 +1,5 @@
 class Poisonbar extends MovableObject {
-  x = 80;
+  x = 0;
   y = 40;
   height = 60;
   width = 180;

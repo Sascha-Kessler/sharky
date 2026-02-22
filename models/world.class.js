@@ -5,8 +5,10 @@ class World {
   coinbar;
   ctx;
   camera_x = 0;
+  throwableObjects = [];
 
   constructor(canvas, keyboard, level) {
+    console.log("World level:", level);
     this.canvas = canvas;
     this.keyboard = keyboard;
     this.ctx = canvas.getContext("2d");
@@ -19,6 +21,7 @@ class World {
 
     // Spielfigur
     this.character = new Character(this.keyboard, this);
+    this.throwableObjects = [];
     this.healthbar = new Healthbar(this.character);
     this.poisonbar = new Poisonbar();
     this.coinbar = new Coinbar();
@@ -38,6 +41,9 @@ class World {
   update() {
     this.character.update();
     this.enemies.forEach((enemy) => enemy.update());
+    this.throwableObjects = this.throwableObjects.filter(
+      (b) => b.x > 0 && b.x < this.level.level_end_x + 500,
+    );
     this.checkCollisions();
   }
 
@@ -68,7 +74,7 @@ class World {
     this.addObjectToMap(this.level.coin); // Coins
     this.addObjectToMap(this.level.enemies); // Enemies
     this.addToMap(this.character); // Character vorne
-
+    this.addObjectToMap(this.throwableObjects);
     this.ctx.restore();
 
     // ===== UI ohne Kamera (HUD) =====
@@ -107,5 +113,15 @@ class World {
   flipImageBack(mo) {
     mo.x = mo.x * -1;
     this.ctx.restore();
+  }
+
+  throwObject() {
+    const x = this.character.x + (this.character.otherDirection ? -20 : 120);
+    const y = this.character.y + 80;
+
+    const bubble = new ThrowableObject(x, y, this.character.otherDirection);
+    bubble.throw(); // ✅ Logik in der Klasse
+
+    this.throwableObjects.push(bubble); // ✅ World verwaltet die Liste
   }
 }

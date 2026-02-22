@@ -1,5 +1,5 @@
 class Coinbar extends MovableObject {
-  x = 80;
+  x = 0;
   y = 80;
   height = 60;
   width = 180;

@@ -1,27 +1,8 @@
-class MovableObject {
-  img;
-  imageCache = {};
+class MovableObject extends DrawableObjects {
   speed = 0.15;
   speedX = 0;
   speedY = 0;
   otherDirection = false;
-
-  loadImage(path) {
-    this.img = new Image();
-    this.img.src = path;
-  }
-
-  loadImages(arr) {
-    arr.forEach((path) => {
-      let img = new Image();
-      img.src = path;
-      this.imageCache[path] = img;
-    });
-  }
-
-  draw(ctx) {
-    ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
-  }
 
   drawFrame(ctx) {
     if (
@@ -30,11 +11,22 @@ class MovableObject {
       this instanceof Endboss ||
       this instanceof Coin
     ) {
-      // Red rectangle
+      const left = this.offset?.left || 0;
+      const top = this.offset?.top || 0;
+      const right = this.offset?.right || 0;
+      const bottom = this.offset?.bottom || 0;
+
       ctx.beginPath();
       ctx.lineWidth = "2";
       ctx.strokeStyle = "red";
-      ctx.rect(this.x, this.y, this.width, this.height);
+
+      ctx.rect(
+        this.x + left,
+        this.y + top,
+        this.width - left - right,
+        this.height - top - bottom,
+      );
+
       ctx.stroke();
     }
   }
@@ -45,12 +37,28 @@ class MovableObject {
     }, 1000 / 60);
   }
 
-  isColliding(mo) {
+  isColliding(obj) {
     return (
-      this.x < mo.x + mo.width &&
-      this.x + this.width > mo.x &&
-      this.y < mo.y + mo.height &&
-      this.y + this.height > mo.y
+      this.getHitboxRight() > obj.getHitboxLeft() &&
+      this.getHitboxLeft() < obj.getHitboxRight() &&
+      this.getHitboxBottom() > obj.getHitboxTop() &&
+      this.getHitboxTop() < obj.getHitboxBottom()
     );
+  }
+
+  getHitboxLeft() {
+    return this.x + (this.offset?.left || 0);
+  }
+
+  getHitboxRight() {
+    return this.x + this.width - (this.offset?.right || 0);
+  }
+
+  getHitboxTop() {
+    return this.y + (this.offset?.top || 0);
+  }
+
+  getHitboxBottom() {
+    return this.y + this.height - (this.offset?.bottom || 0);
   }
 }
