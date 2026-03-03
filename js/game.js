@@ -4,6 +4,7 @@ const GAME_HEIGHT = 480;
 let canvas;
 let world;
 let keyboard;
+let isPaused = false;
 
 window.addEventListener("keydown", (event) => {
   keyboard.key[event.code] = true;
@@ -19,14 +20,13 @@ function init() {
   resizeCanvas();
 
   keyboard = new Keyboard();
-  const level1 = createLevel1();
-  world = new World(canvas, keyboard, level1);
-  window.addEventListener("resize", resizeCanvas);
-  requestAnimationFrame(gameLoop);
 }
 
 function gameLoop() {
-  world.update();
+  if (!isPaused) {
+    world.update();
+  }
+
   world.draw();
   requestAnimationFrame(gameLoop);
 }
@@ -42,4 +42,16 @@ function resizeCanvas() {
 
   canvas.style.width = GAME_WIDTH * scale + "px";
   canvas.style.height = GAME_HEIGHT * scale + "px";
+}
+
+function startGame() {
+  document.getElementById("canvas").classList.remove("dnone");
+  const level1 = createLevel1();
+  world = new World(canvas, keyboard, level1);
+  window.addEventListener("resize", resizeCanvas);
+  requestAnimationFrame(gameLoop);
+}
+
+function togglePause() {
+  isPaused = !isPaused;
 }
