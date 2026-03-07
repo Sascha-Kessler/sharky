@@ -84,6 +84,7 @@ class Character extends MovableObject {
 
     if (this.keyboard.isPressed("ArrowUp")) {
       this.speedY = -5;
+      console.log(this.y);
     } else if (this.keyboard.isPressed("ArrowDown")) {
       this.speedY = 5;
     } else {
@@ -107,11 +108,11 @@ class Character extends MovableObject {
     if (this.x > this.world.level.level_end_x) {
       this.x = this.world.level.level_end_x;
     }
-    if (this.y < 0) {
-      this.y = 0;
+    if (this.y < -this.offset.top) {
+      this.y = -this.offset.top;
     }
-    if (this.y + this.height > this.world.height) {
-      this.y = this.world.height - this.height;
+    if (this.y + this.height - this.offset.bottom > this.world.height) {
+      this.y = this.world.height - this.height + this.offset.bottom;
     }
   }
 

@@ -38,8 +38,18 @@
 
   <body onload="init()">
     <h1>Sharky</h1>
-    <button id="startBtn" onclick="startGame()">Start Game</button>
-    <button id="pauseBtn" onclick="togglePause()">Pause</button>
+    <div id="startscreen">
+      <button id="startBtn" class="ocean-btn start-btn" onclick="startGame()">
+        Start
+      </button>
+      <button id="optionBtn" class="ocean-btn start-btn" onclick="">
+        Options
+      </button>
+      <button id="pauseBtn" class="ocean-btn pause-btn" onclick="togglePause()">
+        Pause
+      </button>
+    </div>
+
     <canvas id="canvas" class="dnone"></canvas>
   </body>
 </html>

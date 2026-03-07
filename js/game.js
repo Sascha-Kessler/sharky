@@ -5,6 +5,7 @@ let canvas;
 let world;
 let keyboard;
 let isPaused = false;
+let startingScreenBackground = ["../img/3. Background/Mesa de trabajo 1.png"];
 
 window.addEventListener("keydown", (event) => {
   keyboard.key[event.code] = true;
@@ -46,6 +47,8 @@ function resizeCanvas() {
 
 function startGame() {
   document.getElementById("canvas").classList.remove("dnone");
+  document.getElementById("startBtn").classList.add("dnone");
+  document.getElementById("optionBtn").classList.add("dnone");
   const level1 = createLevel1();
   world = new World(canvas, keyboard, level1);
   window.addEventListener("resize", resizeCanvas);

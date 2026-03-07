@@ -4,13 +4,15 @@ body {
   padding: 0;
   height: 100%;
   width: 100vw;
-}
-
-body {
   display: flex;
   flex-direction: column;
   align-items: center; /* Zentriert horizontal */
   justify-content: flex-start;
+  background-image: url("../img/3. Background/Mesa de trabajo 1.png");
+  background-size: cover; /* Bild füllt den Bildschirm */
+  background-position: center; /* Bild zentrieren */
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
 h1 {
@@ -24,4 +26,67 @@ h1 {
 
 .dnone {
   display: none;
+}
+
+.ocean-btn {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 22px;
+  font-weight: bold;
+  letter-spacing: 2px;
+
+  padding: 14px 36px;
+
+  border: none;
+  border-radius: 40px;
+
+  color: white;
+  cursor: pointer;
+
+  background: linear-gradient(145deg, #0099cc, #004f6b);
+
+  box-shadow:
+    0 6px 15px rgba(0, 0, 0, 0.4),
+    inset 0 0 10px rgba(255, 255, 255, 0.2);
+
+  transition: all 0.25s ease;
+}
+
+/* Hover Effekt */
+.ocean-btn:hover {
+  transform: translateY(-3px) scale(1.05);
+
+  background: linear-gradient(145deg, #00cfff, #006d8f);
+
+  box-shadow:
+    0 10px 20px rgba(0, 0, 0, 0.5),
+    0 0 12px rgba(0, 200, 255, 0.7);
+}
+
+/* Klick Effekt */
+.ocean-btn:active {
+  transform: translateY(2px);
+  box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.6);
+}
+
+/* Start Button größer */
+.start-btn {
+  font-size: 28px;
+  padding: 18px 50px;
+}
+
+/* Pause Button kleiner */
+.pause-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+
+  font-size: 16px;
+  padding: 10px 22px;
+}
+
+#startscreen {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
 }
