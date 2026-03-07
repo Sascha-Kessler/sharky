@@ -45,6 +45,7 @@ class World {
       (b) => b.x > 0 && b.x < this.level.level_end_x + 500,
     );
     this.checkCollisions();
+    this.checkBubbleCollisions();
   }
 
   checkCollisions() {
@@ -60,6 +61,18 @@ class World {
           }
         }
       }
+    });
+  }
+
+  checkBubbleCollisions() {
+    this.throwableObjects.forEach((bubble, bubbleIndex) => {
+      this.level.enemies.forEach((enemy, enemyIndex) => {
+        if (bubble.isColliding(enemy)) {
+          console.log("Treffer");
+          this.throwableObjects.splice(bubbleIndex, 1);
+          this.level.enemies.splice(enemyIndex, 1);
+        }
+      });
     });
   }
 
