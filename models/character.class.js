@@ -47,6 +47,7 @@ class Character extends MovableObject {
   invincibleTime = 1500;
   health = 100;
   coins = 0;
+  poisonBottles = 0;
 
   dead = false;
   isHurt = false;
@@ -333,6 +334,12 @@ class Character extends MovableObject {
       ) {
         this.world.throwObject("poison");
         this.attackBubbleThrown = true;
+
+        // PoisonBottle verbrauchen
+        this.poisonBottles--;
+
+        // Bar updaten
+        this.world.poisonbar.poisonbarUpdate(this.poisonBottles);
       }
 
       this.currentImageNormalAttack++;
@@ -390,6 +397,8 @@ class Character extends MovableObject {
   }
 
   poisonAttack() {
+    if (this.poisonBottles === 0) return;
+
     if (this.dead) return;
     if (this.isHurt) return;
     if (this.isAttacking) return;

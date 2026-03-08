@@ -17,8 +17,12 @@ class Poisonbar extends MovableObject {
     super();
     this.world = world;
     this.keyboard = keyboard;
-    this.loadImage(
-      "../img/4. Marcadores/green/poisoned bubbles/0_ copia 2.png",
-    );
+    this.loadImages(this.IMAGES_POISON);
+    this.img = this.imageCache[this.IMAGES_POISON[0]];
+  }
+
+  poisonbarUpdate(poisonBottles) {
+    let index = Math.max(0, Math.min(5, poisonBottles));
+    this.img = this.imageCache[this.IMAGES_POISON[index]];
   }
 }

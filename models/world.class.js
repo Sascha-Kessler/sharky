@@ -27,7 +27,8 @@ class World {
     // Level content
     this.backgroundObjects = level.backgroundObjects;
     this.enemies = level.enemies;
-    this.coins = level.coin;
+    this.coins = level.coins;
+    this.poisonBottles = level.poisonBottles;
 
     // Main character
     this.character = new Character(this.keyboard, this);
@@ -64,6 +65,7 @@ class World {
     this.checkEnemyCollisions();
     this.checkBubbleCollisions();
     this.checkCoinCollisions();
+    this.checkPoisonBottlesCollisions();
   }
 
   updateEnemies() {
@@ -119,6 +121,16 @@ class World {
     });
   }
 
+  checkPoisonBottlesCollisions() {
+    this.poisonBottles.forEach((poisonBottle, poisonBottleIndex) => {
+      if (this.character.isColliding(poisonBottle)) {
+        this.poisonBottles.splice(poisonBottleIndex, 1);
+        this.character.poisonBottles++;
+        this.poisonbar.poisonbarUpdate(this.character.poisonBottles);
+      }
+    });
+  }
+
   // =========================
   // Drawing
   // =========================
@@ -131,6 +143,7 @@ class World {
     this.addObjectToMap(this.backgroundObjects);
     this.addObjectToMap(this.coins);
     this.addObjectToMap(this.enemies);
+    this.addObjectToMap(this.poisonBottles);
     this.addToMap(this.character);
     this.addObjectToMap(this.throwableObjects);
 

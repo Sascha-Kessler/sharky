@@ -4,6 +4,9 @@ class Endboss extends MovableObject {
   // =========================
   IMAGES_FLOATING = ENDBOSS_IMAGES.FLOATING;
   IMAGES_SPAWNING = ENDBOSS_IMAGES.SPAWNING;
+  IMAGES_ATTACKING = ENDBOSS_IMAGES.ATTACKING;
+  IMAGES_HURT = ENDBOSS_IMAGES.HURT;
+  IMAGES_DEAD = ENDBOSS_IMAGES.DEAD;
 
   // =========================
   // Position and Size
@@ -12,6 +15,7 @@ class Endboss extends MovableObject {
   y = 100;
   height = 300;
   width = 300;
+  health = 100;
 
   // =========================
   // Animation
@@ -34,6 +38,9 @@ class Endboss extends MovableObject {
     this.loadImage(this.IMAGES_SPAWNING[0]);
     this.loadImages(this.IMAGES_FLOATING);
     this.loadImages(this.IMAGES_SPAWNING);
+    this.loadImages(this.IMAGES_ATTACKING);
+    this.loadImages(this.IMAGES_HURT);
+    this.loadImages(this.IMAGES_DEAD);
   }
 
   // =========================

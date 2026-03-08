@@ -42,12 +42,22 @@ function createLevel1() {
       new BackgroundObject("../img/3. Background/Light/2.png", TILE_WIDTH),
       new BackgroundObject("../img/3. Background/Light/1.png", 2 * TILE_WIDTH),
       new BackgroundObject("../img/3. Background/Light/2.png", 3 * TILE_WIDTH),
+      new BackgroundObject("../img/3. Background/Light/1.png", 4 * TILE_WIDTH),
+      new BackgroundObject("../img/3. Background/Light/2.png", 5 * TILE_WIDTH),
     ],
 
     [
       ...createCoinRow(600, 200, 5, 60),
       ...createCoinRow(1200, 180, 4, 60),
       ...createCoinArc(1600, 250, 6, 70),
+    ],
+
+    [
+      new PoisonBottle(400, 300),
+      new PoisonBottle(600, 350),
+      new PoisonBottle(1005, 235),
+      new PoisonBottle(1385, 295),
+      new PoisonBottle(1685, 295),
     ],
   );
 }
