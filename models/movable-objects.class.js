@@ -8,6 +8,7 @@ class MovableObject extends DrawableObjects {
     if (
       this instanceof Character ||
       this instanceof PufferFish ||
+      this instanceof JellyFish ||
       this instanceof Endboss ||
       this instanceof Coin
     ) {

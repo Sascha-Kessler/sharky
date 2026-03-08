@@ -1,16 +1,21 @@
-class PufferFish extends MovableObject {
+class JellyFish extends MovableObject {
   // =========================
   // Animation Image Sets
   // =========================
-  IMAGES_SWIMMING_GREEN = PUFFERFISH_IMAGES.GREEN_SWIMMING;
-  IMAGES_SWIMMING_ORANGE = PUFFERFISH_IMAGES.ORANGE_SWIMMING;
-  IMAGES_SWIMMING_RED = PUFFERFISH_IMAGES.RED_SWIMMING;
+  IMAGES_SWIMMING_GREEN = JELLYFISH_IMAGES.GREEN_SWIMMING;
+  IMAGES_SWIMMING_PINK = JELLYFISH_IMAGES.PINK_SWIMMING;
 
   // =========================
   // Size
   // =========================
   height = 60;
   width = 60;
+  offset = {
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  };
 
   // =========================
   // Animation
@@ -22,7 +27,7 @@ class PufferFish extends MovableObject {
   // =========================
   // Movement
   // =========================
-  speedX = -0.15 - Math.random() * 1.25;
+  speedY = -0.15 - Math.random() * 1.25;
   activationRange = 600;
   isActive = false;
 
@@ -31,12 +36,10 @@ class PufferFish extends MovableObject {
   // =========================
   constructor(x, y, color) {
     super();
-    if (color === "green") {
-      this.imagesSwimming = this.IMAGES_SWIMMING_GREEN;
-    } else if (color === "orange") {
-      this.imagesSwimming = this.IMAGES_SWIMMING_ORANGE;
+    if (color === "pink") {
+      this.imagesSwimming = this.IMAGES_SWIMMING_PINK;
     } else {
-      this.imagesSwimming = this.IMAGES_SWIMMING_RED;
+      this.imagesSwimming = this.IMAGES_SWIMMING_GREEN;
     }
     this.loadImage(this.imagesSwimming[0]);
     this.loadImages(this.imagesSwimming);
@@ -65,6 +68,7 @@ class PufferFish extends MovableObject {
 
     this.move();
     this.updateSwimAnimation();
+    this.clampToWorld();
   }
 
   checkActivation() {
@@ -72,12 +76,30 @@ class PufferFish extends MovableObject {
       this.isActive = true;
     }
   }
+  clampToWorld() {
+    if (this.x < 150) {
+      this.x = 150;
+    }
 
+    if (this.x > this.world.level.level_end_x) {
+      this.x = this.world.level.level_end_x;
+    }
+
+    if (this.y < -this.offset.top) {
+      this.y = -this.offset.top;
+      this.speedY *= -1;
+    }
+
+    if (this.y + this.height - this.offset.bottom > this.world.height) {
+      this.y = this.world.height - this.height + this.offset.bottom;
+      this.speedY *= -1;
+    }
+  }
   // =========================
   // Movement
   // =========================
   move() {
-    this.x += this.speedX;
+    this.y += this.speedY;
   }
 
   // =========================

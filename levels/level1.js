@@ -28,10 +28,12 @@ function createLevel1() {
   const TILE_WIDTH = GAME_WIDTH;
   return new Level(
     [
-      new PufferFish(600, 200),
-      new PufferFish(1000, 250),
-      new PufferFish(1400, 180),
-      new PufferFish(1800, 220),
+      new PufferFish(600, 200, "green"),
+      new PufferFish(1000, 250, "red"),
+      new PufferFish(1400, 180, "orange"),
+      new PufferFish(1800, 220, "red"),
+      new JellyFish(600, 400, "green"),
+      new JellyFish(1200, 200, "pink"),
       new Endboss(),
     ],
 
