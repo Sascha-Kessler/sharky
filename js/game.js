@@ -9,7 +9,6 @@ let startingScreenBackground = ["../img/3. Background/Mesa de trabajo 1.png"];
 
 window.addEventListener("keydown", (event) => {
   keyboard.key[event.code] = true;
-  console.log(event.code);
 });
 
 window.addEventListener("keyup", (event) => {
@@ -56,5 +55,10 @@ function startGame() {
 }
 
 function togglePause() {
+  const button = document.getElementById("pauseBtn");
+
   isPaused = !isPaused;
+  button.blur();
+
+  button.innerText = isPaused ? "Resume" : "Pause";
 }

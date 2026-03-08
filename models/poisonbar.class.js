@@ -1,8 +1,8 @@
 class Poisonbar extends MovableObject {
   x = 0;
   y = 40;
-  height = 60;
-  width = 180;
+  height = 50;
+  width = 170;
   IMAGES_POISON = [
     "../img/4. Marcadores/green/poisoned bubbles/0_ copia 2.png",
     "../img/4. Marcadores/green/poisoned bubbles/20_ copia 3.png",

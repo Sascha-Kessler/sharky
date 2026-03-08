@@ -21,17 +21,19 @@ class PufferFish extends MovableObject {
   // Movement
   // =========================
   speedX = -0.15 - Math.random() * 1.25;
+  activationRange = 600;
+  isActive = false;
 
   // =========================
   // Constructor
   // =========================
-  constructor() {
+  constructor(x, y) {
     super();
     this.loadImage(this.IMAGES_SWIMMING[0]);
     this.loadImages(this.IMAGES_SWIMMING);
 
-    this.x = 800 + Math.random() * 400;
-    this.y = Math.random() * (GAME_HEIGHT - this.height);
+    this.x = x;
+    this.y = y;
   }
 
   // =========================
@@ -40,17 +42,26 @@ class PufferFish extends MovableObject {
   setWorld(world) {
     this.world = world;
     this.character = world.character;
-
-    // Example: spawn relative to character
-    this.x = this.character.x + 600;
   }
 
   // =========================
   // Main Update Flow
   // =========================
   update() {
+    if (!this.world) return;
+
+    this.checkActivation();
+
+    if (!this.isActive) return;
+
     this.move();
     this.updateSwimAnimation();
+  }
+
+  checkActivation() {
+    if (this.character.x + this.activationRange >= this.x) {
+      this.isActive = true;
+    }
   }
 
   // =========================
@@ -58,10 +69,6 @@ class PufferFish extends MovableObject {
   // =========================
   move() {
     this.x += this.speedX;
-
-    if (this.x + this.width < 0) {
-      this.x = this.world.canvas.width + 200 + Math.random() * 600;
-    }
   }
 
   // =========================

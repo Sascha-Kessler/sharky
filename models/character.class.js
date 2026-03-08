@@ -46,6 +46,7 @@ class Character extends MovableObject {
   lastHit = 0;
   invincibleTime = 1500;
   health = 100;
+  coins = 0;
 
   dead = false;
   isHurt = false;

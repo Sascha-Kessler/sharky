@@ -57,24 +57,30 @@ class World {
   // =========================
   update() {
     this.character.update();
-    this.enemies.forEach((enemy) => enemy.update());
+    this.updateEnemies();
     this.coins.forEach((coin) => coin.update());
-
     this.updateThrowableObjects();
-    this.checkCollisions();
+    this.checkEnemyCollisions();
     this.checkBubbleCollisions();
+    this.checkCoinCollisions();
+  }
+
+  updateEnemies() {
+    this.enemies.forEach((enemy) => enemy.update());
+
+    this.enemies = this.enemies.filter((enemy) => enemy.x + enemy.width > -100);
   }
 
   updateThrowableObjects() {
     this.throwableObjects = this.throwableObjects.filter(
-      (bubble) => bubble.x > 0 && bubble.x < this.level.level_end_x + 500,
+      (bubble) => Math.abs(bubble.x - this.character.x) < 800,
     );
   }
 
   // =========================
   // Collision Handling
   // =========================
-  checkCollisions() {
+  checkEnemyCollisions() {
     this.enemies.forEach((enemy) => {
       if (this.character.isColliding(enemy)) {
         if (!this.character.isHurtCooldownActive()) {
@@ -95,11 +101,20 @@ class World {
     this.throwableObjects.forEach((bubble, bubbleIndex) => {
       this.enemies.forEach((enemy, enemyIndex) => {
         if (bubble.isColliding(enemy)) {
-          console.log("Treffer");
           this.throwableObjects.splice(bubbleIndex, 1);
           this.enemies.splice(enemyIndex, 1);
         }
       });
+    });
+  }
+
+  checkCoinCollisions() {
+    this.coins.forEach((coin, coinIndex) => {
+      if (this.character.isColliding(coin)) {
+        this.coins.splice(coinIndex, 1);
+        this.character.coins++;
+        this.coinbar.coinbarUpdate(this.character.coins);
+      }
     });
   }
 

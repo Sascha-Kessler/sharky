@@ -1,6 +1,6 @@
 class Healthbar extends MovableObject {
-  height = 60;
-  width = 180;
+  height = 50;
+  width = 170;
   y = 0;
   x = 0;
   IMAGES_HEALTHBAR = [
