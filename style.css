@@ -25,7 +25,7 @@ h1 {
 }
 
 .dnone {
-  display: none;
+  display: none !important;
 }
 
 .ocean-btn {
@@ -77,9 +77,9 @@ h1 {
 /* Pause Button kleiner */
 .pause-btn {
   position: absolute;
-  top: 20px;
+  top: 70px;
   right: 20px;
-
+  display: none;
   font-size: 16px;
   padding: 10px 22px;
 }

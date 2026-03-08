@@ -51,6 +51,7 @@ class Character extends MovableObject {
   dead = false;
   isHurt = false;
   isAttacking = false;
+  isAttackingPoison = false;
 
   // =========================
   // Idle Animation
@@ -141,6 +142,10 @@ class Character extends MovableObject {
     if (this.keyboard.isPressed("Space")) {
       this.normalAttack();
     }
+
+    if (this.keyboard.isPressed("KeyB")) {
+      this.poisonAttack();
+    }
   }
 
   applyMovement() {
@@ -183,6 +188,11 @@ class Character extends MovableObject {
 
     if (this.isAttacking) {
       this.updateNormalAttackAnimation();
+      return;
+    }
+
+    if (this.isAttackingPoison) {
+      this.updatePoisonAttackAnimation();
       return;
     }
 
@@ -291,7 +301,7 @@ class Character extends MovableObject {
         this.currentImageNormalAttack ===
           this.IMAGES_ATTACK_NORMAL_BUBBLE.length - 1
       ) {
-        this.world.throwObject();
+        this.world.throwObject("normal");
         this.attackBubbleThrown = true;
       }
 
@@ -301,6 +311,36 @@ class Character extends MovableObject {
         this.currentImageNormalAttack >= this.IMAGES_ATTACK_NORMAL_BUBBLE.length
       ) {
         this.isAttacking = false;
+        this.currentImageNormalAttack = 0;
+      }
+    }
+  }
+
+  updatePoisonAttackAnimation() {
+    this.attackAnimationCounter++;
+
+    if (this.attackAnimationCounter >= this.attackAnimationDelay) {
+      this.attackAnimationCounter = 0;
+
+      const path =
+        this.IMAGES_ATTACK_POISON_BUBBLE[this.currentImageNormalAttack];
+      this.img = this.imageCache[path];
+
+      if (
+        !this.attackBubbleThrown &&
+        this.currentImageNormalAttack ===
+          this.IMAGES_ATTACK_POISON_BUBBLE.length - 1
+      ) {
+        this.world.throwObject("poison");
+        this.attackBubbleThrown = true;
+      }
+
+      this.currentImageNormalAttack++;
+
+      if (
+        this.currentImageNormalAttack >= this.IMAGES_ATTACK_POISON_BUBBLE.length
+      ) {
+        this.isAttackingPoison = false;
         this.currentImageNormalAttack = 0;
       }
     }
@@ -341,8 +381,21 @@ class Character extends MovableObject {
     if (this.dead) return;
     if (this.isHurt) return;
     if (this.isAttacking) return;
+    if (this.isAttackingPoison) return;
 
     this.isAttacking = true;
+    this.currentImageNormalAttack = 0;
+    this.attackAnimationCounter = 0;
+    this.attackBubbleThrown = false;
+  }
+
+  poisonAttack() {
+    if (this.dead) return;
+    if (this.isHurt) return;
+    if (this.isAttacking) return;
+    if (this.isAttackingPoison) return;
+
+    this.isAttackingPoison = true;
     this.currentImageNormalAttack = 0;
     this.attackAnimationCounter = 0;
     this.attackBubbleThrown = false;

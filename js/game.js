@@ -1,5 +1,6 @@
 const GAME_WIDTH = 720;
 const GAME_HEIGHT = 480;
+let gameStarted = false;
 
 let canvas;
 let world;
@@ -8,11 +9,19 @@ let isPaused = false;
 let startingScreenBackground = ["../img/3. Background/Mesa de trabajo 1.png"];
 
 window.addEventListener("keydown", (event) => {
-  keyboard.key[event.code] = true;
+  if (keyboard) {
+    keyboard.key[event.code] = true;
+  }
+
+  console.log("keydown:", event.code, event.key);
 });
 
 window.addEventListener("keyup", (event) => {
-  keyboard.key[event.code] = false;
+  if (keyboard) {
+    keyboard.key[event.code] = false;
+  }
+
+  console.log("keyup:", event.code, event.key);
 });
 
 function init() {
@@ -20,9 +29,13 @@ function init() {
   resizeCanvas();
 
   keyboard = new Keyboard();
+
+  window.addEventListener("resize", resizeCanvas);
 }
 
 function gameLoop() {
+  if (!world) return;
+
   if (!isPaused) {
     world.update();
   }
@@ -45,12 +58,14 @@ function resizeCanvas() {
 }
 
 function startGame() {
+  if (gameStarted) return;
+  gameStarted = true;
+
   document.getElementById("canvas").classList.remove("dnone");
-  document.getElementById("startBtn").classList.add("dnone");
-  document.getElementById("optionBtn").classList.add("dnone");
+  document.getElementById("startscreen").classList.add("dnone");
+  document.getElementById("pauseBtn").style.display = "block";
   const level1 = createLevel1();
   world = new World(canvas, keyboard, level1);
-  window.addEventListener("resize", resizeCanvas);
   requestAnimationFrame(gameLoop);
 }
 

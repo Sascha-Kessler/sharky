@@ -1,7 +1,7 @@
 class Keyboard {
-    key = {};
+  key = {};
 
-    isPressed(code) {
-        return !!this.key[code];
-    }
+  isPressed(code) {
+    return !!this.key[code];
+  }
 }

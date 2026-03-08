@@ -59,6 +59,7 @@ class World {
     this.character.update();
     this.updateEnemies();
     this.coins.forEach((coin) => coin.update());
+    this.throwableObjects.forEach((bubble) => bubble.update());
     this.updateThrowableObjects();
     this.checkEnemyCollisions();
     this.checkBubbleCollisions();
@@ -178,11 +179,16 @@ class World {
   // =========================
   // Throwing Objects
   // =========================
-  throwObject() {
+  throwObject(type) {
     const x = this.character.x + (this.character.otherDirection ? -20 : 120);
     const y = this.character.y + 80;
 
-    const bubble = new ThrowableObject(x, y, this.character.otherDirection);
+    const bubble = new ThrowableObject(
+      x,
+      y,
+      this.character.otherDirection,
+      type,
+    );
     bubble.throw();
 
     this.throwableObjects.push(bubble);
