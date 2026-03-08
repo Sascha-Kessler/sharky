@@ -3,6 +3,7 @@ class Character extends MovableObject {
   // Animation Image Sets
   // =========================
   IMAGES_SWIMMING = SHARKIE_IMAGES.SWIMMING;
+  IMAGES_IDLE = SHARKIE_IMAGES.IDLE;
   IMAGES_HURT = SHARKIE_IMAGES.HURT;
   IMAGES_DEAD = SHARKIE_IMAGES.DEAD;
   IMAGES_ATTACK_NORMAL_BUBBLE = SHARKIE_IMAGES.ATTACK_NORMAL_BUBBLE;
@@ -27,6 +28,7 @@ class Character extends MovableObject {
   // =========================
   // Animation Indices
   // =========================
+  currentImageIdle = 0;
   currentImage = 0;
   currentImageDead = 0;
   currentImageHurt = 0;
@@ -48,6 +50,12 @@ class Character extends MovableObject {
   dead = false;
   isHurt = false;
   isAttacking = false;
+
+  // =========================
+  // Idle Animation
+  // =========================
+  idleAnimationCounter = 0;
+  idleAnimationDelay = 12;
 
   // =========================
   // Swim Animation
@@ -85,6 +93,7 @@ class Character extends MovableObject {
     this.keyboard = keyboard;
 
     this.loadImage("../img/1.Sharkie/3.Swim/1.png");
+    this.loadImages(this.IMAGES_IDLE);
     this.loadImages(this.IMAGES_SWIMMING);
     this.loadImages(this.IMAGES_DEAD);
     this.loadImages(this.IMAGES_HURT);
@@ -176,7 +185,28 @@ class Character extends MovableObject {
       return;
     }
 
+    if (this.speedX === 0 && this.speedY === 0) {
+      this.updateIdleAnimation();
+      return;
+    }
+
     this.updateSwimAnimation();
+  }
+
+  // =========================
+  // Idle Animation
+  // =========================
+  updateIdleAnimation() {
+    this.idleAnimationCounter++;
+
+    if (this.idleAnimationCounter >= this.idleAnimationDelay) {
+      this.idleAnimationCounter = 0;
+
+      const i = this.currentImageIdle % this.IMAGES_IDLE.length;
+      const path = this.IMAGES_IDLE[i];
+      this.img = this.imageCache[path];
+      this.currentImageIdle++;
+    }
   }
 
   // =========================
