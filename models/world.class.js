@@ -71,7 +71,13 @@ class World {
   updateEnemies() {
     this.enemies.forEach((enemy) => enemy.update());
 
-    this.enemies = this.enemies.filter((enemy) => enemy.x + enemy.width > -100);
+    this.enemies = this.enemies.filter((enemy) => {
+      if (enemy instanceof Endboss) {
+        return true;
+      }
+
+      return !enemy.dead && enemy.x + enemy.width > -100;
+    });
   }
 
   updateThrowableObjects() {
@@ -102,10 +108,10 @@ class World {
 
   checkBubbleCollisions() {
     this.throwableObjects.forEach((bubble, bubbleIndex) => {
-      this.enemies.forEach((enemy, enemyIndex) => {
+      this.enemies.forEach((enemy) => {
         if (bubble.isColliding(enemy)) {
+          enemy.hit(bubble.damage);
           this.throwableObjects.splice(bubbleIndex, 1);
-          this.enemies.splice(enemyIndex, 1);
         }
       });
     });

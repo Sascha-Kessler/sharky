@@ -9,11 +9,14 @@ class ThrowableObject extends MovableObject {
     this.height = 100;
     this.width = 100;
     this.otherDirection = otherDirection;
+    this.type = type;
     if (type === "poison") {
+      this.damage = 20;
       this.loadImage(
         "../img/1.Sharkie/4.Attack/Bubble trap/Poisoned Bubble (for whale).png",
       );
     } else {
+      this.damage = 10;
       this.loadImage("../img/1.Sharkie/4.Attack/Bubble trap/Bubble.png");
     }
   }

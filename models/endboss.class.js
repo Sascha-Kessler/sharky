@@ -24,11 +24,20 @@ class Endboss extends MovableObject {
   frameCounter = 0;
   floatingFrameDelay = 12;
   hadFirstContact = false;
-  spawningIndex = 0;
   isSpawning = false;
   spawnAnimationFinished = false;
   spawningIndex = 0;
   spawnFrameDelay = 5;
+
+  currentImageDead = 0;
+  deadAnimationCounter = 0;
+  deadAnimationDelay = 8;
+  deadAnimationFinished = false;
+
+  isHurt = false;
+  currentImageHurt = 0;
+  hurtAnimationCounter = 0;
+  hurtAnimationDelay = 6;
 
   // =========================
   // Constructor
@@ -55,6 +64,16 @@ class Endboss extends MovableObject {
   // Main Update Flow
   // =========================
   update() {
+    if (this.dead) {
+      this.updateDeadAnimation();
+      return;
+    }
+
+    if (this.isHurt) {
+      this.updateHurtAnimation();
+      return;
+    }
+
     this.checkFirstContact();
 
     if (this.isSpawning) {
@@ -121,6 +140,73 @@ class Endboss extends MovableObject {
       const path = this.IMAGES_FLOATING[i];
       this.img = this.imageCache[path];
       this.currentImage++;
+    }
+  }
+
+  updateDeadAnimation() {
+    if (this.deadAnimationFinished) {
+      const lastPath = this.IMAGES_DEAD[this.IMAGES_DEAD.length - 1];
+      this.img = this.imageCache[lastPath];
+      return;
+    }
+
+    this.deadAnimationCounter++;
+
+    if (this.deadAnimationCounter >= this.deadAnimationDelay) {
+      this.deadAnimationCounter = 0;
+
+      const path = this.IMAGES_DEAD[this.currentImageDead];
+      this.img = this.imageCache[path];
+      this.currentImageDead++;
+
+      if (this.currentImageDead >= this.IMAGES_DEAD.length) {
+        this.currentImageDead = this.IMAGES_DEAD.length - 1;
+        this.deadAnimationFinished = true;
+      }
+    }
+  }
+
+  die() {
+    if (this.dead) return;
+
+    this.dead = true;
+    this.currentImageDead = 0;
+    this.deadAnimationCounter = 0;
+    this.deadAnimationFinished = false;
+  }
+
+  updateHurtAnimation() {
+    this.hurtAnimationCounter++;
+
+    if (this.hurtAnimationCounter >= this.hurtAnimationDelay) {
+      this.hurtAnimationCounter = 0;
+
+      const path = this.IMAGES_HURT[this.currentImageHurt];
+      this.img = this.imageCache[path];
+      this.currentImageHurt++;
+
+      if (this.currentImageHurt >= this.IMAGES_HURT.length) {
+        this.isHurt = false;
+        this.currentImageHurt = 0;
+      }
+    }
+  }
+
+  hit(damage) {
+    if (this.dead) return;
+
+    this.health -= damage;
+
+    if (this.health <= 0) {
+      this.health = 0;
+      this.die();
+      return;
+    }
+
+    if (!this.isHurt) {
+      this.isHurt = true;
+      this.currentImageHurt = 0;
+      this.hurtAnimationCounter = 0;
     }
   }
 }

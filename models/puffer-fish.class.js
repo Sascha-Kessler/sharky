@@ -11,6 +11,7 @@ class PufferFish extends MovableObject {
   // =========================
   height = 60;
   width = 60;
+  health = 1;
 
   // =========================
   // Animation

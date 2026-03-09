@@ -62,4 +62,16 @@ class MovableObject extends DrawableObjects {
   getHitboxBottom() {
     return this.y + this.height - (this.offset?.bottom || 0);
   }
+
+  hit(damage) {
+    this.health -= damage;
+
+    if (this.health <= 0) {
+      this.die();
+    }
+  }
+
+  die() {
+    this.dead = true;
+  }
 }

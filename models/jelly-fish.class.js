@@ -10,6 +10,7 @@ class JellyFish extends MovableObject {
   // =========================
   height = 60;
   width = 60;
+  health = 1;
   offset = {
     top: 0,
     left: 0,
