@@ -301,13 +301,13 @@ class Endboss extends MovableObject {
   updateAttackMovement() {
     if (this.attackPhase === "forward") {
       this.x -= this.attackSpeedX;
+      const path = this.IMAGES_ATTACKING[0];
+      this.img = this.imageCache[path];
 
       if (this.x <= this.attackTargetX) {
         this.x = this.attackTargetX;
         this.attackPhase = "animate";
       }
-
-      this.updateAttackAnimation();
     } else if (this.attackPhase === "animate") {
       this.updateAttackAnimation();
     } else if (this.attackPhase === "backward") {
@@ -320,8 +320,6 @@ class Endboss extends MovableObject {
         this.currentImageAttack = 0;
         this.frameCounter = 0;
       }
-
-      this.updateAttackAnimation();
     }
   }
 }
