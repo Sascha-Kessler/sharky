@@ -16,6 +16,20 @@ class Endboss extends MovableObject {
   height = 300;
   width = 300;
   health = 100;
+  speedY = 2;
+  attackSpeedX = 8;
+  attackDistance = 200;
+  attackStartX = 0;
+  attackTargetX = 0;
+
+  offset = {
+    top: 100,
+    left: 0,
+    right: 0,
+    bottom: 45,
+  };
+
+  attackCooldown = 5000; // ms
 
   // =========================
   // Animation
@@ -39,6 +53,12 @@ class Endboss extends MovableObject {
   hurtAnimationCounter = 0;
   hurtAnimationDelay = 6;
 
+  isAttacking = false;
+  attackPhase = "none"; // "forward", "animate", "backward"
+  currentImageAttack = 0;
+  attackAnimationCounter = 0;
+  attackAnimationDelay = 6;
+
   // =========================
   // Constructor
   // =========================
@@ -50,6 +70,7 @@ class Endboss extends MovableObject {
     this.loadImages(this.IMAGES_ATTACKING);
     this.loadImages(this.IMAGES_HURT);
     this.loadImages(this.IMAGES_DEAD);
+    this.lastAttack = Date.now();
   }
 
   // =========================
@@ -81,7 +102,42 @@ class Endboss extends MovableObject {
       return;
     }
 
+    if (this.isAttacking) {
+      this.updateAttackMovement();
+      return;
+    }
+
+    if (Date.now() - this.lastAttack > this.attackCooldown) {
+      this.startAttack();
+      this.lastAttack = Date.now();
+    }
+
     this.updateFloatingAnimation();
+    this.clampToWorld();
+    this.autoMove();
+  }
+
+  clampToWorld() {
+    if (this.y < -this.offset.top) {
+      this.y = -this.offset.top;
+    }
+
+    if (this.y + this.height - this.offset.bottom > this.world.height) {
+      this.y = this.world.height - this.height + this.offset.bottom;
+    }
+  }
+
+  autoMove() {
+    // Richtungswechsel an den Grenzen
+    if (
+      this.y <= -this.offset.top ||
+      this.y + this.height - this.offset.bottom >= this.world.height
+    ) {
+      this.speedY *= -1;
+    }
+
+    // Bewegung anwenden
+    this.y += this.speedY;
   }
 
   // =========================
@@ -207,6 +263,65 @@ class Endboss extends MovableObject {
       this.isHurt = true;
       this.currentImageHurt = 0;
       this.hurtAnimationCounter = 0;
+    }
+  }
+
+  startAttack() {
+    this.isAttacking = true;
+    this.attackPhase = "forward";
+
+    this.attackStartX = this.x;
+    this.attackTargetX = this.x - this.attackDistance; // 200px nach vorne schwimmen
+
+    this.currentImageAttack = 0;
+    this.attackAnimationCounter = 0;
+  }
+
+  updateAttackAnimation() {
+    this.attackAnimationCounter++;
+
+    if (this.attackAnimationCounter >= this.attackAnimationDelay) {
+      this.attackAnimationCounter = 0;
+
+      const i = this.currentImageAttack % this.IMAGES_ATTACKING.length;
+      const path = this.IMAGES_ATTACKING[i];
+      this.img = this.imageCache[path];
+      this.currentImageAttack++;
+
+      if (
+        this.attackPhase === "animate" &&
+        this.currentImageAttack >= this.IMAGES_ATTACKING.length
+      ) {
+        this.currentImageAttack = 0;
+        this.attackPhase = "backward";
+      }
+    }
+  }
+
+  updateAttackMovement() {
+    if (this.attackPhase === "forward") {
+      this.x -= this.attackSpeedX;
+
+      if (this.x <= this.attackTargetX) {
+        this.x = this.attackTargetX;
+        this.attackPhase = "animate";
+      }
+
+      this.updateAttackAnimation();
+    } else if (this.attackPhase === "animate") {
+      this.updateAttackAnimation();
+    } else if (this.attackPhase === "backward") {
+      this.x += this.attackSpeedX;
+
+      if (this.x >= this.attackStartX) {
+        this.x = this.attackStartX;
+        this.isAttacking = false;
+        this.attackPhase = "none";
+        this.currentImageAttack = 0;
+        this.frameCounter = 0;
+      }
+
+      this.updateAttackAnimation();
     }
   }
 }
