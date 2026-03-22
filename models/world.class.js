@@ -111,6 +111,7 @@ class World {
       this.enemies.forEach((enemy) => {
         if (bubble.isColliding(enemy)) {
           enemy.hit(bubble.damage);
+          this.playSound(window.sounds.bubblePop);
           this.throwableObjects.splice(bubbleIndex, 1);
         }
       });
@@ -120,6 +121,7 @@ class World {
   checkCoinCollisions() {
     this.coins.forEach((coin, coinIndex) => {
       if (this.character.isColliding(coin)) {
+        this.playSound(window.sounds.coinPickup);
         this.coins.splice(coinIndex, 1);
         this.character.coins++;
         this.coinbar.coinbarUpdate(this.character.coins);
@@ -176,8 +178,9 @@ class World {
     if (mo.otherDirection) {
       this.flipImageBack(mo);
     }
-
-    mo.drawFrame(this.ctx);
+    if (window.DEBUG.hitbox) {
+      mo.drawFrame(this.ctx);
+    }
   }
 
   // =========================
@@ -211,5 +214,14 @@ class World {
     bubble.throw();
 
     this.throwableObjects.push(bubble);
+  }
+
+  playSound(sound) {
+    if (!window.soundOn) return;
+
+    const sfx = sound.cloneNode();
+    sfx.volume = sound.volume;
+    sfx.playbackRate = 0.9 + Math.random() * 0.2; // leicht variieren
+    sfx.play();
   }
 }

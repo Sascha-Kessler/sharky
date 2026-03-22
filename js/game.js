@@ -1,12 +1,26 @@
 const GAME_WIDTH = 720;
 const GAME_HEIGHT = 480;
 let gameStarted = false;
+window.DEBUG = {
+  hitbox: false,
+};
 
 let canvas;
 let world;
 let keyboard;
 let isPaused = false;
 let startingScreenBackground = ["../img/3. Background/Mesa de trabajo 1.png"];
+window.soundOn = false;
+
+window.sounds = {
+  levelMusic: new Audio("../audio/Bubble Bounce Bay.mp3"),
+  bubblePop: new Audio("../audio/bubble pop.mp3"),
+  coinPickup: new Audio("../audio/coin pickup.mp3"),
+};
+window.sounds.levelMusic.loop = true;
+window.sounds.levelMusic.volume = 0.2;
+window.sounds.bubblePop.volume = 0.4;
+window.sounds.coinPickup.volume = 0.4;
 
 window.addEventListener("keydown", (event) => {
   if (keyboard) {
@@ -76,4 +90,18 @@ function togglePause() {
   button.blur();
 
   button.innerText = isPaused ? "Resume" : "Pause";
+}
+
+function toggleSound() {
+  window.soundOn = !window.soundOn;
+  const soundButton = document.getElementById("soundBtn");
+
+  if (window.soundOn) {
+    window.sounds.levelMusic.play();
+    soundButton.innerText = "Sound Off";
+  } else {
+    window.sounds.levelMusic.pause();
+    soundButton.innerText = "Sound On";
+  }
+  soundButton.blur();
 }
