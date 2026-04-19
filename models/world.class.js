@@ -93,6 +93,7 @@ class World {
     this.enemies.forEach((enemy) => {
       if (this.character.isColliding(enemy)) {
         if (!this.character.isHurtCooldownActive()) {
+          this.playSound(window.sounds.getsHit);
           this.character.lastHit = Date.now();
           this.character.health -= 20;
           this.character.hurt();
@@ -132,6 +133,7 @@ class World {
   checkPoisonBottlesCollisions() {
     this.poisonBottles.forEach((poisonBottle, poisonBottleIndex) => {
       if (this.character.isColliding(poisonBottle)) {
+        this.playSound(window.sounds.bottlePickup);
         this.poisonBottles.splice(poisonBottleIndex, 1);
         this.character.poisonBottles++;
         this.poisonbar.poisonbarUpdate(this.character.poisonBottles);

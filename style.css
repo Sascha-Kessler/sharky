@@ -2,8 +2,8 @@ html,
 body {
   margin: 0;
   padding: 0;
-  height: 100%;
-  width: 100vw;
+  min-height: 100vh;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center; /* Zentriert horizontal */
@@ -13,13 +13,15 @@ body {
   background-position: center; /* Bild zentrieren */
   background-repeat: no-repeat;
   background-attachment: fixed;
+  color: white;
 }
 
 h1 {
-  margin: 10px 0;
+  margin: 0;
 }
 
 #canvas {
+  display: block;
   background-color: black;
   image-rendering: smooth;
 }
@@ -77,7 +79,7 @@ h1 {
 /* Pause Button kleiner */
 .pause-btn {
   position: absolute;
-  top: 70px;
+  top: 10px;
   right: 20px;
   display: none;
   font-size: 16px;
@@ -86,7 +88,15 @@ h1 {
 
 .sound-btn {
   position: absolute;
-  top: 170px;
+  top: 60px;
+  right: 20px;
+  font-size: 16px;
+  padding: 10px 22px;
+}
+
+.end-game-btn {
+  position: absolute;
+  top: 110px;
   right: 20px;
   font-size: 16px;
   padding: 10px 22px;
@@ -97,4 +107,85 @@ h1 {
   justify-content: center;
   align-items: center;
   gap: 15px;
+}
+
+#gameOverScreen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 50px;
+}
+
+#gameOverScreen img {
+  width: 60%;
+  height: auto;
+}
+
+#gameContainer {
+  position: relative;
+  display: inline-block;
+}
+
+@keyframes slideInFromTop {
+  0% {
+    transform: translateY(-200%);
+    opacity: 0;
+  }
+  70% {
+    transform: translateY(20px);
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.slide-in {
+  animation: slideInFromTop 0.8s ease-out forwards;
+}
+
+#winScreen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 50px;
+}
+
+#winScreen img {
+  width: 60%;
+  height: auto;
+}
+
+#options-overlay {
+  position: relative;
+  width: 80%;
+  height: 80%;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 50px;
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 8px;
+}
+
+#options-overlay-close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
 }

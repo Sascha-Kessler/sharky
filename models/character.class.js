@@ -109,7 +109,8 @@ class Character extends MovableObject {
   // Main Update Flow
   // =========================
   update() {
-    if (!this.dead) {
+    const boss = this.world.enemies.find((e) => e instanceof Endboss);
+    if (!this.dead && !boss.dead) {
       this.handleMovementInput();
       this.applyMovement();
       this.clampToWorld();
@@ -280,6 +281,10 @@ class Character extends MovableObject {
       if (this.currentImageDead >= this.IMAGES_DEAD.length) {
         this.currentImageDead = this.IMAGES_DEAD.length - 1;
         this.deadAnimationFinished = true;
+        gameOver = true;
+        const screen = document.getElementById("gameOverScreen");
+        screen.classList.remove("dnone");
+        screen.classList.add("slide-in");
       }
     }
   }

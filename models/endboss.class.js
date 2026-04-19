@@ -11,11 +11,12 @@ class Endboss extends MovableObject {
   // =========================
   // Position and Size
   // =========================
+
   x = 2500;
   y = 100;
   height = 300;
   width = 300;
-  health = 100;
+  health = 10;
   speedY = 2;
   attackSpeedX = 8;
   attackDistance = 200;
@@ -218,6 +219,10 @@ class Endboss extends MovableObject {
       if (this.currentImageDead >= this.IMAGES_DEAD.length) {
         this.currentImageDead = this.IMAGES_DEAD.length - 1;
         this.deadAnimationFinished = true;
+        winGame = true;
+        const screen = document.getElementById("winScreen");
+        screen.classList.remove("dnone");
+        screen.classList.add("slide-in");
       }
     }
   }
