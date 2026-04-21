@@ -1,11 +1,13 @@
 const GAME_WIDTH = 720;
 const GAME_HEIGHT = 480;
+
 let gameStarted = false;
 let gameOver = false;
 let winGame = false;
 window.DEBUG = {
   hitbox: false,
 };
+
 let gameOverSoundPlayed = false;
 let canvas;
 let world;
@@ -24,6 +26,7 @@ window.sounds = {
   getsHit: new Audio("../audio/character get hit.wav"),
   gameOver: new Audio("../audio/game over sound.mp3"),
 };
+
 window.sounds.levelMusic.loop = true;
 window.sounds.levelMusic.volume = 0.2;
 window.sounds.bubblePop.volume = 0.4;
@@ -33,15 +36,19 @@ window.sounds.bottlePickup.volume = 0.4;
 window.sounds.getsHit.volume = 0.4;
 window.sounds.gameOver.volume = 0.4;
 
-window.addEventListener("keydown", (event) => {
-  if (keyboard) {
-    keyboard.key[event.code] = true;
+window.addEventListener("keyup", (event) => {
+  const blockedKeys = [
+    "ArrowUp",
+    "ArrowDown",
+    "ArrowLeft",
+    "ArrowRight",
+    "Space",
+  ];
+
+  if (blockedKeys.includes(event.code)) {
+    event.preventDefault();
   }
 
-  console.log("keydown:", event.code, event.key);
-});
-
-window.addEventListener("keyup", (event) => {
   if (keyboard) {
     keyboard.key[event.code] = false;
   }
@@ -49,12 +56,31 @@ window.addEventListener("keyup", (event) => {
   console.log("keyup:", event.code, event.key);
 });
 
+window.addEventListener("keydown", (event) => {
+  const blockedKeys = [
+    "ArrowUp",
+    "ArrowDown",
+    "ArrowLeft",
+    "ArrowRight",
+    "Space",
+  ];
+
+  if (blockedKeys.includes(event.code)) {
+    event.preventDefault();
+  }
+
+  if (keyboard) {
+    keyboard.key[event.code] = true;
+  }
+
+  console.log("keydown:", event.code, event.key);
+});
+
 function init() {
   canvas = document.getElementById("canvas");
-  resizeCanvas();
-
   keyboard = new Keyboard();
 
+  resizeCanvas();
   window.addEventListener("resize", resizeCanvas);
 }
 
@@ -64,6 +90,7 @@ function gameLoop() {
   if (!isPaused && !gameOver) {
     world.update();
   }
+
   if (gameOver && !gameOverSoundPlayed && soundOn) {
     window.sounds.levelMusic.pause();
     window.sounds.gameOver.play();
@@ -74,29 +101,48 @@ function gameLoop() {
   requestAnimationFrame(gameLoop);
 }
 
-function resizeCanvas() {
-  const scaleX = window.innerWidth / GAME_WIDTH;
-  const scaleY = (window.innerHeight - 60) / GAME_HEIGHT;
+function isTouchDevice() {
+  return (
+    window.matchMedia("(pointer: coarse)").matches ||
+    window.matchMedia("(hover: none)").matches ||
+    "ontouchstart" in window ||
+    navigator.maxTouchPoints > 0
+  );
+}
 
-  const scale = Math.min(scaleX, scaleY);
+function resizeCanvas() {
+  const gameContainer = document.getElementById("gameContainer");
+  const viewportWidth = window.visualViewport
+    ? window.visualViewport.width
+    : window.innerWidth;
+  const viewportHeight = window.visualViewport
+    ? window.visualViewport.height
+    : window.innerHeight;
 
   canvas.width = GAME_WIDTH;
   canvas.height = GAME_HEIGHT;
 
-  canvas.style.width = GAME_WIDTH * scale + "px";
-  canvas.style.height = GAME_HEIGHT * scale + "px";
+  canvas.style.width = `${viewportWidth}px`;
+  canvas.style.height = `${viewportHeight}px`;
+
+  gameContainer.style.width = `${viewportWidth}px`;
+  gameContainer.style.height = `${viewportHeight}px`;
 }
 
 function startGame() {
   window.sounds.buttonKlick.play();
+  document.getElementById("gameName").classList.add("dnone");
+
   if (gameStarted) return;
   gameStarted = true;
 
   document.getElementById("gameContainer").classList.remove("dnone");
   document.getElementById("startscreen").classList.add("dnone");
   document.getElementById("pauseBtn").style.display = "block";
+
   const level1 = createLevel1();
   world = new World(canvas, keyboard, level1);
+
   requestAnimationFrame(gameLoop);
 }
 
@@ -127,7 +173,6 @@ function toggleSound() {
 
   if (window.soundOn) {
     soundButton.innerText = "Sound Off";
-
     if (!isPaused) {
       window.sounds.levelMusic.play();
     }
@@ -146,6 +191,7 @@ function endGame() {
 function openOptions() {
   document.getElementById("options-overlay").classList.remove("dnone");
 }
+
 function closeOptions() {
   document.getElementById("options-overlay").classList.add("dnone");
 }
@@ -156,13 +202,11 @@ function enterFullscreen(element) {
   } else if (element.webkitRequestFullscreen) {
     element.webkitRequestFullscreen();
   } else if (element.msRequestFullscreen) {
-    // for IE11 (remove June 15, 2022)
     element.msRequestFullscreen();
   }
 }
 
 function exitFullscreen() {
-  console.log("exit");
   if (document.exitFullscreen) {
     document.exitFullscreen();
   } else if (document.webkitExitFullscreen) {

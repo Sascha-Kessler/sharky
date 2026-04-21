@@ -42,7 +42,7 @@
 
   <body onload="init()">
     <div id="fullscreen">
-      <h1>Sharky</h1>
+      <h1 id="gameName">Sharky</h1>
       <div id="startscreen">
         <button id="startBtn" class="ocean-btn start-btn" onclick="startGame()">
           Start
@@ -102,12 +102,24 @@
         <ul class="controls-list">
           <li data-action="moveLeft">
             <span>Move left</span>
-            <button class="keybind-btn">A</button>
+            <button class="keybind-btn">Arrow Left</button>
           </li>
 
           <li data-action="moveRight">
             <span>Move right</span>
-            <button class="keybind-btn">D</button>
+            <button class="keybind-btn">Arrow Right</button>
+          </li>
+          <li data-action="moveUp">
+            <span>Move up</span>
+            <button class="keybind-btn">Arrow Up</button>
+          </li>
+          <li data-action="moveDown">
+            <span>Move down</span>
+            <button class="keybind-btn">Arrow Down</button>
+          </li>
+          <li data-action="poisonAttack">
+            <span>Poison Attack</span>
+            <button class="keybind-btn">B</button>
           </li>
 
           <li data-action="normalAttack">
