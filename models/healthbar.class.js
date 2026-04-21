@@ -17,6 +17,29 @@ class Healthbar extends MovableObject {
     super();
     this.loadImages(this.IMAGES_HEALTHBAR);
     this.img = this.imageCache[this.IMAGES_HEALTHBAR[5]];
+    this.setResponsivePosition();
+  }
+
+  setResponsivePosition() {
+    const isMobile = isTouchDevice();
+
+    if (isMobile) {
+      this.x = 10;
+
+      this.y = 10;
+
+      this.width = 130;
+
+      this.height = 38;
+    } else {
+      this.x = 0;
+
+      this.y = 0;
+
+      this.width = 170;
+
+      this.height = 50;
+    }
   }
 
   healthbarUpdate(health) {

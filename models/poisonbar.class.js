@@ -19,6 +19,29 @@ class Poisonbar extends MovableObject {
     this.keyboard = keyboard;
     this.loadImages(this.IMAGES_POISON);
     this.img = this.imageCache[this.IMAGES_POISON[0]];
+    this.setResponsivePosition();
+  }
+
+  setResponsivePosition() {
+    const isMobile = isTouchDevice();
+
+    if (isMobile) {
+      this.x = 10;
+
+      this.y = 40;
+
+      this.width = 130;
+
+      this.height = 38;
+    } else {
+      this.x = 0;
+
+      this.y = 40;
+
+      this.width = 170;
+
+      this.height = 50;
+    }
   }
 
   poisonbarUpdate(poisonBottles) {

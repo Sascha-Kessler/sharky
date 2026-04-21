@@ -122,11 +122,34 @@ function resizeCanvas() {
   canvas.width = GAME_WIDTH;
   canvas.height = GAME_HEIGHT;
 
-  canvas.style.width = `${viewportWidth}px`;
-  canvas.style.height = `${viewportHeight}px`;
+  const isMobile = isTouchDevice();
 
-  gameContainer.style.width = `${viewportWidth}px`;
-  gameContainer.style.height = `${viewportHeight}px`;
+  let displayWidth;
+  let displayHeight;
+
+  if (isMobile) {
+    displayWidth = Math.floor(viewportWidth);
+    displayHeight = Math.floor(viewportHeight);
+  } else {
+    const scaleX = (viewportWidth - 2) / GAME_WIDTH;
+    const scaleY = (viewportHeight - 2) / GAME_HEIGHT;
+    const scale = Math.min(scaleX, scaleY);
+
+    displayWidth = Math.floor(GAME_WIDTH * scale);
+    displayHeight = Math.floor(GAME_HEIGHT * scale);
+  }
+
+  canvas.style.width = `${displayWidth}px`;
+  canvas.style.height = `${displayHeight}px`;
+
+  gameContainer.style.width = `${displayWidth}px`;
+  gameContainer.style.height = `${displayHeight}px`;
+
+  if (world) {
+    world.healthbar?.setResponsivePosition();
+    world.coinbar?.setResponsivePosition();
+    world.bottlebar?.setResponsivePosition();
+  }
 }
 
 function startGame() {
