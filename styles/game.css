@@ -66,3 +66,107 @@
 #game-ui button {
   background-color: transparent !important;
 }
+#mobile-controls {
+  position: absolute;
+  left: clamp(6px, 2vw, 15px);
+  bottom: clamp(6px, 2vw, 15px);
+
+  display: grid;
+  grid-template-columns: repeat(3, clamp(30px, 6vw, 50px));
+  grid-template-rows: repeat(3, clamp(30px, 6vw, 50px));
+  gap: clamp(3px, 0.8vw, 6px);
+
+  z-index: 30;
+}
+
+#mobile-actions {
+  position: absolute;
+  right: clamp(8px, 2vw, 20px);
+  bottom: clamp(10px, 3vw, 25px);
+
+  display: flex;
+  flex-direction: column;
+  gap: clamp(8px, 2vw, 14px);
+
+  z-index: 30;
+}
+
+.touch-btn.action {
+  width: clamp(80px, 20vw, 140px);
+  height: clamp(36px, 8vw, 60px);
+
+  border-radius: clamp(8px, 2vw, 14px);
+
+  font-size: clamp(12px, 2.5vw, 18px);
+  font-weight: bold;
+  letter-spacing: 1px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #00cfff;
+  background: rgba(0, 0, 0, 0.6);
+  color: #00cfff;
+
+  touch-action: none;
+}
+
+.touch-btn.special {
+  border-color: limegreen;
+  color: limegreen;
+}
+
+.up {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.left {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.right {
+  grid-column: 3;
+  grid-row: 2;
+}
+
+.down {
+  grid-column: 2;
+  grid-row: 3;
+}
+
+.touch-btn {
+  border: 1px solid #00cfff;
+  border-radius: clamp(6px, 1.5vw, 12px);
+
+  background: rgba(0, 0, 0, 0.6);
+  color: #00cfff;
+
+  font-size: clamp(12px, 3vw, 20px);
+  font-weight: bold;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  touch-action: none;
+  user-select: none;
+  cursor: pointer;
+}
+
+.touch-btn:active {
+  transform: scale(0.9);
+  background: rgba(0, 200, 255, 0.2);
+}
+
+#mobile-actions {
+  display: none;
+}
+
+@media (pointer: coarse) {
+  #mobile-actions {
+    display: flex;
+  }
+}

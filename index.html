@@ -67,6 +67,58 @@
       <canvas id="canvas"></canvas>
 
       <!-- GAME UI -->
+      <div id="mobile-controls">
+        <button
+          class="touch-btn up"
+          ontouchstart="keyboard.key['ArrowUp'] = true"
+          ontouchend="keyboard.key['ArrowUp'] = false"
+        >
+          ↑
+        </button>
+
+        <button
+          class="touch-btn left"
+          ontouchstart="keyboard.key['ArrowLeft'] = true"
+          ontouchend="keyboard.key['ArrowLeft'] = false"
+        >
+          ←
+        </button>
+
+        <button
+          class="touch-btn right"
+          ontouchstart="keyboard.key['ArrowRight'] = true"
+          ontouchend="keyboard.key['ArrowRight'] = false"
+        >
+          →
+        </button>
+
+        <button
+          class="touch-btn down"
+          ontouchstart="keyboard.key['ArrowDown'] = true"
+          ontouchend="keyboard.key['ArrowDown'] = false"
+        >
+          ↓
+        </button>
+      </div>
+      <div id="mobile-actions">
+  <button
+    class="touch-btn action normal"
+    ontouchstart="keyboard.key['Space'] = true"
+    ontouchend="keyboard.key['Space'] = false"
+  >
+    ATK
+  </button>
+
+  <button
+    class="touch-btn action special"
+    ontouchstart="keyboard.key['KeyB'] = true"
+    ontouchend="keyboard.key['KeyB'] = false"
+  >
+    SP.ATK
+  </button>
+</div>
+      </div>
+
       <div id="game-ui">
         <button
           id="pauseBtn"
