@@ -6,14 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sharky</title>
     <link rel="stylesheet" href="./style.css" />
+    <link rel="stylesheet" href="./styles/game.css" />
+    <link rel="stylesheet" href="./styles/components.css" />
 
-    <!-- 1) Basis / Utilities -->
+    <!-- 1) Basis -->
     <script src="./models/drawable-objects.class.js"></script>
     <script src="./models/movable-objects.class.js"></script>
     <script src="./models/throwable-object.class.js"></script>
     <script src="./models/keyboard.class.js"></script>
 
-    <!-- 2) Game Objects (die von Level benutzt werden) -->
+    <!-- 2) Game Objects -->
     <script src="./models/background.class.js"></script>
     <script src="./assets/character.images.js"></script>
     <script src="./models/character.class.js"></script>
@@ -29,94 +31,115 @@
     <script src="./models/poisonbar.class.js"></script>
     <script src="./models/coinbar.class.js"></script>
 
-    <!-- 3) Level-Logik + Level-Daten -->
+    <!-- 3) Level -->
     <script src="./models/level.class.js"></script>
     <script src="./levels/level1.js"></script>
 
-    <!-- 4) World (benutzt level1) -->
+    <!-- 4) World -->
     <script src="./models/world.class.js"></script>
 
-    <!-- 5) Game init/loop (erst ganz am Ende) -->
+    <!-- 5) Game -->
     <script src="./js/game.js"></script>
   </head>
 
   <body onload="init()">
-    <div id="fullscreen">
-      <h1 id="gameName">Sharky</h1>
-      <div id="startscreen">
-        <button id="startBtn" class="ocean-btn start-btn" onclick="startGame()">
-          Start
-        </button>
-        <button
-          id="optionBtn"
-          class="ocean-btn start-btn"
-          onclick="openOptions()"
-        >
-          Options
-        </button>
-      </div>
-      <div id="gameContainer" class="dnone">
-        <canvas id="canvas"></canvas>
+    <div class="water-effect"></div>
+
+    <h1 id="gameName">Sharky</h1>
+
+    <!-- STARTSCREEN -->
+    <div id="startscreen">
+      <button id="startBtn" class="ocean-btn start-btn" onclick="startGame()">
+        Start
+      </button>
+
+      <button
+        id="optionBtn"
+        class="ocean-btn options-btn"
+        onclick="openOptions()"
+      >
+        Options
+      </button>
+    </div>
+
+    <!-- GAME -->
+    <div id="gameContainer" class="dnone">
+      <canvas id="canvas"></canvas>
+
+      <!-- GAME UI -->
+      <div id="game-ui">
         <button
           id="pauseBtn"
           class="ocean-btn pause-btn"
           onclick="togglePause()"
         >
-          Pause
+          <img id="pauseIcon" src="./img/pause.png" alt="" />
         </button>
+
         <button
           id="soundBtn"
           class="ocean-btn sound-btn"
           onclick="toggleSound()"
         >
-          Sound On
+          <img id="soundIcon" src="./img/sound.png" alt="" />
         </button>
+
         <button
           id="newGameBtn"
           class="ocean-btn end-game-btn"
           onclick="endGame()"
         >
-          End Game
+          <img id="endGame" src="./img/cross.png" alt="" />
         </button>
-        <div id="gameOverScreen" class="dnone">
-          <img src="../img/6.Botones/Tittles/Game Over/Recurso 9.png" alt="" />
-          <button class="ocean-btn" onclick="endGame()">Retry</button>
-        </div>
-        <div id="winScreen" class="dnone">
-          <img src="../img/6.Botones/Try again/Mesa de trabajo 1.png" alt="" />
-          <button class="ocean-btn" onclick="endGame()">Retry</button>
-        </div>
       </div>
 
-      <div id="options-overlay" class="dnone">
+      <!-- GAME OVER -->
+      <div id="gameOverScreen" class="dnone">
+        <img src="../img/6.Botones/Tittles/Game Over/Recurso 9.png" alt="" />
+        <button class="ocean-btn" onclick="endGame()">Retry</button>
+      </div>
+
+      <!-- WIN -->
+      <div id="winScreen" class="dnone">
+        <img src="../img/6.Botones/Try again/Mesa de trabajo 1.png" alt="" />
+        <button class="ocean-btn" onclick="endGame()">Retry</button>
+      </div>
+    </div>
+
+    <!-- OPTIONS OVERLAY (JETZT WIEDER GLOBAL) -->
+    <div id="options-overlay" class="dnone">
+      <div class="options-content">
         <button
           id="options-overlay-close-button"
           class="ocean-btn"
           onclick="closeOptions()"
         >
-          X
+          ✖
         </button>
 
-        <h2>Steuerung</h2>
+        <h2>Controls</h2>
 
         <ul class="controls-list">
           <li data-action="moveLeft">
             <span>Move left</span>
-            <button class="keybind-btn">Arrow Left</button>
+            <button class="keybind-btn">←</button>
           </li>
 
           <li data-action="moveRight">
             <span>Move right</span>
-            <button class="keybind-btn">Arrow Right</button>
+            <button class="keybind-btn">→</button>
           </li>
+
           <li data-action="moveUp">
             <span>Move up</span>
-            <button class="keybind-btn">Arrow Up</button>
+            <button class="keybind-btn">↑</button>
           </li>
+
           <li data-action="moveDown">
             <span>Move down</span>
-            <button class="keybind-btn">Arrow Down</button>
+            <button class="keybind-btn">↓</button>
           </li>
+
           <li data-action="poisonAttack">
             <span>Poison Attack</span>
             <button class="keybind-btn">B</button>

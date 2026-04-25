@@ -11,102 +11,86 @@ body {
   box-sizing: border-box;
 }
 
+/* ===== BODY / BACKGROUND ===== */
+
 body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
+
   background-image: url("../img/3. Background/Mesa de trabajo 1.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  background-attachment: fixed;
+
   color: white;
 }
+
+/* ===== WATER EFFECT ===== */
+
+.water-effect {
+  position: fixed;
+  inset: -80px;
+  pointer-events: none;
+  z-index: 1;
+
+  background:
+    radial-gradient(
+      circle at 25% 30%,
+      rgba(0, 220, 255, 0.35),
+      transparent 35%
+    ),
+    radial-gradient(
+      circle at 70% 65%,
+      rgba(255, 255, 255, 0.22),
+      transparent 32%
+    ),
+    linear-gradient(
+      115deg,
+      transparent 0%,
+      rgba(0, 200, 255, 0.18) 45%,
+      transparent 65%
+    );
+
+  mix-blend-mode: screen;
+  animation: waterMove 3s ease-in-out infinite;
+}
+
+@keyframes waterMove {
+  0% {
+    transform: translate(-80px, 40px) scale(1);
+    opacity: 0.25;
+  }
+  50% {
+    transform: translate(90px, -60px) scale(1.15);
+    opacity: 0.85;
+  }
+  100% {
+    transform: translate(-80px, 40px) scale(1);
+    opacity: 0.25;
+  }
+}
+
+/* ===== LAYER FIX (wichtig!) ===== */
+
+#gameName,
+#startscreen,
+#gameContainer {
+  position: relative;
+  z-index: 2;
+}
+
+/* ===== HEADLINE ===== */
 
 h1 {
   margin: 0;
   text-align: center;
-}
-
-#canvas {
-  display: block;
-}
-
-.dnone {
-  display: none !important;
-}
-
-.ocean-btn {
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 16px;
-  font-weight: bold;
-  letter-spacing: 1px;
-
-  padding: 10px 20px;
-
-  border-radius: 10px;
-  border: 1px solid #00cfff;
-
-  background: rgba(0, 0, 0, 0.8);
-  color: #00cfff;
-
-  cursor: pointer;
-
-  box-shadow: 0 0 8px rgba(0, 200, 255, 0.3);
-
-  transition: all 0.2s ease;
-}
-
-.ocean-btn:hover {
-  background: #00cfff;
   color: black;
-
-  box-shadow:
-    0 0 12px #00cfff,
-    0 0 25px rgba(0, 200, 255, 0.8);
-
-  transform: scale(1.05);
 }
 
-/* Klick */
-.ocean-btn:active {
-  transform: scale(0.95);
-  box-shadow: inset 0 0 10px rgba(0, 200, 255, 0.8);
-}
-
-/* Start Button größer */
-.start-btn {
-  font-size: 28px;
-  padding: 18px 50px;
-}
-
-/* Pause Button kleiner */
-.pause-btn {
-  position: absolute;
-  top: 10px;
-  right: 20px;
-  display: none;
-  font-size: 16px;
-  padding: 10px 22px;
-}
-
-.sound-btn {
-  position: absolute;
-  top: 60px;
-  right: 20px;
-  font-size: 16px;
-  padding: 10px 22px;
-}
-
-.end-game-btn {
-  position: absolute;
-  top: 110px;
-  right: 20px;
-  font-size: 16px;
-  padding: 10px 22px;
-}
+/* ===== STARTSCREEN ===== */
 
 #startscreen {
   display: flex;
@@ -116,170 +100,8 @@ h1 {
   margin-top: 150px;
 }
 
-#gameOverScreen {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+/* ===== UTIL ===== */
 
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 50px;
-}
-
-#gameOverScreen img {
-  width: 60%;
-  height: auto;
-}
-
-#gameContainer {
-  position: relative;
-  display: inline-block;
-}
-
-@keyframes slideInFromTop {
-  0% {
-    transform: translateY(-200%);
-    opacity: 0;
-  }
-  70% {
-    transform: translateY(20px);
-  }
-  100% {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-.slide-in {
-  animation: slideInFromTop 0.8s ease-out forwards;
-}
-
-#winScreen {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 50px;
-}
-
-#winScreen img {
-  width: 60%;
-  height: auto;
-}
-
-#options-overlay {
-  position: absolute;
-
-  inset: 0; /* ersetzt top/left/width/height */
-
-  z-index: 100;
-
-  display: flex;
-
-  flex-direction: column;
-
-  justify-content: center;
-
-  align-items: center;
-
-  gap: 50px;
-
-  background: rgba(0, 0, 0, 0.8);
-
-  border-radius: 8px;
-}
-
-#options-overlay-close-button {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-}
-
-.controls-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  width: 100%;
-  max-width: 400px;
-}
-
-/* einzelner Eintrag */
-.controls-list li {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  padding: 12px 18px;
-  margin-bottom: 12px;
-
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-
-  border: 1px solid rgba(0, 200, 255, 0.2);
-
-  transition: all 0.2s ease;
-}
-
-/* Hover Effekt */
-.controls-list li:hover {
-  background: rgba(0, 200, 255, 0.1);
-  transform: scale(1.02);
-}
-
-/* Text links */
-.controls-list span {
-  font-size: 16px;
-  letter-spacing: 1px;
-}
-
-/* Key Button rechts */
-.keybind-btn {
-  min-width: 70px;
-
-  padding: 6px 12px;
-
-  border-radius: 8px;
-  border: 1px solid rgba(0, 200, 255, 0.5);
-
-  background: rgba(0, 0, 0, 0.6);
-  color: #00cfff;
-
-  font-weight: bold;
-  text-transform: uppercase;
-
-  cursor: pointer;
-
-  transition: all 0.2s ease;
-}
-
-/* Hover */
-.keybind-btn:hover {
-  background: rgba(0, 200, 255, 0.2);
-  box-shadow: 0 0 10px rgba(0, 200, 255, 0.6);
-}
-
-/* Beim Rebinding */
-.keybind-btn.waiting {
-  background: orange;
-  color: black;
-  animation: pulse 0.8s infinite alternate;
-}
-
-@keyframes pulse {
-  from {
-    transform: scale(1);
-  }
-  to {
-    transform: scale(1.1);
-  }
+.dnone {
+  display: none !important;
 }

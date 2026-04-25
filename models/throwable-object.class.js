@@ -10,6 +10,8 @@ class ThrowableObject extends MovableObject {
     this.width = 100;
     this.otherDirection = otherDirection;
     this.type = type;
+    this.spawnTime = 0;
+    this.lifetime = 3000;
     if (type === "poison") {
       this.damage = 20;
       this.loadImage(
@@ -29,5 +31,10 @@ class ThrowableObject extends MovableObject {
   throw() {
     this.speedX = this.otherDirection ? -2 : 2;
     this.isThrown = true;
+    this.spawnTime = Date.now();
+  }
+
+  isExpired() {
+    return Date.now() - this.spawnTime > this.lifetime;
   }
 }

@@ -82,7 +82,8 @@ class World {
 
   updateThrowableObjects() {
     this.throwableObjects = this.throwableObjects.filter(
-      (bubble) => Math.abs(bubble.x - this.character.x) < 800,
+      (bubble) =>
+        Math.abs(bubble.x - this.character.x) < 500 && !bubble.isExpired(),
     );
   }
 

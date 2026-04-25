@@ -172,11 +172,11 @@ function startGame() {
 function togglePause() {
   window.sounds.buttonKlick.play();
   const button = document.getElementById("pauseBtn");
-
+  const icon = document.getElementById("pauseIcon");
   isPaused = !isPaused;
   button.blur();
 
-  button.innerText = isPaused ? "Resume" : "Pause";
+  icon.src = isPaused ? "./img/play.png" : "./img/pause.png";
 
   if (isPaused) {
     window.wasMusicPlayingBeforePause = window.soundOn;
@@ -192,19 +192,17 @@ function toggleSound() {
   window.sounds.buttonKlick.play();
 
   window.soundOn = !window.soundOn;
-  const soundButton = document.getElementById("soundBtn");
 
-  if (window.soundOn) {
-    soundButton.innerText = "Sound Off";
-    if (!isPaused) {
-      window.sounds.levelMusic.play();
-    }
+  const icon = document.getElementById("soundIcon");
+
+  icon.src = window.soundOn ? "./img/volume-off.png" : "./img/sound.png";
+
+  if (window.soundOn && !isPaused) {
+    window.sounds.levelMusic.play();
   } else {
-    soundButton.innerText = "Sound On";
     window.sounds.levelMusic.pause();
   }
-
-  soundButton.blur();
+  soundBtn.blur();
 }
 
 function endGame() {
