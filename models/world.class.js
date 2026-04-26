@@ -1,50 +1,35 @@
 class World {
-  // =========================
-  // World Objects
-  // =========================
   character;
   healthbar;
   poisonbar;
   coinbar;
 
-  // =========================
-  // Canvas and Camera
-  // =========================
   ctx;
   camera_x = 0;
 
-  // =========================
-  // Game Collections
-  // =========================
   throwableObjects = [];
 
-  constructor(canvas, keyboard, level) {
+  constructor(canvas, keyboard, level, soundManager) {
     this.canvas = canvas;
     this.keyboard = keyboard;
     this.ctx = canvas.getContext("2d");
     this.level = level;
+    this.soundManager = soundManager;
 
-    // Level content
     this.backgroundObjects = level.backgroundObjects;
     this.enemies = level.enemies;
     this.coins = level.coins;
     this.poisonBottles = level.poisonBottles;
 
-    // Main character
     this.character = new Character(this.keyboard, this);
 
-    // HUD
     this.healthbar = new Healthbar(this.character);
     this.poisonbar = new Poisonbar();
     this.coinbar = new Coinbar();
 
-    // Connect enemies with world
     this.enemies.forEach((enemy) => enemy.setWorld(this));
   }
 
-  // =========================
-  // World Dimensions
-  // =========================
   get width() {
     return Math.max(...this.backgroundObjects.map((bg) => bg.x + bg.width));
   }
@@ -53,9 +38,6 @@ class World {
     return this.canvas.height;
   }
 
-  // =========================
-  // Main Update Flow
-  // =========================
   update() {
     this.character.update();
     this.updateEnemies();
@@ -72,10 +54,7 @@ class World {
     this.enemies.forEach((enemy) => enemy.update());
 
     this.enemies = this.enemies.filter((enemy) => {
-      if (enemy instanceof Endboss) {
-        return true;
-      }
-
+      if (enemy instanceof Endboss) return true;
       return !enemy.dead && enemy.x + enemy.width > -100;
     });
   }
@@ -87,20 +66,18 @@ class World {
     );
   }
 
-  // =========================
-  // Collision Handling
-  // =========================
   checkEnemyCollisions() {
     this.enemies.forEach((enemy) => {
       if (this.character.isColliding(enemy)) {
         if (!this.character.isHurtCooldownActive()) {
-          this.playSound(window.sounds.getsHit);
+          this.soundManager.play("getsHit");
+
           this.character.lastHit = Date.now();
           this.character.health -= 20;
           this.character.hurt();
           this.healthbar.healthbarUpdate(this.character.health);
 
-          if (this.character.health == 0) {
+          if (this.character.health <= 0) {
             this.character.die();
           }
         }
@@ -109,42 +86,45 @@ class World {
   }
 
   checkBubbleCollisions() {
-    this.throwableObjects.forEach((bubble, bubbleIndex) => {
-      this.enemies.forEach((enemy) => {
-        if (bubble.isColliding(enemy)) {
-          enemy.hit(bubble.damage);
-          this.playSound(window.sounds.bubblePop);
-          this.throwableObjects.splice(bubbleIndex, 1);
-        }
-      });
+    this.throwableObjects = this.throwableObjects.filter((bubble) => {
+      const hitEnemy = this.enemies.find((enemy) => bubble.isColliding(enemy));
+
+      if (hitEnemy) {
+        hitEnemy.hit(bubble.damage);
+        this.soundManager.play("bubblePop");
+        return false;
+      }
+
+      return true;
     });
   }
 
   checkCoinCollisions() {
-    this.coins.forEach((coin, coinIndex) => {
+    this.coins = this.coins.filter((coin) => {
       if (this.character.isColliding(coin)) {
-        this.playSound(window.sounds.coinPickup);
-        this.coins.splice(coinIndex, 1);
+        this.soundManager.play("coinPickup");
         this.character.coins++;
         this.coinbar.coinbarUpdate(this.character.coins);
+        return false;
       }
+
+      return true;
     });
   }
 
   checkPoisonBottlesCollisions() {
-    this.poisonBottles.forEach((poisonBottle, poisonBottleIndex) => {
+    this.poisonBottles = this.poisonBottles.filter((poisonBottle) => {
       if (this.character.isColliding(poisonBottle)) {
-        this.playSound(window.sounds.bottlePickup);
-        this.poisonBottles.splice(poisonBottleIndex, 1);
+        this.soundManager.play("bottlePickup");
         this.character.poisonBottles++;
         this.poisonbar.poisonbarUpdate(this.character.poisonBottles);
+        return false;
       }
+
+      return true;
     });
   }
 
-  // =========================
-  // Drawing
-  // =========================
   draw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
@@ -181,14 +161,12 @@ class World {
     if (mo.otherDirection) {
       this.flipImageBack(mo);
     }
+
     if (window.DEBUG.hitbox) {
       mo.drawFrame(this.ctx);
     }
   }
 
-  // =========================
-  // Image Flipping
-  // =========================
   flipImage(mo) {
     this.ctx.save();
     this.ctx.translate(mo.width, 0);
@@ -201,9 +179,6 @@ class World {
     this.ctx.restore();
   }
 
-  // =========================
-  // Throwing Objects
-  // =========================
   throwObject(type) {
     const x = this.character.x + (this.character.otherDirection ? -20 : 120);
     const y = this.character.y + 80;
@@ -214,17 +189,8 @@ class World {
       this.character.otherDirection,
       type,
     );
+
     bubble.throw();
-
     this.throwableObjects.push(bubble);
-  }
-
-  playSound(sound) {
-    if (!window.soundOn) return;
-
-    const sfx = sound.cloneNode();
-    sfx.volume = sound.volume;
-    sfx.playbackRate = 0.9 + Math.random() * 0.2; // leicht variieren
-    sfx.play();
   }
 }

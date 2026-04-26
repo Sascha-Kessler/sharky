@@ -161,12 +161,17 @@
   background: rgba(0, 200, 255, 0.2);
 }
 
-#mobile-actions {
+#mobile-actions,
+#mobile-controls {
   display: none;
 }
 
 @media (pointer: coarse) {
   #mobile-actions {
     display: flex;
+  }
+
+  #mobile-controls {
+    display: grid;
   }
 }

@@ -1,9 +1,5 @@
-class Poisonbar extends MovableObject {
-  x = 0;
-  y = 40;
-  height = 50;
-  width = 170;
-  IMAGES_POISON = [
+class Poisonbar extends Statusbar {
+  IMAGES_POISONBAR = [
     "../img/4. Marcadores/green/poisoned bubbles/0_ copia 2.png",
     "../img/4. Marcadores/green/poisoned bubbles/20_ copia 3.png",
     "../img/4. Marcadores/green/poisoned bubbles/40_ copia 2.png",
@@ -11,41 +7,17 @@ class Poisonbar extends MovableObject {
     "../img/4. Marcadores/green/poisoned bubbles/80_ copia 2.png",
     "../img/4. Marcadores/green/poisoned bubbles/100_ copia 3.png",
   ];
-  currentImage = 0;
 
-  constructor(keyboard, world) {
-    super();
-    this.world = world;
-    this.keyboard = keyboard;
-    this.loadImages(this.IMAGES_POISON);
-    this.img = this.imageCache[this.IMAGES_POISON[0]];
-    this.setResponsivePosition();
-  }
+  constructor() {
+    super([], 0, 40);
 
-  setResponsivePosition() {
-    const isMobile = isTouchDevice();
+    this.images = this.IMAGES_POISONBAR;
 
-    if (isMobile) {
-      this.x = 10;
-
-      this.y = 40;
-
-      this.width = 130;
-
-      this.height = 38;
-    } else {
-      this.x = 0;
-
-      this.y = 40;
-
-      this.width = 170;
-
-      this.height = 50;
-    }
+    this.loadImages(this.images);
+    this.setPercentage(0);
   }
 
   poisonbarUpdate(poisonBottles) {
-    let index = Math.max(0, Math.min(5, poisonBottles));
-    this.img = this.imageCache[this.IMAGES_POISON[index]];
+    this.setPercentage(poisonBottles * 20);
   }
 }

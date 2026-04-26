@@ -1,7 +1,13 @@
 class Keyboard {
-  key = {};
+  LEFT = false;
 
-  isPressed(code) {
-    return !!this.key[code];
-  }
+  RIGHT = false;
+
+  UP = false;
+
+  DOWN = false;
+
+  ATTACK = false;
+
+  POISON = false;
 }

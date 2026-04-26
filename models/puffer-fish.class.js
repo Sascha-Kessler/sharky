@@ -67,33 +67,4 @@ class PufferFish extends MovableObject {
     this.move();
     this.updateSwimAnimation();
   }
-
-  checkActivation() {
-    if (this.character.x + this.activationRange >= this.x) {
-      this.isActive = true;
-    }
-  }
-
-  // =========================
-  // Movement
-  // =========================
-  move() {
-    this.x += this.speedX;
-  }
-
-  // =========================
-  // Swim Animation
-  // =========================
-  updateSwimAnimation() {
-    this.frameCounter++;
-
-    if (this.frameCounter >= this.swimFrameDelay) {
-      this.frameCounter = 0;
-
-      let i = this.currentImage % this.imagesSwimming.length;
-      let path = this.imagesSwimming[i];
-      this.img = this.imageCache[path];
-      this.currentImage++;
-    }
-  }
 }

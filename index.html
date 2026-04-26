@@ -11,22 +11,35 @@
 
     <!-- 1) Basis -->
     <script src="./models/drawable-objects.class.js"></script>
+    <script src="./models/statusbar.class.js"></script>
     <script src="./models/movable-objects.class.js"></script>
     <script src="./models/throwable-object.class.js"></script>
     <script src="./models/keyboard.class.js"></script>
+    <script src="./js/input-manager.js"></script>
 
     <!-- 2) Game Objects -->
     <script src="./models/background.class.js"></script>
     <script src="./assets/character.images.js"></script>
     <script src="./models/character.class.js"></script>
+    <script src="./models/character-movement.js"></script>
+    <script src="./models/character-animation.js"></script>
+    <script src="./models/character-attack.js"></script>
     <script src="./assets/puffer-fish.images.js"></script>
     <script src="./models/puffer-fish.class.js"></script>
+    <script src="./models/puffer-fish-movement.js"></script>
+    <script src="./models/puffer-fish-animation.js"></script>
     <script src="./assets/jelly-fish.images.js"></script>
     <script src="./models/jelly-fish.class.js"></script>
+    <script src="./models/jelly-fish-movement.js"></script>
+    <script src="./models/jelly-fish-animation.js"></script>
     <script src="./assets/endboss.images.js"></script>
     <script src="./models/endboss.class.js"></script>
-    <script src="./models/coins.class.js"></script>
-    <script src="./models/poison-bottles.js"></script>
+    <script src="./models/endboss-movement.js"></script>
+    <script src="./models/endboss-animation.js"></script>
+    <script src="./models/endboss-attack.js"></script>
+    <script src="./models/coin.class.js"></script>
+    <script src="./models/poison-bottle.js"></script>
+    
     <script src="./models/healthbar.class.js"></script>
     <script src="./models/poisonbar.class.js"></script>
     <script src="./models/coinbar.class.js"></script>
@@ -39,7 +52,10 @@
     <script src="./models/world.class.js"></script>
 
     <!-- 5) Game -->
+     <script src="./js/sound-manager.js"></script>
+     <script src="./js/ui-manager.js"></script>
     <script src="./js/game.js"></script>
+    
   </head>
 
   <body onload="init()">
@@ -69,33 +85,33 @@
       <!-- GAME UI -->
       <div id="mobile-controls">
         <button
-          class="touch-btn up"
-          ontouchstart="keyboard.key['ArrowUp'] = true"
-          ontouchend="keyboard.key['ArrowUp'] = false"
+          class="touch-btn up" 
+          ontouchstart="keyboard.UP= true"
+          ontouchend="keyboard.UP = false"
         >
           ↑
         </button>
 
         <button
           class="touch-btn left"
-          ontouchstart="keyboard.key['ArrowLeft'] = true"
-          ontouchend="keyboard.key['ArrowLeft'] = false"
+          ontouchstart="keyboard.LEFT = true"
+          ontouchend="keyboard.LEFT = false"
         >
           ←
         </button>
 
         <button
           class="touch-btn right"
-          ontouchstart="keyboard.key['ArrowRight'] = true"
-          ontouchend="keyboard.key['ArrowRight'] = false"
+          ontouchstart="keyboard.RIGHT = true"
+          ontouchend="keyboard.RIGHT = false"
         >
           →
         </button>
 
         <button
           class="touch-btn down"
-          ontouchstart="keyboard.key['ArrowDown'] = true"
-          ontouchend="keyboard.key['ArrowDown'] = false"
+          ontouchstart="keyboard.DOWN = true"
+          ontouchend="keyboard.DOWN = false"
         >
           ↓
         </button>
@@ -103,23 +119,23 @@
       <div id="mobile-actions">
   <button
     class="touch-btn action normal"
-    ontouchstart="keyboard.key['Space'] = true"
-    ontouchend="keyboard.key['Space'] = false"
+    ontouchstart="keyboard.ATTACK = true"
+    ontouchend="keyboard.ATTACK = false"
   >
     ATK
   </button>
 
   <button
     class="touch-btn action special"
-    ontouchstart="keyboard.key['KeyB'] = true"
-    ontouchend="keyboard.key['KeyB'] = false"
+    ontouchstart="keyboard.POISON = true"
+    ontouchend="keyboard.POISON = false"
   >
     SP.ATK
   </button>
 </div>
       </div>
 
-      <div id="game-ui">
+      <div id="game-ui" class="dnone">
         <button
           id="pauseBtn"
           class="ocean-btn pause-btn"
