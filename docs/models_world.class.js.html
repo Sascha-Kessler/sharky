@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: models/world.class.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: models/world.class.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>class World {
+  character;
+  healthbar;
+  poisonbar;
+  coinbar;
+
+  ctx;
+  camera_x = 0;
+
+  throwableObjects = [];
+
+  constructor(canvas, keyboard, level, soundManager) {
+    this.canvas = canvas;
+    this.keyboard = keyboard;
+    this.ctx = canvas.getContext("2d");
+    this.level = level;
+    this.soundManager = soundManager;
+
+    this.backgroundObjects = level.backgroundObjects;
+    this.enemies = level.enemies;
+    this.coins = level.coins;
+    this.poisonBottles = level.poisonBottles;
+
+    this.character = new Character(this.keyboard, this);
+
+    this.healthbar = new Healthbar(this.character);
+    this.poisonbar = new Poisonbar();
+    this.coinbar = new Coinbar();
+
+    this.enemies.forEach((enemy) => enemy.setWorld(this));
+  }
+
+  /**
+   * Returns the height of the world
+   * @returns {number}
+   */
+  get height() {
+    return this.canvas.height;
+  }
+
+  /**
+   * Updates the entire game world
+   */
+  update() {
+    this.handleEntities();
+    this.handleProjectiles();
+    this.handleCollisions();
+  }
+
+  /**
+   * Updates all entities like character, enemies and coins
+   */
+  handleEntities() {
+    this.character.update();
+    this.updateEnemies();
+    this.coins.forEach((coin) => coin.update());
+  }
+
+  /**
+   * Updates all enemies and removes dead/off-screen ones
+   */
+  updateEnemies() {
+    this.enemies.forEach((enemy) => enemy.update());
+
+    this.enemies = this.enemies.filter((enemy) => {
+      if (enemy instanceof Endboss) return true;
+      return !enemy.dead &amp;&amp; enemy.x + enemy.width > -100;
+    });
+  }
+
+  /**
+   * Updates all projectile objects
+   */
+  handleProjectiles() {
+    this.throwableObjects.forEach((bubble) => bubble.update());
+    this.updateThrowableObjects();
+  }
+
+  /**
+   * Removes expired or distant throwable objects
+   */
+  updateThrowableObjects() {
+    this.throwableObjects = this.throwableObjects.filter(
+      (bubble) =>
+        Math.abs(bubble.x - this.character.x) &lt; 500 &amp;&amp; !bubble.isExpired(),
+    );
+  }
+
+  /**
+   * Creates and throws a new projectile
+   * @param {string} type - Type of bubble
+   */
+  throwObject(type) {
+    const x = this.character.x + (this.character.otherDirection ? -20 : 120);
+    const y = this.character.y + 80;
+
+    const bubble = new ThrowableObject(
+      x,
+      y,
+      this.character.otherDirection,
+      type,
+    );
+
+    bubble.throw();
+    this.throwableObjects.push(bubble);
+  }
+
+  /**
+   * Handles all collision checks
+   */
+  handleCollisions() {
+    this.handleEnemyCollisions();
+    this.handleBubbleCollisions();
+    this.handlePoisonBottlesCollisions();
+    this.handleCoinCollisions();
+  }
+
+  /**
+   * Checks collisions between character and enemies
+   */
+  handleEnemyCollisions() {
+    this.enemies.forEach((enemy) => {
+      if (this.character.isColliding(enemy)) {
+        this.handleCharacterHit(20);
+      }
+    });
+  }
+
+  /**
+   * Handles damage taken by the character
+   * @param {number} damage - Damage amount
+   */
+  handleCharacterHit(damage = 20) {
+    if (this.character.isHurtCooldownActive()) return;
+
+    this.soundManager.play("getsHit");
+
+    this.character.lastHit = Date.now();
+
+    this.character.health -= damage;
+
+    this.character.hurt();
+
+    this.healthbar.healthbarUpdate(this.character.health);
+
+    if (this.character.health &lt;= 0) {
+      this.character.die();
+    }
+  }
+
+  /**
+   * Checks collisions between bubbles and enemies
+   */
+  handleBubbleCollisions() {
+    this.throwableObjects = this.throwableObjects.filter((bubble) => {
+      const hitEnemy = this.enemies.find((enemy) => bubble.isColliding(enemy));
+
+      if (hitEnemy) {
+        hitEnemy.hit(bubble.damage);
+        this.soundManager.play("bubblePop");
+        return false;
+      }
+
+      return true;
+    });
+  }
+
+  /**
+   * Checks collisions between character and coins
+   */
+  handleCoinCollisions() {
+    this.coins = this.coins.filter((coin) => {
+      if (this.character.isColliding(coin)) {
+        this.soundManager.play("coinPickup");
+        this.character.coins++;
+        this.coinbar.coinbarUpdate(this.character.coins);
+        return false;
+      }
+
+      return true;
+    });
+  }
+
+  /**
+   * Checks collisions between character and poison bottles
+   */
+  handlePoisonBottlesCollisions() {
+    this.poisonBottles = this.poisonBottles.filter((poisonBottle) => {
+      if (this.character.isColliding(poisonBottle)) {
+        this.soundManager.play("bottlePickup");
+        this.character.poisonBottles++;
+        this.poisonbar.poisonbarUpdate(this.character.poisonBottles);
+        return false;
+      }
+
+      return true;
+    });
+  }
+
+  /**
+   * Draws the entire world
+   */
+  draw() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+    this.ctx.save();
+    this.ctx.translate(this.camera_x, 0);
+
+    this.addObjectToMap(this.backgroundObjects);
+    this.addObjectToMap(this.coins);
+    this.addObjectToMap(this.enemies);
+    this.addObjectToMap(this.poisonBottles);
+    this.addToMap(this.character);
+    this.addObjectToMap(this.throwableObjects);
+
+    this.ctx.restore();
+
+    this.addToMap(this.healthbar);
+    this.addToMap(this.poisonbar);
+    this.addToMap(this.coinbar);
+  }
+
+  /**
+   * Draws multiple objects
+   * @param {Array} objects - Objects to draw
+   */
+  addObjectToMap(objects) {
+    objects.forEach((obj) => this.addToMap(obj));
+  }
+
+  /**
+   * Draws one object
+   * @param {Object} mo - Drawable object
+   */
+  addToMap(mo) {
+    if (!mo.img || !mo.img.complete) return;
+
+    if (mo.otherDirection) {
+      this.flipImage(mo);
+    }
+
+    mo.draw(this.ctx);
+
+    if (mo.otherDirection) {
+      this.flipImageBack(mo);
+    }
+
+    if (window.DEBUG.hitbox) {
+      mo.drawFrame(this.ctx);
+    }
+  }
+
+  /**
+   * Flips an object horizontally
+   * @param {Object} mo - Object to flip
+   */
+  flipImage(mo) {
+    this.ctx.save();
+    this.ctx.translate(mo.width, 0);
+    this.ctx.scale(-1, 1);
+    mo.x = mo.x * -1;
+  }
+
+  /**
+   * Restores flipped object position
+   * @param {Object} mo - Object to restore
+   */
+  flipImageBack(mo) {
+    mo.x = mo.x * -1;
+    this.ctx.restore();
+  }
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Character.html">Character</a></li><li><a href="Coin.html">Coin</a></li><li><a href="Coinbar.html">Coinbar</a></li><li><a href="DrawableObjects.html">DrawableObjects</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="Healthbar.html">Healthbar</a></li><li><a href="InputManager.html">InputManager</a></li><li><a href="JellyFish.html">JellyFish</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Level.html">Level</a></li><li><a href="PoisonBottle.html">PoisonBottle</a></li><li><a href="Poisonbar.html">Poisonbar</a></li><li><a href="PufferFish.html">PufferFish</a></li><li><a href="SoundManager.html">SoundManager</a></li><li><a href="Statusbar.html">Statusbar</a></li><li><a href="ThrowableObject.html">ThrowableObject</a></li><li><a href="UIManager.html">UIManager</a></li></ul><h3>Global</h3><ul><li><a href="global.html#applyCanvasStyles">applyCanvasStyles</a></li><li><a href="global.html#calculateDisplaySize">calculateDisplaySize</a></li><li><a href="global.html#checkGameOver">checkGameOver</a></li><li><a href="global.html#checkWinGame">checkWinGame</a></li><li><a href="global.html#closeOptions">closeOptions</a></li><li><a href="global.html#createCoinArc">createCoinArc</a></li><li><a href="global.html#createCoinRow">createCoinRow</a></li><li><a href="global.html#createLevel1">createLevel1</a></li><li><a href="global.html#endGame">endGame</a></li><li><a href="global.html#gameLoop">gameLoop</a></li><li><a href="global.html#getViewportSize">getViewportSize</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#isTouchDevice">isTouchDevice</a></li><li><a href="global.html#openOptions">openOptions</a></li><li><a href="global.html#playGameOverSound">playGameOverSound</a></li><li><a href="global.html#resizeCanvas">resizeCanvas</a></li><li><a href="global.html#setCanvasResolution">setCanvasResolution</a></li><li><a href="global.html#startGame">startGame</a></li><li><a href="global.html#togglePause">togglePause</a></li><li><a href="global.html#toggleSound">toggleSound</a></li><li><a href="global.html#updateGame">updateGame</a></li><li><a href="global.html#updateStatusbarPositions">updateStatusbarPositions</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Mon Apr 27 2026 18:52:19 GMT+0200 (Central European Summer Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

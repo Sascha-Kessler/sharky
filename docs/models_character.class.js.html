@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: models/character.class.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: models/character.class.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Main player character controlling movement, animations and state
+ */
+class Character extends MovableObject {
+  IMAGES_SWIMMING = SHARKIE_IMAGES.SWIMMING;
+  IMAGES_IDLE = SHARKIE_IMAGES.IDLE;
+  IMAGES_HURT = SHARKIE_IMAGES.HURT;
+  IMAGES_DEAD = SHARKIE_IMAGES.DEAD;
+  IMAGES_ATTACK_NORMAL_BUBBLE = SHARKIE_IMAGES.ATTACK_NORMAL_BUBBLE;
+  IMAGES_ATTACK_POISON_BUBBLE = SHARKIE_IMAGES.ATTACK_POISON_BUBBLE;
+  IMAGES_ATTACK_WITHOUT_BUBBLE = SHARKIE_IMAGES.ATTACK_WITHOUT_BUBBLE;
+
+  x = 120;
+  y = 200;
+  height = 220;
+  width = 220;
+
+  offset = {
+    top: 100,
+    left: 35,
+    right: 40,
+    bottom: 45,
+  };
+
+  currentImageIdle = 0;
+  currentImage = 0;
+  currentImageDead = 0;
+  currentImageHurt = 0;
+  currentImageNormalAttack = 0;
+
+  speedX = 0;
+  speedY = 0;
+
+  lastHit = 0;
+  invincibleTime = 1500;
+  health = 100;
+  coins = 0;
+  poisonBottles = 0;
+
+  dead = false;
+  isHurt = false;
+  isAttacking = false;
+  isAttackingPoison = false;
+
+  idleAnimationDelay = 12;
+
+  frameCounter = 0;
+  swimFrameDelay = 10;
+
+  deadAnimationCounter = 0;
+  deadAnimationDelay = 10;
+  deadAnimationFinished = false;
+
+  hurtAnimationCounter = 0;
+  hurtAnimationDelay = 6;
+  hurtAnimationFinished = false;
+
+  attackAnimationCounter = 0;
+  attackAnimationDelay = 6;
+  attackBubbleThrown = false;
+
+  /**
+   * Creates a new Character instance
+   * @param {Keyboard} keyboard - Input handler
+   * @param {World} world - Game world reference
+   */
+  constructor(keyboard, world) {
+    super();
+    this.world = world;
+    this.keyboard = keyboard;
+
+    this.loadImage("../img/1.Sharkie/3.Swim/1.png");
+    this.loadImages(this.IMAGES_IDLE);
+    this.loadImages(this.IMAGES_SWIMMING);
+    this.loadImages(this.IMAGES_DEAD);
+    this.loadImages(this.IMAGES_HURT);
+    this.loadImages(this.IMAGES_ATTACK_NORMAL_BUBBLE);
+    this.loadImages(this.IMAGES_ATTACK_POISON_BUBBLE);
+    this.loadImages(this.IMAGES_ATTACK_WITHOUT_BUBBLE);
+  }
+
+  /**
+   * Updates character logic each frame (movement + animation)
+   */
+  update() {
+    const boss = this.world.enemies.find((e) => e instanceof Endboss);
+
+    if (!this.dead &amp;&amp; !boss?.dead) {
+      this.handleMovementInput();
+      this.applyMovement();
+      this.clampToWorld();
+    }
+
+    this.updateAnimation();
+  }
+
+  /**
+   * Checks if the character is still in the hurt cooldown phase
+   * @returns {boolean}
+   */
+  isHurtCooldownActive() {
+    const now = Date.now();
+    return now - this.lastHit &lt; this.invincibleTime;
+  }
+
+  /**
+   * Triggers the death state and resets animation values
+   */
+  die() {
+    if (this.dead) return;
+
+    this.dead = true;
+    this.speedX = 0;
+    this.speedY = 0;
+    this.currentImageDead = 0;
+    this.deadAnimationCounter = 0;
+    this.deadAnimationFinished = false;
+  }
+
+  /**
+   * Triggers the hurt state and starts hurt animation
+   */
+  hurt() {
+    if (this.dead) return;
+    if (this.isHurt) return;
+
+    this.isHurt = true;
+    this.currentImageHurt = 0;
+    this.hurtAnimationCounter = 0;
+  }
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Character.html">Character</a></li><li><a href="Coin.html">Coin</a></li><li><a href="Coinbar.html">Coinbar</a></li><li><a href="DrawableObjects.html">DrawableObjects</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="Healthbar.html">Healthbar</a></li><li><a href="InputManager.html">InputManager</a></li><li><a href="JellyFish.html">JellyFish</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Level.html">Level</a></li><li><a href="PoisonBottle.html">PoisonBottle</a></li><li><a href="Poisonbar.html">Poisonbar</a></li><li><a href="PufferFish.html">PufferFish</a></li><li><a href="SoundManager.html">SoundManager</a></li><li><a href="Statusbar.html">Statusbar</a></li><li><a href="ThrowableObject.html">ThrowableObject</a></li><li><a href="UIManager.html">UIManager</a></li></ul><h3>Global</h3><ul><li><a href="global.html#applyCanvasStyles">applyCanvasStyles</a></li><li><a href="global.html#calculateDisplaySize">calculateDisplaySize</a></li><li><a href="global.html#checkGameOver">checkGameOver</a></li><li><a href="global.html#checkWinGame">checkWinGame</a></li><li><a href="global.html#closeOptions">closeOptions</a></li><li><a href="global.html#createCoinArc">createCoinArc</a></li><li><a href="global.html#createCoinRow">createCoinRow</a></li><li><a href="global.html#createLevel1">createLevel1</a></li><li><a href="global.html#endGame">endGame</a></li><li><a href="global.html#gameLoop">gameLoop</a></li><li><a href="global.html#getViewportSize">getViewportSize</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#isTouchDevice">isTouchDevice</a></li><li><a href="global.html#openOptions">openOptions</a></li><li><a href="global.html#playGameOverSound">playGameOverSound</a></li><li><a href="global.html#resizeCanvas">resizeCanvas</a></li><li><a href="global.html#setCanvasResolution">setCanvasResolution</a></li><li><a href="global.html#startGame">startGame</a></li><li><a href="global.html#togglePause">togglePause</a></li><li><a href="global.html#toggleSound">toggleSound</a></li><li><a href="global.html#updateGame">updateGame</a></li><li><a href="global.html#updateStatusbarPositions">updateStatusbarPositions</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Mon Apr 27 2026 18:52:19 GMT+0200 (Central European Summer Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

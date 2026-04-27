@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: levels/level1.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: levels/level1.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Creates a row of coins
+ * @param {number} x
+ * @param {number} y
+ * @param {number} count
+ * @param {number} spacing
+ * @returns {Coin[]}
+ */
+function createCoinRow(x, y, count, spacing) {
+  let coins = [];
+
+  for (let i = 0; i &lt; count; i++) {
+    let coin = new Coin();
+    coin.x = x + i * spacing;
+    coin.y = y;
+    coins.push(coin);
+  }
+
+  return coins;
+}
+
+/**
+ * Creates an arc-shaped coin formation
+ * @param {number} x
+ * @param {number} y
+ * @param {number} count
+ * @param {number} spacing
+ * @returns {Coin[]}
+ */
+function createCoinArc(x, y, count, spacing) {
+  let coins = [];
+
+  for (let i = 0; i &lt; count; i++) {
+    let coin = new Coin();
+    coin.x = x + i * spacing;
+    coin.y = y - Math.sin(i * 0.5) * 80;
+    coins.push(coin);
+  }
+
+  return coins;
+}
+
+/**
+ * Creates and returns level 1 with all enemies, background objects, coins and poison bottles
+ * @returns {Level}
+ */
+function createLevel1() {
+  const TILE_WIDTH = GAME_WIDTH;
+
+  return new Level(
+    [
+      new PufferFish(600, 200, "green"),
+      new PufferFish(1000, 250, "red"),
+      new PufferFish(1400, 180, "orange"),
+      new PufferFish(1800, 220, "red"),
+      new JellyFish(600, 400, "green"),
+      new JellyFish(1200, 200, "pink"),
+      new Endboss(),
+    ],
+
+    [
+      new BackgroundObject("../img/3. Background/Light/1.png", 0),
+      new BackgroundObject("../img/3. Background/Light/2.png", TILE_WIDTH),
+      new BackgroundObject("../img/3. Background/Light/1.png", 2 * TILE_WIDTH),
+      new BackgroundObject("../img/3. Background/Light/2.png", 3 * TILE_WIDTH),
+      new BackgroundObject("../img/3. Background/Light/1.png", 4 * TILE_WIDTH),
+      new BackgroundObject("../img/3. Background/Light/2.png", 5 * TILE_WIDTH),
+    ],
+
+    [
+      ...createCoinRow(600, 200, 5, 60),
+      ...createCoinRow(1200, 180, 4, 60),
+      ...createCoinArc(1600, 250, 6, 70),
+    ],
+
+    [
+      new PoisonBottle(400, 300),
+      new PoisonBottle(600, 350),
+      new PoisonBottle(1005, 235),
+      new PoisonBottle(1385, 295),
+      new PoisonBottle(1685, 295),
+    ],
+  );
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Character.html">Character</a></li><li><a href="Coin.html">Coin</a></li><li><a href="Coinbar.html">Coinbar</a></li><li><a href="DrawableObjects.html">DrawableObjects</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="Healthbar.html">Healthbar</a></li><li><a href="InputManager.html">InputManager</a></li><li><a href="JellyFish.html">JellyFish</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Level.html">Level</a></li><li><a href="PoisonBottle.html">PoisonBottle</a></li><li><a href="Poisonbar.html">Poisonbar</a></li><li><a href="PufferFish.html">PufferFish</a></li><li><a href="SoundManager.html">SoundManager</a></li><li><a href="Statusbar.html">Statusbar</a></li><li><a href="ThrowableObject.html">ThrowableObject</a></li><li><a href="UIManager.html">UIManager</a></li></ul><h3>Global</h3><ul><li><a href="global.html#applyCanvasStyles">applyCanvasStyles</a></li><li><a href="global.html#calculateDisplaySize">calculateDisplaySize</a></li><li><a href="global.html#checkGameOver">checkGameOver</a></li><li><a href="global.html#checkWinGame">checkWinGame</a></li><li><a href="global.html#closeOptions">closeOptions</a></li><li><a href="global.html#createCoinArc">createCoinArc</a></li><li><a href="global.html#createCoinRow">createCoinRow</a></li><li><a href="global.html#createLevel1">createLevel1</a></li><li><a href="global.html#endGame">endGame</a></li><li><a href="global.html#gameLoop">gameLoop</a></li><li><a href="global.html#getViewportSize">getViewportSize</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#isTouchDevice">isTouchDevice</a></li><li><a href="global.html#openOptions">openOptions</a></li><li><a href="global.html#playGameOverSound">playGameOverSound</a></li><li><a href="global.html#resizeCanvas">resizeCanvas</a></li><li><a href="global.html#setCanvasResolution">setCanvasResolution</a></li><li><a href="global.html#startGame">startGame</a></li><li><a href="global.html#togglePause">togglePause</a></li><li><a href="global.html#toggleSound">toggleSound</a></li><li><a href="global.html#updateGame">updateGame</a></li><li><a href="global.html#updateStatusbarPositions">updateStatusbarPositions</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Mon Apr 27 2026 18:52:19 GMT+0200 (Central European Summer Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
