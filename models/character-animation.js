@@ -1,32 +1,22 @@
+/**
+ * Controls which animation should be played based on the current state
+ */
 Character.prototype.updateAnimation = function () {
-  if (this.dead) {
-    this.updateDeadAnimation();
-    return;
-  }
-
-  if (this.isHurt) {
-    this.updateHurtAnimation();
-    return;
-  }
-
-  if (this.isAttacking) {
-    this.updateNormalAttackAnimation();
-    return;
-  }
-
-  if (this.isAttackingPoison) {
-    this.updatePoisonAttackAnimation();
-    return;
-  }
+  if (this.dead) return this.updateDeadAnimation();
+  if (this.isHurt) return this.updateHurtAnimation();
+  if (this.isAttacking) return this.updateNormalAttack();
+  if (this.isAttackingPoison) return this.updatePoisonAttack();
 
   if (this.speedX === 0 && this.speedY === 0) {
-    this.updateIdleAnimation();
-    return;
+    return this.updateIdleAnimation();
   }
 
   this.updateSwimAnimation();
 };
 
+/**
+ * Updates idle animation when character is not moving
+ */
 Character.prototype.updateIdleAnimation = function () {
   this.idleAnimationCounter++;
 
@@ -40,8 +30,10 @@ Character.prototype.updateIdleAnimation = function () {
   }
 };
 
+/**
+ * Updates swimming animation while character is moving
+ */
 Character.prototype.updateSwimAnimation = function () {
-  if (this.dead || this.isHurt) return;
   if (this.speedX === 0 && this.speedY === 0) return;
 
   this.frameCounter++;
@@ -56,6 +48,9 @@ Character.prototype.updateSwimAnimation = function () {
   }
 };
 
+/**
+ * Updates hurt animation when character is damaged
+ */
 Character.prototype.updateHurtAnimation = function () {
   this.hurtAnimationCounter++;
 
@@ -70,10 +65,17 @@ Character.prototype.updateHurtAnimation = function () {
     if (this.currentImageHurt >= this.IMAGES_HURT.length) {
       this.isHurt = false;
       this.currentImageHurt = 0;
+      this.currentImageIdle = 0;
+      const path = this.IMAGES_IDLE[0];
+
+      this.img = this.imageCache[path];
     }
   }
 };
 
+/**
+ * Updates death animation until it finishes
+ */
 Character.prototype.updateDeadAnimation = function () {
   if (this.deadAnimationFinished) return;
 

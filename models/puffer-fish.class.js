@@ -1,44 +1,39 @@
+/**
+ * Represents a puffer fish enemy with horizontal movement and activation behavior
+ */
 class PufferFish extends MovableObject {
-  // =========================
-  // Animation Image Sets
-  // =========================
   IMAGES_SWIMMING_GREEN = PUFFERFISH_IMAGES.GREEN_SWIMMING;
   IMAGES_SWIMMING_ORANGE = PUFFERFISH_IMAGES.ORANGE_SWIMMING;
   IMAGES_SWIMMING_RED = PUFFERFISH_IMAGES.RED_SWIMMING;
 
-  // =========================
-  // Size
-  // =========================
   height = 60;
   width = 60;
   health = 1;
 
-  // =========================
-  // Animation
-  // =========================
   currentImage = 0;
   frameCounter = 0;
   swimFrameDelay = 12;
 
-  // =========================
-  // Movement
-  // =========================
-  speedX = -0.15 - Math.random() * 1.25;
+  speedX = -(0.15 + Math.random() * 1.25);
   activationRange = 600;
   isActive = false;
 
-  // =========================
-  // Constructor
-  // =========================
+  /**
+   * Creates a puffer fish with a given position and color
+   * @param {number} x
+   * @param {number} y
+   * @param {"green"|"orange"|"red"} color
+   */
   constructor(x, y, color) {
     super();
-    if (color === "green") {
-      this.imagesSwimming = this.IMAGES_SWIMMING_GREEN;
-    } else if (color === "orange") {
-      this.imagesSwimming = this.IMAGES_SWIMMING_ORANGE;
-    } else {
-      this.imagesSwimming = this.IMAGES_SWIMMING_RED;
-    }
+
+    this.imagesSwimming =
+      color === "green"
+        ? this.IMAGES_SWIMMING_GREEN
+        : color === "orange"
+          ? this.IMAGES_SWIMMING_ORANGE
+          : this.IMAGES_SWIMMING_RED;
+
     this.loadImage(this.imagesSwimming[0]);
     this.loadImages(this.imagesSwimming);
 
@@ -46,22 +41,22 @@ class PufferFish extends MovableObject {
     this.y = y;
   }
 
-  // =========================
-  // World Reference
-  // =========================
+  /**
+   * Connects the puffer fish to the game world
+   * @param {World} world
+   */
   setWorld(world) {
     this.world = world;
     this.character = world.character;
   }
 
-  // =========================
-  // Main Update Flow
-  // =========================
+  /**
+   * Updates puffer fish behavior each frame
+   */
   update() {
     if (!this.world) return;
 
     this.checkActivation();
-
     if (!this.isActive) return;
 
     this.move();

@@ -30,26 +30,35 @@ class World {
     this.enemies.forEach((enemy) => enemy.setWorld(this));
   }
 
-  get width() {
-    return Math.max(...this.backgroundObjects.map((bg) => bg.x + bg.width));
-  }
-
+  /**
+   * Returns the height of the world
+   * @returns {number}
+   */
   get height() {
     return this.canvas.height;
   }
 
+  /**
+   * Updates the entire game world
+   */
   update() {
+    this.handleEntities();
+    this.handleProjectiles();
+    this.handleCollisions();
+  }
+
+  /**
+   * Updates all entities like character, enemies and coins
+   */
+  handleEntities() {
     this.character.update();
     this.updateEnemies();
     this.coins.forEach((coin) => coin.update());
-    this.throwableObjects.forEach((bubble) => bubble.update());
-    this.updateThrowableObjects();
-    this.checkEnemyCollisions();
-    this.checkBubbleCollisions();
-    this.checkCoinCollisions();
-    this.checkPoisonBottlesCollisions();
   }
 
+  /**
+   * Updates all enemies and removes dead/off-screen ones
+   */
   updateEnemies() {
     this.enemies.forEach((enemy) => enemy.update());
 
@@ -59,6 +68,17 @@ class World {
     });
   }
 
+  /**
+   * Updates all projectile objects
+   */
+  handleProjectiles() {
+    this.throwableObjects.forEach((bubble) => bubble.update());
+    this.updateThrowableObjects();
+  }
+
+  /**
+   * Removes expired or distant throwable objects
+   */
   updateThrowableObjects() {
     this.throwableObjects = this.throwableObjects.filter(
       (bubble) =>
@@ -66,26 +86,72 @@ class World {
     );
   }
 
-  checkEnemyCollisions() {
+  /**
+   * Creates and throws a new projectile
+   * @param {string} type - Type of bubble
+   */
+  throwObject(type) {
+    const x = this.character.x + (this.character.otherDirection ? -20 : 120);
+    const y = this.character.y + 80;
+
+    const bubble = new ThrowableObject(
+      x,
+      y,
+      this.character.otherDirection,
+      type,
+    );
+
+    bubble.throw();
+    this.throwableObjects.push(bubble);
+  }
+
+  /**
+   * Handles all collision checks
+   */
+  handleCollisions() {
+    this.handleEnemyCollisions();
+    this.handleBubbleCollisions();
+    this.handlePoisonBottlesCollisions();
+    this.handleCoinCollisions();
+  }
+
+  /**
+   * Checks collisions between character and enemies
+   */
+  handleEnemyCollisions() {
     this.enemies.forEach((enemy) => {
       if (this.character.isColliding(enemy)) {
-        if (!this.character.isHurtCooldownActive()) {
-          this.soundManager.play("getsHit");
-
-          this.character.lastHit = Date.now();
-          this.character.health -= 20;
-          this.character.hurt();
-          this.healthbar.healthbarUpdate(this.character.health);
-
-          if (this.character.health <= 0) {
-            this.character.die();
-          }
-        }
+        this.handleCharacterHit(20);
       }
     });
   }
 
-  checkBubbleCollisions() {
+  /**
+   * Handles damage taken by the character
+   * @param {number} damage - Damage amount
+   */
+  handleCharacterHit(damage = 20) {
+    if (this.character.isHurtCooldownActive()) return;
+
+    this.soundManager.play("getsHit");
+
+    this.character.lastHit = Date.now();
+
+    this.character.health -= damage;
+
+    this.character.hurt();
+
+    this.healthbar.healthbarUpdate(this.character.health);
+
+    if (this.character.health <= 0) {
+      this.character.die();
+    }
+  }
+
+  /**
+   * Checks collisions between bubbles and enemies
+   */
+  handleBubbleCollisions() {
     this.throwableObjects = this.throwableObjects.filter((bubble) => {
       const hitEnemy = this.enemies.find((enemy) => bubble.isColliding(enemy));
 
@@ -99,7 +165,10 @@ class World {
     });
   }
 
-  checkCoinCollisions() {
+  /**
+   * Checks collisions between character and coins
+   */
+  handleCoinCollisions() {
     this.coins = this.coins.filter((coin) => {
       if (this.character.isColliding(coin)) {
         this.soundManager.play("coinPickup");
@@ -112,7 +181,10 @@ class World {
     });
   }
 
-  checkPoisonBottlesCollisions() {
+  /**
+   * Checks collisions between character and poison bottles
+   */
+  handlePoisonBottlesCollisions() {
     this.poisonBottles = this.poisonBottles.filter((poisonBottle) => {
       if (this.character.isColliding(poisonBottle)) {
         this.soundManager.play("bottlePickup");
@@ -125,6 +197,9 @@ class World {
     });
   }
 
+  /**
+   * Draws the entire world
+   */
   draw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
@@ -145,10 +220,18 @@ class World {
     this.addToMap(this.coinbar);
   }
 
+  /**
+   * Draws multiple objects
+   * @param {Array} objects - Objects to draw
+   */
   addObjectToMap(objects) {
     objects.forEach((obj) => this.addToMap(obj));
   }
 
+  /**
+   * Draws one object
+   * @param {Object} mo - Drawable object
+   */
   addToMap(mo) {
     if (!mo.img || !mo.img.complete) return;
 
@@ -167,6 +250,10 @@ class World {
     }
   }
 
+  /**
+   * Flips an object horizontally
+   * @param {Object} mo - Object to flip
+   */
   flipImage(mo) {
     this.ctx.save();
     this.ctx.translate(mo.width, 0);
@@ -174,23 +261,12 @@ class World {
     mo.x = mo.x * -1;
   }
 
+  /**
+   * Restores flipped object position
+   * @param {Object} mo - Object to restore
+   */
   flipImageBack(mo) {
     mo.x = mo.x * -1;
     this.ctx.restore();
-  }
-
-  throwObject(type) {
-    const x = this.character.x + (this.character.otherDirection ? -20 : 120);
-    const y = this.character.y + 80;
-
-    const bubble = new ThrowableObject(
-      x,
-      y,
-      this.character.otherDirection,
-      type,
-    );
-
-    bubble.throw();
-    this.throwableObjects.push(bubble);
   }
 }

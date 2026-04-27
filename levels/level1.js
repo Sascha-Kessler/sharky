@@ -1,3 +1,11 @@
+/**
+ * Creates a row of coins
+ * @param {number} x
+ * @param {number} y
+ * @param {number} count
+ * @param {number} spacing
+ * @returns {Coin[]}
+ */
 function createCoinRow(x, y, count, spacing) {
   let coins = [];
 
@@ -11,6 +19,14 @@ function createCoinRow(x, y, count, spacing) {
   return coins;
 }
 
+/**
+ * Creates an arc-shaped coin formation
+ * @param {number} x
+ * @param {number} y
+ * @param {number} count
+ * @param {number} spacing
+ * @returns {Coin[]}
+ */
 function createCoinArc(x, y, count, spacing) {
   let coins = [];
 
@@ -24,8 +40,13 @@ function createCoinArc(x, y, count, spacing) {
   return coins;
 }
 
+/**
+ * Creates and returns level 1 with all enemies, background objects, coins and poison bottles
+ * @returns {Level}
+ */
 function createLevel1() {
   const TILE_WIDTH = GAME_WIDTH;
+
   return new Level(
     [
       new PufferFish(600, 200, "green"),

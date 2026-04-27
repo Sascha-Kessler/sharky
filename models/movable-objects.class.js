@@ -4,6 +4,10 @@ class MovableObject extends DrawableObjects {
   speedY = 0;
   otherDirection = false;
 
+  /**
+   * Draws the hitbox frame for debugging purposes
+   * @param {CanvasRenderingContext2D} ctx
+   */
   drawFrame(ctx) {
     if (
       this instanceof Character ||
@@ -32,37 +36,40 @@ class MovableObject extends DrawableObjects {
     }
   }
 
-  moveLeft() {
-    setInterval(() => {
-      this.x -= this.speed;
-    }, 1000 / 60);
-  }
-
+  /**
+   * Checks collision between this object and another object
+   * @param {MovableObject} obj
+   * @returns {boolean}
+   */
   isColliding(obj) {
+    const a = this.getHitbox();
+    const b = obj.getHitbox();
+
     return (
-      this.getHitboxRight() > obj.getHitboxLeft() &&
-      this.getHitboxLeft() < obj.getHitboxRight() &&
-      this.getHitboxBottom() > obj.getHitboxTop() &&
-      this.getHitboxTop() < obj.getHitboxBottom()
+      a.right > b.left &&
+      a.left < b.right &&
+      a.bottom > b.top &&
+      a.top < b.bottom
     );
   }
 
-  getHitboxLeft() {
-    return this.x + (this.offset?.left || 0);
+  /**
+   * Returns the hitbox boundaries of the object
+   * @returns {{left: number, right: number, top: number, bottom: number}}
+   */
+  getHitbox() {
+    const left = this.x + (this.offset?.left || 0);
+    const right = this.x + this.width - (this.offset?.right || 0);
+    const top = this.y + (this.offset?.top || 0);
+    const bottom = this.y + this.height - (this.offset?.bottom || 0);
+
+    return { left, right, top, bottom };
   }
 
-  getHitboxRight() {
-    return this.x + this.width - (this.offset?.right || 0);
-  }
-
-  getHitboxTop() {
-    return this.y + (this.offset?.top || 0);
-  }
-
-  getHitboxBottom() {
-    return this.y + this.height - (this.offset?.bottom || 0);
-  }
-
+  /**
+   * Applies damage to the object
+   * @param {number} damage
+   */
   hit(damage) {
     this.health -= damage;
 
@@ -71,6 +78,9 @@ class MovableObject extends DrawableObjects {
     }
   }
 
+  /**
+   * Marks the object as dead
+   */
   die() {
     this.dead = true;
   }

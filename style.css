@@ -11,8 +11,6 @@ body {
   box-sizing: border-box;
 }
 
-/* ===== BODY / BACKGROUND ===== */
-
 body {
   min-height: 100vh;
   display: flex;
@@ -27,8 +25,6 @@ body {
 
   color: white;
 }
-
-/* ===== WATER EFFECT ===== */
 
 .water-effect {
   position: fixed;
@@ -73,16 +69,13 @@ body {
   }
 }
 
-/* ===== LAYER FIX (wichtig!) ===== */
-
-#gameName,
-#startscreen,
-#gameContainer {
+.game-name,
+.start-screen,
+.game-container {
   position: relative;
+  display: inline-block;
   z-index: 2;
 }
-
-/* ===== HEADLINE ===== */
 
 h1 {
   margin: 0;
@@ -90,9 +83,7 @@ h1 {
   color: black;
 }
 
-/* ===== STARTSCREEN ===== */
-
-#startscreen {
+.start-screen {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -100,8 +91,6 @@ h1 {
   margin-top: 150px;
 }
 
-/* ===== UTIL ===== */
-
-.dnone {
+.d-none {
   display: none !important;
 }

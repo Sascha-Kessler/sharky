@@ -1,3 +1,6 @@
+/**
+ * Displays the coin status bar based on collected coins
+ */
 class Coinbar extends Statusbar {
   IMAGES_COINBAR = [
     "../img/4. Marcadores/green/Coin/0_  copia 4.png",
@@ -8,6 +11,9 @@ class Coinbar extends Statusbar {
     "../img/4. Marcadores/green/Coin/100_ copia 4.png",
   ];
 
+  /**
+   * Creates a new coin status bar
+   */
   constructor() {
     super([], 0, 80);
 
@@ -17,6 +23,10 @@ class Coinbar extends Statusbar {
     this.setPercentage(0);
   }
 
+  /**
+   * Updates the coin bar based on collected coins
+   * @param {number} coins
+   */
   coinbarUpdate(coins) {
     this.setPercentage(coins * 20);
   }

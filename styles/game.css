@@ -1,19 +1,14 @@
-/* ===== GAME CANVAS ===== */
+.game-container {
+  position: relative;
+  display: inline-block;
+  z-index: 2;
+}
 
-#canvas {
+.canvas {
   display: block;
 }
 
-/* ===== GAME CONTAINER ===== */
-
-#gameContainer {
-  position: relative;
-  display: inline-block;
-}
-
-/* ===== GAME UI ===== */
-
-#game-ui {
+.game-ui {
   position: absolute;
   top: 10px;
   right: 20px;
@@ -25,6 +20,16 @@
   z-index: 20;
 }
 
+.game-ui button {
+  background-color: transparent;
+}
+
+.game-ui img {
+  width: 24px;
+  height: 24px;
+  pointer-events: none;
+}
+
 .pause-btn,
 .sound-btn,
 .end-game-btn {
@@ -32,13 +37,11 @@
   padding: 10px 22px;
 }
 
-/* ===== GAME OVER / WIN ===== */
-
-#gameOverScreen,
-#winScreen {
+.game-over-screen,
+.win-screen {
   position: absolute;
-  top: 0;
-  left: 0;
+  inset: 0;
+  z-index: 50;
   width: 100%;
   height: 100%;
 
@@ -49,24 +52,13 @@
   gap: 50px;
 }
 
-#gameOverScreen img,
-#winScreen img {
+.game-over-screen img,
+.win-screen img {
   width: 60%;
   height: auto;
 }
 
-#game-ui img {
-  width: 24px;
-
-  height: 24px;
-
-  pointer-events: none;
-}
-
-#game-ui button {
-  background-color: transparent !important;
-}
-#mobile-controls {
+.mobile-controls {
   position: absolute;
   left: clamp(6px, 2vw, 15px);
   bottom: clamp(6px, 2vw, 15px);
@@ -79,7 +71,7 @@
   z-index: 30;
 }
 
-#mobile-actions {
+.mobile-actions {
   position: absolute;
   right: clamp(8px, 2vw, 20px);
   bottom: clamp(10px, 3vw, 25px);
@@ -91,87 +83,17 @@
   z-index: 30;
 }
 
-.touch-btn.action {
-  width: clamp(80px, 20vw, 140px);
-  height: clamp(36px, 8vw, 60px);
-
-  border-radius: clamp(8px, 2vw, 14px);
-
-  font-size: clamp(12px, 2.5vw, 18px);
-  font-weight: bold;
-  letter-spacing: 1px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border: 1px solid #00cfff;
-  background: rgba(0, 0, 0, 0.6);
-  color: #00cfff;
-
-  touch-action: none;
-}
-
-.touch-btn.special {
-  border-color: limegreen;
-  color: limegreen;
-}
-
-.up {
-  grid-column: 2;
-  grid-row: 1;
-}
-
-.left {
-  grid-column: 1;
-  grid-row: 2;
-}
-
-.right {
-  grid-column: 3;
-  grid-row: 2;
-}
-
-.down {
-  grid-column: 2;
-  grid-row: 3;
-}
-
-.touch-btn {
-  border: 1px solid #00cfff;
-  border-radius: clamp(6px, 1.5vw, 12px);
-
-  background: rgba(0, 0, 0, 0.6);
-  color: #00cfff;
-
-  font-size: clamp(12px, 3vw, 20px);
-  font-weight: bold;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  touch-action: none;
-  user-select: none;
-  cursor: pointer;
-}
-
-.touch-btn:active {
-  transform: scale(0.9);
-  background: rgba(0, 200, 255, 0.2);
-}
-
-#mobile-actions,
-#mobile-controls {
+.mobile-actions,
+.mobile-controls {
   display: none;
 }
 
 @media (pointer: coarse) {
-  #mobile-actions {
+  .mobile-actions {
     display: flex;
   }
 
-  #mobile-controls {
+  .mobile-controls {
     display: grid;
   }
 }

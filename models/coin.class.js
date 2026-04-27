@@ -1,7 +1,7 @@
+/**
+ * Represents a collectible coin with animation
+ */
 class Coin extends MovableObject {
-  // =========================
-  // Animation Image Sets
-  // =========================
   IMAGES_COIN = [
     "../img/4. Marcadores/1. Coins/1.png",
     "../img/4. Marcadores/1. Coins/2.png",
@@ -9,22 +9,16 @@ class Coin extends MovableObject {
     "../img/4. Marcadores/1. Coins/4.png",
   ];
 
-  // =========================
-  // Size
-  // =========================
   height = 40;
   width = 40;
 
-  // =========================
-  // Animation
-  // =========================
   currentImage = 0;
   frameCounter = 0;
   coinFrameDelay = 12;
 
-  // =========================
-  // Constructor
-  // =========================
+  /**
+   * Creates a new coin at a random position
+   */
   constructor() {
     super();
     this.loadImage(this.IMAGES_COIN[0]);
@@ -34,24 +28,24 @@ class Coin extends MovableObject {
     this.y = Math.random() * (GAME_HEIGHT - this.height);
   }
 
-  // =========================
-  // Main Update Flow
-  // =========================
+  /**
+   * Updates the coin each frame
+   */
   update() {
     this.updateCoinAnimation();
   }
 
-  // =========================
-  // Coin Animation
-  // =========================
+  /**
+   * Updates the coin animation
+   */
   updateCoinAnimation() {
     this.frameCounter++;
 
     if (this.frameCounter >= this.coinFrameDelay) {
       this.frameCounter = 0;
 
-      let i = this.currentImage % this.IMAGES_COIN.length;
-      let path = this.IMAGES_COIN[i];
+      const i = this.currentImage % this.IMAGES_COIN.length;
+      const path = this.IMAGES_COIN[i];
       this.img = this.imageCache[path];
       this.currentImage++;
     }

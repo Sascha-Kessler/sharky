@@ -1,4 +1,10 @@
+/**
+ * Manages all game sounds and music
+ */
 class SoundManager {
+  /**
+   * Creates a new sound manager and loads all audio files
+   */
   constructor() {
     this.soundOn = false;
     this.wasMusicPlayingBeforePause = false;
@@ -16,17 +22,33 @@ class SoundManager {
     this.setupVolumes();
   }
 
+  /**
+   * Sets volume and loop settings for all sounds
+   */
   setupVolumes() {
-    this.sounds.levelMusic.loop = true;
-    this.sounds.levelMusic.volume = 0.2;
-    this.sounds.bubblePop.volume = 0.4;
-    this.sounds.coinPickup.volume = 0.4;
-    this.sounds.buttonKlick.volume = 0.2;
-    this.sounds.bottlePickup.volume = 0.4;
-    this.sounds.getsHit.volume = 0.4;
-    this.sounds.gameOver.volume = 0.4;
+    const config = {
+      levelMusic: { volume: 0.2, loop: true },
+      bubblePop: { volume: 0.4 },
+      coinPickup: { volume: 0.4 },
+      buttonKlick: { volume: 0.2 },
+      bottlePickup: { volume: 0.4 },
+      getsHit: { volume: 0.4 },
+      gameOver: { volume: 0.4 },
+    };
+
+    Object.entries(config).forEach(([key, settings]) => {
+      const sound = this.sounds[key];
+      if (!sound) return;
+
+      sound.volume = settings.volume ?? 1;
+      if (settings.loop) sound.loop = true;
+    });
   }
 
+  /**
+   * Plays a sound by name
+   * @param {string} name
+   */
   play(name) {
     if (!this.soundOn && name !== "buttonKlick") return;
 
@@ -37,16 +59,27 @@ class SoundManager {
     sound.play();
   }
 
+  /**
+   * Starts background music
+   */
   playMusic() {
     if (this.soundOn) {
       this.sounds.levelMusic.play();
     }
   }
 
+  /**
+   * Pauses background music
+   */
   pauseMusic() {
     this.sounds.levelMusic.pause();
   }
 
+  /**
+   * Toggles sound on/off
+   * @param {boolean} isPaused
+   * @returns {boolean}
+   */
   toggleSound(isPaused) {
     this.soundOn = !this.soundOn;
 
@@ -59,11 +92,17 @@ class SoundManager {
     return this.soundOn;
   }
 
+  /**
+   * Pauses music when the game is paused
+   */
   pauseForGamePause() {
     this.wasMusicPlayingBeforePause = this.soundOn;
     this.pauseMusic();
   }
 
+  /**
+   * Resumes music after pause if it was playing before
+   */
   resumeFromGamePause() {
     if (this.wasMusicPlayingBeforePause && this.soundOn) {
       this.playMusic();

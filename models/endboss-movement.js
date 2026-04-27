@@ -1,3 +1,6 @@
+/**
+ * Keeps the endboss within vertical world boundaries
+ */
 Endboss.prototype.clampToWorld = function () {
   if (this.y < -this.offset.top) {
     this.y = -this.offset.top;
@@ -8,6 +11,9 @@ Endboss.prototype.clampToWorld = function () {
   }
 };
 
+/**
+ * Moves the endboss automatically and reverses direction at bounds
+ */
 Endboss.prototype.autoMove = function () {
   if (
     this.y <= -this.offset.top ||
@@ -19,14 +25,24 @@ Endboss.prototype.autoMove = function () {
   this.y += this.speedY;
 };
 
+/**
+ * Checks if the player reached the trigger point for the first encounter
+ */
 Endboss.prototype.checkFirstContact = function () {
   if (!this.world) return;
 
   if (this.character.x > 1885 && !this.hadFirstContact) {
-    this.hadFirstContact = true;
-    this.isSpawning = true;
-    this.spawnAnimationFinished = false;
-    this.spawningIndex = 0;
-    this.frameCounter = 0;
+    this.startFirstContact();
   }
+};
+
+/**
+ * Initializes the first contact state and starts spawning
+ */
+Endboss.prototype.startFirstContact = function () {
+  this.hadFirstContact = true;
+  this.isSpawning = true;
+  this.spawnAnimationFinished = false;
+  this.spawningIndex = 0;
+  this.frameCounter = 0;
 };

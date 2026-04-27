@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="./styles/game.css" />
     <link rel="stylesheet" href="./styles/components.css" />
 
-    <!-- 1) Basis -->
     <script src="./models/drawable-objects.class.js"></script>
     <script src="./models/statusbar.class.js"></script>
     <script src="./models/movable-objects.class.js"></script>
@@ -17,7 +16,6 @@
     <script src="./models/keyboard.class.js"></script>
     <script src="./js/input-manager.js"></script>
 
-    <!-- 2) Game Objects -->
     <script src="./models/background.class.js"></script>
     <script src="./assets/character.images.js"></script>
     <script src="./models/character.class.js"></script>
@@ -39,38 +37,33 @@
     <script src="./models/endboss-attack.js"></script>
     <script src="./models/coin.class.js"></script>
     <script src="./models/poison-bottle.js"></script>
-    
+
     <script src="./models/healthbar.class.js"></script>
     <script src="./models/poisonbar.class.js"></script>
     <script src="./models/coinbar.class.js"></script>
 
-    <!-- 3) Level -->
     <script src="./models/level.class.js"></script>
     <script src="./levels/level1.js"></script>
 
-    <!-- 4) World -->
     <script src="./models/world.class.js"></script>
 
-    <!-- 5) Game -->
-     <script src="./js/sound-manager.js"></script>
-     <script src="./js/ui-manager.js"></script>
+    <script src="./js/sound-manager.js"></script>
+    <script src="./js/ui-manager.js"></script>
     <script src="./js/game.js"></script>
-    
   </head>
 
   <body onload="init()">
     <div class="water-effect"></div>
 
-    <h1 id="gameName">Sharky</h1>
+    <h1 id="game-name" class="game-name">Sharky</h1>
 
-    <!-- STARTSCREEN -->
-    <div id="startscreen">
-      <button id="startBtn" class="ocean-btn start-btn" onclick="startGame()">
+    <div id="start-screen" class="start-screen">
+      <button id="start-btn" class="ocean-btn start-btn" onclick="startGame()">
         Start
       </button>
 
       <button
-        id="optionBtn"
+        id="option-btn"
         class="ocean-btn options-btn"
         onclick="openOptions()"
       >
@@ -78,15 +71,13 @@
       </button>
     </div>
 
-    <!-- GAME -->
-    <div id="gameContainer" class="dnone">
-      <canvas id="canvas"></canvas>
+    <div id="game-container" class="game-container d-none">
+      <canvas id="canvas" class="canvas"></canvas>
 
-      <!-- GAME UI -->
-      <div id="mobile-controls">
+      <div id="mobile-controls" class="mobile-controls">
         <button
-          class="touch-btn up" 
-          ontouchstart="keyboard.UP= true"
+          class="touch-btn up"
+          ontouchstart="keyboard.UP = true"
           ontouchend="keyboard.UP = false"
         >
           ↑
@@ -116,70 +107,67 @@
           ↓
         </button>
       </div>
-      <div id="mobile-actions">
-  <button
-    class="touch-btn action normal"
-    ontouchstart="keyboard.ATTACK = true"
-    ontouchend="keyboard.ATTACK = false"
-  >
-    ATK
-  </button>
 
-  <button
-    class="touch-btn action special"
-    ontouchstart="keyboard.POISON = true"
-    ontouchend="keyboard.POISON = false"
-  >
-    SP.ATK
-  </button>
-</div>
+      <div id="mobile-actions" class="mobile-actions">
+        <button
+          class="touch-btn action normal"
+          ontouchstart="keyboard.ATTACK = true"
+          ontouchend="keyboard.ATTACK = false"
+        >
+          ATK
+        </button>
+
+        <button
+          class="touch-btn action special"
+          ontouchstart="keyboard.POISON = true"
+          ontouchend="keyboard.POISON = false"
+        >
+          SP.ATK
+        </button>
       </div>
 
-      <div id="game-ui" class="dnone">
+      <div id="game-ui" class="game-ui d-none">
         <button
-          id="pauseBtn"
+          id="pause-btn"
           class="ocean-btn pause-btn"
           onclick="togglePause()"
         >
-          <img id="pauseIcon" src="./img/pause.png" alt="" />
+          <img id="pause-icon" src="./img/pause.png" alt="" />
         </button>
 
         <button
-          id="soundBtn"
+          id="sound-btn"
           class="ocean-btn sound-btn"
           onclick="toggleSound()"
         >
-          <img id="soundIcon" src="./img/sound.png" alt="" />
+          <img id="sound-icon" src="./img/sound.png" alt="" />
         </button>
 
         <button
-          id="newGameBtn"
+          id="new-game-btn"
           class="ocean-btn end-game-btn"
           onclick="endGame()"
         >
-          <img id="endGame" src="./img/cross.png" alt="" />
+          <img id="end-game-icon" src="./img/cross.png" alt="" />
         </button>
       </div>
 
-      <!-- GAME OVER -->
-      <div id="gameOverScreen" class="dnone">
+      <div id="game-over-screen" class="game-over-screen d-none">
         <img src="../img/6.Botones/Tittles/Game Over/Recurso 9.png" alt="" />
         <button class="ocean-btn" onclick="endGame()">Retry</button>
       </div>
 
-      <!-- WIN -->
-      <div id="winScreen" class="dnone">
+      <div id="win-screen" class="win-screen d-none">
         <img src="../img/6.Botones/Try again/Mesa de trabajo 1.png" alt="" />
         <button class="ocean-btn" onclick="endGame()">Retry</button>
       </div>
     </div>
 
-    <!-- OPTIONS OVERLAY (JETZT WIEDER GLOBAL) -->
-    <div id="options-overlay" class="dnone">
+    <div id="options-overlay" class="options-overlay d-none">
       <div class="options-content">
         <button
           id="options-overlay-close-button"
-          class="ocean-btn"
+          class="options-overlay-close-button ocean-btn"
           onclick="closeOptions()"
         >
           ✖

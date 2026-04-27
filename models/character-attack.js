@@ -1,88 +1,99 @@
-Character.prototype.normalAttack = function () {
-  if (this.dead) return;
-  if (this.isHurt) return;
-  if (this.isAttacking) return;
-  if (this.isAttackingPoison) return;
-
-  this.isAttacking = true;
+/**
+ * Resets the attack animation state
+ */
+Character.prototype.resetAttackState = function () {
   this.currentImageNormalAttack = 0;
   this.attackAnimationCounter = 0;
   this.attackBubbleThrown = false;
 };
 
+/**
+ * Starts a normal attack
+ */
+Character.prototype.normalAttack = function () {
+  if (this.dead || this.isHurt || this.isAttacking || this.isAttackingPoison)
+    return;
+
+  this.isAttacking = true;
+  this.resetAttackState();
+};
+
+/**
+ * Starts a poison attack if poison bottles are available
+ */
 Character.prototype.poisonAttack = function () {
   if (this.poisonBottles === 0) return;
 
-  if (this.dead) return;
-  if (this.isHurt) return;
-  if (this.isAttacking) return;
-  if (this.isAttackingPoison) return;
+  if (this.dead || this.isHurt || this.isAttacking || this.isAttackingPoison)
+    return;
 
   this.isAttackingPoison = true;
-  this.currentImageNormalAttack = 0;
-  this.attackAnimationCounter = 0;
-  this.attackBubbleThrown = false;
+  this.resetAttackState();
 };
 
-Character.prototype.updateNormalAttackAnimation = function () {
-  this.attackAnimationCounter++;
+/**
+ * Updates the normal attack animation
+ */
+Character.prototype.updateNormalAttack = function () {
+  this.updateAttackFrame(this.IMAGES_ATTACK_NORMAL_BUBBLE, "normal");
 
-  if (this.attackAnimationCounter >= this.attackAnimationDelay) {
-    this.attackAnimationCounter = 0;
-
-    const path =
-      this.IMAGES_ATTACK_NORMAL_BUBBLE[this.currentImageNormalAttack];
-    this.img = this.imageCache[path];
-
-    if (
-      !this.attackBubbleThrown &&
-      this.currentImageNormalAttack ===
-        this.IMAGES_ATTACK_NORMAL_BUBBLE.length - 1
-    ) {
-      this.world.throwObject("normal");
-      this.attackBubbleThrown = true;
-    }
-
-    this.currentImageNormalAttack++;
-
-    if (
-      this.currentImageNormalAttack >= this.IMAGES_ATTACK_NORMAL_BUBBLE.length
-    ) {
-      this.isAttacking = false;
-      this.currentImageNormalAttack = 0;
-    }
+  if (
+    this.currentImageNormalAttack >= this.IMAGES_ATTACK_NORMAL_BUBBLE.length
+  ) {
+    this.isAttacking = false;
+    this.currentImageNormalAttack = 0;
   }
 };
 
-Character.prototype.updatePoisonAttackAnimation = function () {
+/**
+ * Updates the poison attack animation
+ */
+Character.prototype.updatePoisonAttack = function () {
+  this.updateAttackFrame(this.IMAGES_ATTACK_POISON_BUBBLE, "poison");
+
+  if (
+    this.currentImageNormalAttack >= this.IMAGES_ATTACK_POISON_BUBBLE.length
+  ) {
+    this.isAttackingPoison = false;
+    this.currentImageNormalAttack = 0;
+  }
+};
+
+/**
+ * Updates the attack frame and checks if a bubble should be thrown
+ * @param {string[]} images - Attack animation image paths
+ * @param {string} type - Attack type
+ */
+Character.prototype.updateAttackFrame = function (images, type) {
   this.attackAnimationCounter++;
 
-  if (this.attackAnimationCounter >= this.attackAnimationDelay) {
-    this.attackAnimationCounter = 0;
+  if (this.attackAnimationCounter < this.attackAnimationDelay) return;
 
-    const path =
-      this.IMAGES_ATTACK_POISON_BUBBLE[this.currentImageNormalAttack];
-    this.img = this.imageCache[path];
+  this.attackAnimationCounter = 0;
 
-    if (
-      !this.attackBubbleThrown &&
-      this.currentImageNormalAttack ===
-        this.IMAGES_ATTACK_POISON_BUBBLE.length - 1
-    ) {
-      this.world.throwObject("poison");
-      this.attackBubbleThrown = true;
+  const path = images[this.currentImageNormalAttack];
+  this.img = this.imageCache[path];
 
+  this.tryThrowBubble(images, type);
+
+  this.currentImageNormalAttack++;
+};
+
+/**
+ * Throws a bubble at the correct attack animation frame
+ * @param {string[]} images - Attack animation image paths
+ * @param {string} type - Attack type
+ */
+Character.prototype.tryThrowBubble = function (images, type) {
+  const isLastFrame = this.currentImageNormalAttack === images.length - 1;
+
+  if (!this.attackBubbleThrown && isLastFrame) {
+    this.world.throwObject(type);
+    this.attackBubbleThrown = true;
+
+    if (type === "poison") {
       this.poisonBottles--;
       this.world.poisonbar.poisonbarUpdate(this.poisonBottles);
-    }
-
-    this.currentImageNormalAttack++;
-
-    if (
-      this.currentImageNormalAttack >= this.IMAGES_ATTACK_POISON_BUBBLE.length
-    ) {
-      this.isAttackingPoison = false;
-      this.currentImageNormalAttack = 0;
     }
   }
 };

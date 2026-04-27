@@ -1,5 +1,3 @@
-/* ===== BUTTONS ===== */
-
 .ocean-btn {
   font-family: Arial, Helvetica, sans-serif;
   font-size: 16px;
@@ -36,8 +34,6 @@
   box-shadow: inset 0 0 10px rgba(0, 200, 255, 0.8);
 }
 
-/* ===== START BUTTONS ===== */
-
 .start-btn,
 .options-btn {
   font-size: clamp(16px, 3vw, 28px);
@@ -45,19 +41,14 @@
   border-radius: clamp(8px, 1.5vw, 14px);
 }
 
-/* ===== OPTIONS OVERLAY ===== */
-
-#options-overlay {
+.options-overlay {
   position: fixed;
-
   inset: 0;
 
   z-index: 100;
 
   display: flex;
-
   justify-content: center;
-
   align-items: center;
 
   padding: clamp(10px, 3vw, 30px);
@@ -69,17 +60,13 @@
   position: relative;
 
   width: clamp(280px, 85vw, 560px);
-
   max-height: none;
 
   padding: clamp(18px, 4vw, 36px);
-
   padding-top: clamp(50px, 7vw, 70px);
 
   display: flex;
-
   flex-direction: column;
-
   align-items: center;
 
   gap: clamp(12px, 2.5vw, 24px);
@@ -87,7 +74,6 @@
   background: rgba(0, 0, 0, 0.9);
 
   border-radius: clamp(10px, 2vw, 18px);
-
   border: 1px solid rgba(0, 207, 255, 0.35);
 
   overflow-y: auto;
@@ -95,19 +81,16 @@
 
 .options-content h2 {
   margin: 0;
-
   font-size: clamp(20px, 4vw, 34px);
 }
 
-#options-overlay-close-button {
+.options-overlay-close-button {
   position: absolute;
 
   top: clamp(8px, 2vw, 14px);
-
   right: clamp(8px, 2vw, 14px);
 
   width: clamp(34px, 7vw, 48px);
-
   height: clamp(34px, 7vw, 48px);
 
   padding: 0;
@@ -119,27 +102,22 @@
   list-style: none;
 
   padding: 0;
-
   margin: 0;
 }
 
 .controls-list li {
   display: flex;
-
   justify-content: space-between;
-
   align-items: center;
 
   gap: clamp(8px, 2vw, 16px);
 
   padding: clamp(8px, 2vw, 14px);
-
   margin-bottom: clamp(6px, 1.5vw, 10px);
 
   font-size: clamp(12px, 2.2vw, 16px);
 
   background: rgba(255, 255, 255, 0.05);
-
   border-radius: clamp(8px, 1.5vw, 12px);
 }
 
@@ -147,8 +125,13 @@
   white-space: nowrap;
 }
 
+.controls-list li:hover {
+  background: rgba(0, 200, 255, 0.1);
+}
+
 .keybind-btn {
   min-width: 70px;
+
   padding: clamp(5px, 1.3vw, 8px) clamp(8px, 2vw, 12px);
 
   font-size: clamp(11px, 2vw, 14px);
@@ -164,10 +147,6 @@
 
   cursor: pointer;
   transition: all 0.2s ease;
-}
-
-.controls-list li:hover {
-  background: rgba(0, 200, 255, 0.1);
 }
 
 .keybind-btn:hover {
@@ -192,13 +171,66 @@
 @media (max-width: 900px) and (orientation: landscape) {
   .controls-list {
     display: grid;
-
     grid-template-columns: 1fr 1fr;
-
     gap: 10px;
   }
 
   .controls-list li {
     margin-bottom: 0;
   }
+}
+
+.touch-btn {
+  border: 1px solid #00cfff;
+  border-radius: clamp(6px, 1.5vw, 12px);
+
+  background: rgba(0, 0, 0, 0.8);
+  color: #00cfff;
+
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: clamp(12px, 3vw, 20px);
+  font-weight: bold;
+  letter-spacing: 1px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+  user-select: none;
+  touch-action: none;
+
+  box-shadow: 0 0 8px rgba(0, 200, 255, 0.3);
+  transition: all 0.2s ease;
+}
+
+.touch-btn:active {
+  transform: scale(0.95);
+  box-shadow: inset 0 0 10px rgba(0, 200, 255, 0.8);
+  background: rgba(0, 200, 255, 0.2);
+}
+
+.touch-btn.special {
+  border-color: limegreen;
+  color: limegreen;
+}
+
+.up {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.left {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.right {
+  grid-column: 3;
+  grid-row: 2;
+}
+
+.down {
+  grid-column: 2;
+  grid-row: 3;
 }

@@ -1,4 +1,16 @@
+/**
+ * Handles all movement and attack input
+ */
 Character.prototype.handleMovementInput = function () {
+  this.handleHorizontalInput();
+  this.handleVerticalInput();
+  this.handleAttackInput();
+};
+
+/**
+ * Handles horizontal movement input (left/right)
+ */
+Character.prototype.handleHorizontalInput = function () {
   if (this.keyboard.RIGHT) {
     this.speedX = 5;
     this.otherDirection = false;
@@ -8,7 +20,12 @@ Character.prototype.handleMovementInput = function () {
   } else {
     this.speedX = 0;
   }
+};
 
+/**
+ * Handles vertical movement input (up/down)
+ */
+Character.prototype.handleVerticalInput = function () {
   if (this.keyboard.UP) {
     this.speedY = -5;
   } else if (this.keyboard.DOWN) {
@@ -16,7 +33,12 @@ Character.prototype.handleMovementInput = function () {
   } else {
     this.speedY = 0;
   }
+};
 
+/**
+ * Handles attack input (normal and poison attacks)
+ */
+Character.prototype.handleAttackInput = function () {
   if (this.keyboard.ATTACK) {
     this.normalAttack();
   }
@@ -26,12 +48,18 @@ Character.prototype.handleMovementInput = function () {
   }
 };
 
+/**
+ * Applies movement to the character position and updates camera
+ */
 Character.prototype.applyMovement = function () {
   this.x += this.speedX;
   this.y += this.speedY;
   this.world.camera_x = -this.x + 100;
 };
 
+/**
+ * Restricts the character within world boundaries
+ */
 Character.prototype.clampToWorld = function () {
   if (this.x < 150) {
     this.x = 150;

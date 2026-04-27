@@ -1,27 +1,26 @@
+/**
+ * Represents the final boss enemy and controls its state flow
+ */
 class Endboss extends MovableObject {
-  // =========================
-  // Animation Image Sets
-  // =========================
   IMAGES_FLOATING = ENDBOSS_IMAGES.FLOATING;
   IMAGES_SPAWNING = ENDBOSS_IMAGES.SPAWNING;
   IMAGES_ATTACKING = ENDBOSS_IMAGES.ATTACKING;
   IMAGES_HURT = ENDBOSS_IMAGES.HURT;
   IMAGES_DEAD = ENDBOSS_IMAGES.DEAD;
 
-  // =========================
-  // Position and Size
-  // =========================
-
   x = 2500;
   y = 100;
   height = 300;
   width = 300;
+
   health = 100;
   speedY = 2;
+
   attackSpeedX = 8;
   attackDistance = 200;
   attackStartX = 0;
   attackTargetX = 0;
+  attackCooldown = 5000;
 
   offset = {
     top: 100,
@@ -30,14 +29,10 @@ class Endboss extends MovableObject {
     bottom: 45,
   };
 
-  attackCooldown = 5000; // ms
-
-  // =========================
-  // Animation
-  // =========================
   currentImage = 0;
   frameCounter = 0;
   floatingFrameDelay = 12;
+
   hadFirstContact = false;
   isSpawning = false;
   spawnAnimationFinished = false;
@@ -55,14 +50,14 @@ class Endboss extends MovableObject {
   hurtAnimationDelay = 6;
 
   isAttacking = false;
-  attackPhase = "none"; // "forward", "animate", "backward"
+  attackPhase = "none";
   currentImageAttack = 0;
   attackAnimationCounter = 0;
   attackAnimationDelay = 6;
 
-  // =========================
-  // Constructor
-  // =========================
+  /**
+   * Creates a new endboss and loads all animation images
+   */
   constructor() {
     super();
     this.loadImage(this.IMAGES_SPAWNING[0]);
@@ -74,50 +69,46 @@ class Endboss extends MovableObject {
     this.lastAttack = Date.now();
   }
 
-  // =========================
-  // World Reference
-  // =========================
+  /**
+   * Connects the endboss to the world and character
+   * @param {World} world
+   */
   setWorld(world) {
     this.world = world;
     this.character = world.character;
   }
 
-  // =========================
-  // Main Update Flow
-  // =========================
+  /**
+   * Updates the endboss state each frame
+   */
   update() {
-    if (this.dead) {
-      this.updateDeadAnimation();
-      return;
-    }
-
-    if (this.isHurt) {
-      this.updateHurtAnimation();
-      return;
-    }
+    if (this.dead) return this.updateDeadAnimation();
+    if (this.isHurt) return this.updateHurtAnimation();
 
     this.checkFirstContact();
 
-    if (this.isSpawning) {
-      this.updateSpawningAnimation();
-      return;
-    }
+    if (this.isSpawning) return this.updateSpawningAnimation();
+    if (this.isAttacking) return this.updateAttackMovement();
 
-    if (this.isAttacking) {
-      this.updateAttackMovement();
-      return;
-    }
-
-    if (Date.now() - this.lastAttack > this.attackCooldown) {
-      this.startAttack();
-      this.lastAttack = Date.now();
-    }
-
+    this.handleAttackCooldown();
     this.updateFloatingAnimation();
     this.clampToWorld();
     this.autoMove();
   }
 
+  /**
+   * Starts an attack when the cooldown has passed
+   */
+  handleAttackCooldown() {
+    if (Date.now() - this.lastAttack > this.attackCooldown) {
+      this.startAttack();
+      this.lastAttack = Date.now();
+    }
+  }
+
+  /**
+   * Marks the endboss as dead and resets death animation
+   */
   die() {
     if (this.dead) return;
 
@@ -127,6 +118,9 @@ class Endboss extends MovableObject {
     this.deadAnimationFinished = false;
   }
 
+  /**
+   * Updates hurt animation while the endboss is damaged
+   */
   updateHurtAnimation() {
     this.hurtAnimationCounter++;
 
@@ -144,21 +138,36 @@ class Endboss extends MovableObject {
     }
   }
 
+  /**
+   * Applies damage to the endboss
+   * @param {number} damage
+   */
   hit(damage) {
     if (this.dead) return;
 
     this.health -= damage;
 
-    if (this.health <= 0) {
-      this.health = 0;
-      this.die();
-      return;
-    }
+    if (this.health <= 0) return this.kill();
 
-    if (!this.isHurt) {
-      this.isHurt = true;
-      this.currentImageHurt = 0;
-      this.hurtAnimationCounter = 0;
-    }
+    this.startHurtAnimation();
+  }
+
+  /**
+   * Sets health to zero and triggers death
+   */
+  kill() {
+    this.health = 0;
+    this.die();
+  }
+
+  /**
+   * Starts the hurt animation
+   */
+  startHurtAnimation() {
+    if (this.isHurt) return;
+
+    this.isHurt = true;
+    this.currentImageHurt = 0;
+    this.hurtAnimationCounter = 0;
   }
 }

@@ -1,13 +1,26 @@
-PufferFish.prototype.updateSwimAnimation = function () {
+/**
+ * Checks if the next animation frame should be updated
+ * @param {number} delay
+ * @returns {boolean}
+ */
+PufferFish.prototype.shouldUpdateFrame = function (delay) {
   this.frameCounter++;
 
-  if (this.frameCounter >= this.swimFrameDelay) {
-    this.frameCounter = 0;
+  if (this.frameCounter < delay) return false;
 
-    const i = this.currentImage % this.imagesSwimming.length;
-    const path = this.imagesSwimming[i];
+  this.frameCounter = 0;
+  return true;
+};
 
-    this.img = this.imageCache[path];
-    this.currentImage++;
-  }
+/**
+ * Updates the swimming animation of the puffer fish
+ */
+PufferFish.prototype.updateSwimAnimation = function () {
+  if (!this.shouldUpdateFrame(this.swimFrameDelay)) return;
+
+  const i = this.currentImage % this.imagesSwimming.length;
+  const path = this.imagesSwimming[i];
+
+  this.img = this.imageCache[path];
+  this.currentImage++;
 };

@@ -1,3 +1,6 @@
+/**
+ * Displays the health status bar based on character health
+ */
 class Healthbar extends Statusbar {
   IMAGES_HEALTHBAR = [
     "../img/4. Marcadores/green/Life/0_  copia3.png",
@@ -8,6 +11,10 @@ class Healthbar extends Statusbar {
     "../img/4. Marcadores/green/Life/100_ copia2.png",
   ];
 
+  /**
+   * Creates a new health bar
+   * @param {Character} character
+   */
   constructor(character) {
     super([], 0, 0);
 
@@ -18,6 +25,10 @@ class Healthbar extends Statusbar {
     this.setPercentage(this.character.health);
   }
 
+  /**
+   * Updates the health bar based on current health
+   * @param {number} health
+   */
   healthbarUpdate(health) {
     this.setPercentage(health);
   }

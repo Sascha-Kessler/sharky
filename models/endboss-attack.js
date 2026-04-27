@@ -1,3 +1,6 @@
+/**
+ * Starts the attack sequence
+ */
 Endboss.prototype.startAttack = function () {
   this.isAttacking = true;
   this.attackPhase = "forward";
@@ -9,50 +12,80 @@ Endboss.prototype.startAttack = function () {
   this.attackAnimationCounter = 0;
 };
 
-Endboss.prototype.updateAttackAnimation = function () {
-  this.attackAnimationCounter++;
+/**
+ * Updates attack movement based on current phase
+ */
+Endboss.prototype.updateAttackMovement = function () {
+  if (this.attackPhase === "forward") return this.handleAttackForward();
+  if (this.attackPhase === "animate") return this.updateAttackAnimation();
+  if (this.attackPhase === "backward") return this.handleAttackBackward();
+};
 
-  if (this.attackAnimationCounter >= this.attackAnimationDelay) {
-    this.attackAnimationCounter = 0;
+/**
+ * Handles forward attack movement
+ */
+Endboss.prototype.handleAttackForward = function () {
+  this.x -= this.attackSpeedX;
+  this.setImageFromArray(this.IMAGES_ATTACKING, 0);
 
-    const i = this.currentImageAttack % this.IMAGES_ATTACKING.length;
-    const path = this.IMAGES_ATTACKING[i];
-
-    this.img = this.imageCache[path];
-    this.currentImageAttack++;
-
-    if (
-      this.attackPhase === "animate" &&
-      this.currentImageAttack >= this.IMAGES_ATTACKING.length
-    ) {
-      this.currentImageAttack = 0;
-      this.attackPhase = "backward";
-    }
+  if (this.x <= this.attackTargetX) {
+    this.x = this.attackTargetX;
+    this.attackPhase = "animate";
   }
 };
 
-Endboss.prototype.updateAttackMovement = function () {
-  if (this.attackPhase === "forward") {
-    this.x -= this.attackSpeedX;
+/**
+ * Updates attack animation frames
+ */
+Endboss.prototype.updateAttackAnimation = function () {
+  if (!this.shouldUpdateFrame(this.attackAnimationDelay)) return;
 
-    const path = this.IMAGES_ATTACKING[0];
-    this.img = this.imageCache[path];
+  const i = this.currentImageAttack % this.IMAGES_ATTACKING.length;
+  this.setImageFromArray(this.IMAGES_ATTACKING, i);
 
-    if (this.x <= this.attackTargetX) {
-      this.x = this.attackTargetX;
-      this.attackPhase = "animate";
-    }
-  } else if (this.attackPhase === "animate") {
-    this.updateAttackAnimation();
-  } else if (this.attackPhase === "backward") {
-    this.x += this.attackSpeedX;
+  this.currentImageAttack++;
 
-    if (this.x >= this.attackStartX) {
-      this.x = this.attackStartX;
-      this.isAttacking = false;
-      this.attackPhase = "none";
-      this.currentImageAttack = 0;
-      this.frameCounter = 0;
-    }
+  if (this.isAttackAnimationFinished()) {
+    this.resetAttackAnimation();
+    this.attackPhase = "backward";
   }
+};
+
+/**
+ * Checks if attack animation reached the end
+ */
+Endboss.prototype.isAttackAnimationFinished = function () {
+  return (
+    this.attackPhase === "animate" &&
+    this.currentImageAttack >= this.IMAGES_ATTACKING.length
+  );
+};
+
+/**
+ * Resets attack animation index
+ */
+Endboss.prototype.resetAttackAnimation = function () {
+  this.currentImageAttack = 0;
+};
+
+/**
+ * Handles backward movement after attack
+ */
+Endboss.prototype.handleAttackBackward = function () {
+  this.x += this.attackSpeedX;
+
+  if (this.x >= this.attackStartX) {
+    this.finishAttack();
+  }
+};
+
+/**
+ * Resets attack state after finishing
+ */
+Endboss.prototype.finishAttack = function () {
+  this.x = this.attackStartX;
+  this.isAttacking = false;
+  this.attackPhase = "none";
+  this.currentImageAttack = 0;
+  this.frameCounter = 0;
 };
