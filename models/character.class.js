@@ -75,7 +75,6 @@ class Character extends MovableObject {
 
     this.loadImage("../img/1.Sharkie/3.Swim/1.png");
     this.loadImages(this.IMAGES_IDLE);
-    this.loadImages(this.IMAGES_LONG_IDLE);
     this.loadImages(this.IMAGES_SWIMMING);
     this.loadImages(this.IMAGES_DEAD);
     this.loadImages(this.IMAGES_HURT);
