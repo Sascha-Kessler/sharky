@@ -234,3 +234,41 @@
   grid-column: 2;
   grid-row: 3;
 }
+
+.imprint-btn {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+
+  font-size: 12px;
+  padding: 6px 12px;
+
+  opacity: 0.8;
+  z-index: 1000;
+}
+
+.imprint-btn:hover {
+  opacity: 1;
+}
+@media (max-width: 768px) {
+  #imprint .options-content {
+    width: 90vw;
+    max-height: 85vh;
+
+    padding: 16px;
+    padding-top: 50px;
+
+    gap: 12px;
+  }
+
+  #imprint p {
+    font-size: 13px;
+    line-height: 1.4;
+  }
+  #imprint .imprint-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    width: 100%;
+  }
+}

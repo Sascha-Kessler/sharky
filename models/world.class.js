@@ -4,11 +4,21 @@ class World {
   poisonbar;
   coinbar;
 
+  /** @type {BossHealthbar | undefined} */
+  bossHealthbar;
+
   ctx;
   camera_x = 0;
 
   throwableObjects = [];
 
+  /**
+   * Creates a new game world
+   * @param {HTMLCanvasElement} canvas
+   * @param {Keyboard} keyboard
+   * @param {Level} level
+   * @param {SoundManager} soundManager
+   */
   constructor(canvas, keyboard, level, soundManager) {
     this.canvas = canvas;
     this.keyboard = keyboard;
@@ -26,6 +36,12 @@ class World {
     this.healthbar = new Healthbar(this.character);
     this.poisonbar = new Poisonbar();
     this.coinbar = new Coinbar();
+
+    const boss = this.enemies.find((enemy) => enemy instanceof Endboss);
+
+    if (boss) {
+      this.bossHealthbar = new BossHealthbar(boss);
+    }
 
     this.enemies.forEach((enemy) => enemy.setWorld(this));
   }
@@ -45,6 +61,11 @@ class World {
     this.handleEntities();
     this.handleProjectiles();
     this.handleCollisions();
+
+    this.healthbar.updateHealth(this.character.health);
+    this.poisonbar.updatePoison(this.character.poisonBottles);
+    this.coinbar.updateCoin(this.character.coins);
+    this.updateBossHealthbar();
   }
 
   /**
@@ -111,6 +132,7 @@ class World {
   handleCollisions() {
     this.handleEnemyCollisions();
     this.handleBubbleCollisions();
+    this.handleFinSlapCollisions();
     this.handlePoisonBottlesCollisions();
     this.handleCoinCollisions();
   }
@@ -131,17 +153,19 @@ class World {
    * @param {number} damage - Damage amount
    */
   handleCharacterHit(damage = 20) {
-    if (this.character.isHurtCooldownActive()) return;
+    if (
+      this.character.isHurtCooldownActive() ||
+      this.character.isFinSlapAttacking
+    )
+      return;
 
     this.soundManager.play("getsHit");
 
     this.character.lastHit = Date.now();
-
     this.character.health -= damage;
-
     this.character.hurt();
 
-    this.healthbar.healthbarUpdate(this.character.health);
+    this.healthbar.updateHealth(this.character.health);
 
     if (this.character.health <= 0) {
       this.character.die();
@@ -173,7 +197,7 @@ class World {
       if (this.character.isColliding(coin)) {
         this.soundManager.play("coinPickup");
         this.character.coins++;
-        this.coinbar.coinbarUpdate(this.character.coins);
+        this.coinbar.updateCoin(this.character.coins);
         return false;
       }
 
@@ -189,12 +213,36 @@ class World {
       if (this.character.isColliding(poisonBottle)) {
         this.soundManager.play("bottlePickup");
         this.character.poisonBottles++;
-        this.poisonbar.poisonbarUpdate(this.character.poisonBottles);
+        this.poisonbar.updatePoison(this.character.poisonBottles);
         return false;
       }
 
       return true;
     });
+  }
+
+  /**
+   * Checks collisions between characters fin slap and enemies
+   */
+  handleFinSlapCollisions() {
+    if (!this.character.isFinSlapAttacking) return;
+
+    this.enemies.forEach((enemy) => {
+      if (this.character.isColliding(enemy)) {
+        enemy.hit(10);
+      }
+    });
+  }
+
+  /**
+   * Updates the boss health bar if a boss exists
+   */
+  updateBossHealthbar() {
+    const boss = this.enemies.find((enemy) => enemy instanceof Endboss);
+
+    if (boss && this.bossHealthbar) {
+      this.bossHealthbar.updateBossHealth(boss.health);
+    }
   }
 
   /**
@@ -218,6 +266,12 @@ class World {
     this.addToMap(this.healthbar);
     this.addToMap(this.poisonbar);
     this.addToMap(this.coinbar);
+
+    const boss = this.enemies.find((enemy) => enemy instanceof Endboss);
+
+    if (boss && boss.hadFirstContact && this.bossHealthbar) {
+      this.addToMap(this.bossHealthbar);
+    }
   }
 
   /**

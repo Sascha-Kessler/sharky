@@ -16,4 +16,6 @@ class Keyboard {
   ATTACK = false;
 
   POISON = false;
+
+  FIN_SLAP = false;
 }

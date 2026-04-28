@@ -6,6 +6,7 @@ Character.prototype.updateAnimation = function () {
   if (this.isHurt) return this.updateHurtAnimation();
   if (this.isAttacking) return this.updateNormalAttack();
   if (this.isAttackingPoison) return this.updatePoisonAttack();
+  if (this.isFinSlapAttacking) return this.updateFinSlapAttack();
 
   if (this.speedX === 0 && this.speedY === 0) {
     return this.updateIdleAnimation();

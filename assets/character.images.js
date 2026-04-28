@@ -33,6 +33,17 @@ const SHARKIE_IMAGES = {
     "../img/1.Sharkie/6.dead/1.Poisoned/12.png",
   ],
 
+  ATTACK_FIN_SLAP: [
+    "../img/1.Sharkie/4.Attack/Fin slap/1.png",
+    "../img/1.Sharkie/4.Attack/Fin slap/2.png",
+    "../img/1.Sharkie/4.Attack/Fin slap/3.png",
+    "../img/1.Sharkie/4.Attack/Fin slap/4.png",
+    "../img/1.Sharkie/4.Attack/Fin slap/5.png",
+    "../img/1.Sharkie/4.Attack/Fin slap/6.png",
+    "../img/1.Sharkie/4.Attack/Fin slap/7.png",
+    "../img/1.Sharkie/4.Attack/Fin slap/8.png",
+  ],
+
   ATTACK_NORMAL_BUBBLE: [
     "../img/1.Sharkie/4.Attack/Bubble trap/op1 (with bubble formation)/1.png",
     "../img/1.Sharkie/4.Attack/Bubble trap/op1 (with bubble formation)/2.png",
@@ -84,5 +95,22 @@ const SHARKIE_IMAGES = {
     "../img/1.Sharkie/1.IDLE/16.png",
     "../img/1.Sharkie/1.IDLE/17.png",
     "../img/1.Sharkie/1.IDLE/18.png",
+  ],
+
+  LONG_IDLE: [
+    "../img/1.Sharkie/2.Long_IDLE/i1.png",
+    "../img/1.Sharkie/2.Long_IDLE/i2.png",
+    "../img/1.Sharkie/2.Long_IDLE/i3.png",
+    "../img/1.Sharkie/2.Long_IDLE/i4.png",
+    "../img/1.Sharkie/2.Long_IDLE/i5.png",
+    "../img/1.Sharkie/2.Long_IDLE/i6.png",
+    "../img/1.Sharkie/2.Long_IDLE/i7.png",
+    "../img/1.Sharkie/2.Long_IDLE/i8.png",
+    "../img/1.Sharkie/2.Long_IDLE/i9.png",
+    "../img/1.Sharkie/2.Long_IDLE/i10.png",
+    "../img/1.Sharkie/2.Long_IDLE/i11.png",
+    "../img/1.Sharkie/2.Long_IDLE/i12.png",
+    "../img/1.Sharkie/2.Long_IDLE/i13.png",
+    "../img/1.Sharkie/2.Long_IDLE/i14.png",
   ],
 };

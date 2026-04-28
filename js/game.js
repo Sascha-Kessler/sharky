@@ -30,6 +30,8 @@ function init() {
 
   resizeCanvas();
   window.addEventListener("resize", resizeCanvas);
+
+  showRotateHint();
 }
 
 /**
@@ -41,6 +43,7 @@ function startGame() {
   if (gameStarted) return;
 
   gameStarted = true;
+  document.getElementById("imprint-btn").classList.add("d-none");
   uiManager.showGameScreen();
 
   const level1 = createLevel1();
@@ -239,10 +242,23 @@ function toggleSound() {
 }
 
 /**
- * Reloads the game
+ * Resets the game state and returns to the start screen without reloading the page
  */
 function endGame() {
-  location.reload();
+  gameStarted = false;
+  gameOver = false;
+  winGame = false;
+  gameOverSoundPlayed = false;
+  isPaused = false;
+  document.getElementById("imprint-btn").classList.remove("d-none");
+  document.getElementById("game-container").classList.add("d-none");
+  document.getElementById("game-over-screen").classList.add("d-none");
+  document.getElementById("win-screen").classList.add("d-none");
+  document.getElementById("game-ui").classList.add("d-none");
+
+  document.getElementById("start-screen").classList.remove("d-none");
+
+  world = null;
 }
 
 /**
@@ -258,3 +274,24 @@ function openOptions() {
 function closeOptions() {
   uiManager.closeOptions();
 }
+
+function showRotateHint() {
+  if (!isTouchDevice()) return;
+  const warning = document.getElementById("rotate-warning");
+
+  warning.classList.remove("d-none");
+
+  setTimeout(() => {
+    warning.classList.add("d-none");
+  }, 3000);
+}
+
+function openImprint() {
+  document.getElementById("imprint").classList.remove("d-none");
+}
+
+function closeImprint() {
+  document.getElementById("imprint").classList.add("d-none");
+}
+
+window.addEventListener("load", showRotateHint);

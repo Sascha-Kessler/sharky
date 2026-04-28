@@ -31,6 +31,7 @@
     <script src="./models/jelly-fish-movement.js"></script>
     <script src="./models/jelly-fish-animation.js"></script>
     <script src="./assets/endboss.images.js"></script>
+    <script src="./models/boss-healthbar.class.js"></script>
     <script src="./models/endboss.class.js"></script>
     <script src="./models/endboss-movement.js"></script>
     <script src="./models/endboss-animation.js"></script>
@@ -70,60 +71,32 @@
         Options
       </button>
     </div>
+    <button
+      id="imprint-btn"
+      class="ocean-btn imprint-btn"
+      onclick="openImprint()"
+    >
+      Imprint
+    </button>
 
     <div id="game-container" class="game-container d-none">
       <canvas id="canvas" class="canvas"></canvas>
 
       <div id="mobile-controls" class="mobile-controls">
-        <button
-          class="touch-btn up"
-          ontouchstart="keyboard.UP = true"
-          ontouchend="keyboard.UP = false"
-        >
-          ↑
-        </button>
+        <button class="touch-btn up" data-key="UP">↑</button>
 
-        <button
-          class="touch-btn left"
-          ontouchstart="keyboard.LEFT = true"
-          ontouchend="keyboard.LEFT = false"
-        >
-          ←
-        </button>
+        <button class="touch-btn left" data-key="LEFT">←</button>
 
-        <button
-          class="touch-btn right"
-          ontouchstart="keyboard.RIGHT = true"
-          ontouchend="keyboard.RIGHT = false"
-        >
-          →
-        </button>
+        <button class="touch-btn right" data-key="RIGHT">→</button>
 
-        <button
-          class="touch-btn down"
-          ontouchstart="keyboard.DOWN = true"
-          ontouchend="keyboard.DOWN = false"
-        >
-          ↓
-        </button>
+        <button class="touch-btn down" data-key="DOWN">↓</button>
       </div>
 
       <div id="mobile-actions" class="mobile-actions">
-        <button
-          class="touch-btn action normal"
-          ontouchstart="keyboard.ATTACK = true"
-          ontouchend="keyboard.ATTACK = false"
-        >
-          ATK
-        </button>
+        <button class="touch-btn action slap" data-key="FIN_SLAP">SL</button>
+        <button class="touch-btn action normal" data-key="ATTACK">ATK</button>
 
-        <button
-          class="touch-btn action special"
-          ontouchstart="keyboard.POISON = true"
-          ontouchend="keyboard.POISON = false"
-        >
-          SP.ATK
-        </button>
+        <button class="touch-btn action special" data-key="POISON">SP</button>
       </div>
 
       <div id="game-ui" class="game-ui d-none">
@@ -196,6 +169,11 @@
             <button class="keybind-btn">↓</button>
           </li>
 
+          <li data-action="FIN_SLAP">
+            <span>Fin Slap</span>
+            <button class="keybind-btn">V</button>
+          </li>
+
           <li data-action="poisonAttack">
             <span>Poison Attack</span>
             <button class="keybind-btn">B</button>
@@ -207,6 +185,39 @@
           </li>
         </ul>
       </div>
+    </div>
+
+    <div id="rotate-warning" class="rotate-warning d-none">
+      Rotate your device for the best experience
+    </div>
+
+    <div id="imprint" class="options-overlay d-none">
+      <div class="options-content">
+        <button
+          class="ocean-btn options-overlay-close-button"
+          onclick="closeImprint()"
+        >
+          ✕
+        </button>
+
+        <h2>Imprint</h2>
+
+        <div class="imprint-grid">
+  <p><strong>Name:</strong><br />Max Mustermann</p>
+
+  <p>
+    <strong>Address:</strong><br />
+    Musterstraße 1<br />
+    12345 Musterstadt
+  </p>
+
+  <p><strong>Email:</strong><br />your@email.com</p>
+
+  <p>
+    <strong>Info:</strong><br />
+    Educational project
+  </p>
+</div>
     </div>
   </body>
 </html>

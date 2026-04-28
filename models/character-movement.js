@@ -46,6 +46,10 @@ Character.prototype.handleAttackInput = function () {
   if (this.keyboard.POISON) {
     this.poisonAttack();
   }
+
+  if (this.keyboard.FIN_SLAP) {
+    this.finSlapAttack();
+  }
 };
 
 /**

@@ -50,12 +50,14 @@ class SoundManager {
    * @param {string} name
    */
   play(name) {
-    if (!this.soundOn && name !== "buttonKlick") return;
+    if (!this.soundOn) return;
 
     const sound = this.sounds[name];
+
     if (!sound) return;
 
     sound.currentTime = 0;
+
     sound.play();
   }
 

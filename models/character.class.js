@@ -4,8 +4,10 @@
 class Character extends MovableObject {
   IMAGES_SWIMMING = SHARKIE_IMAGES.SWIMMING;
   IMAGES_IDLE = SHARKIE_IMAGES.IDLE;
+  IMAGES_LONG_IDLE = SHARKIE_IMAGES.LONG_IDLE;
   IMAGES_HURT = SHARKIE_IMAGES.HURT;
   IMAGES_DEAD = SHARKIE_IMAGES.DEAD;
+  IMAGES_ATTACK_FIN_SLAP = SHARKIE_IMAGES.ATTACK_FIN_SLAP;
   IMAGES_ATTACK_NORMAL_BUBBLE = SHARKIE_IMAGES.ATTACK_NORMAL_BUBBLE;
   IMAGES_ATTACK_POISON_BUBBLE = SHARKIE_IMAGES.ATTACK_POISON_BUBBLE;
   IMAGES_ATTACK_WITHOUT_BUBBLE = SHARKIE_IMAGES.ATTACK_WITHOUT_BUBBLE;
@@ -41,7 +43,9 @@ class Character extends MovableObject {
   isHurt = false;
   isAttacking = false;
   isAttackingPoison = false;
+  isFinSlapAttacking = false;
 
+  idleAnimationCounter = 0;
   idleAnimationDelay = 12;
 
   frameCounter = 0;
@@ -71,9 +75,11 @@ class Character extends MovableObject {
 
     this.loadImage("../img/1.Sharkie/3.Swim/1.png");
     this.loadImages(this.IMAGES_IDLE);
+    this.loadImages(this.IMAGES_LONG_IDLE);
     this.loadImages(this.IMAGES_SWIMMING);
     this.loadImages(this.IMAGES_DEAD);
     this.loadImages(this.IMAGES_HURT);
+    this.loadImages(this.IMAGES_ATTACK_FIN_SLAP);
     this.loadImages(this.IMAGES_ATTACK_NORMAL_BUBBLE);
     this.loadImages(this.IMAGES_ATTACK_POISON_BUBBLE);
     this.loadImages(this.IMAGES_ATTACK_WITHOUT_BUBBLE);
