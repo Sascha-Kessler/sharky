@@ -21,6 +21,7 @@ Character.prototype.finSlapAttack = function () {
     return;
 
   this.isFinSlapAttacking = true;
+  this.finSlapHitDone = false;
   this.resetAttackState();
 };
 
@@ -69,6 +70,7 @@ Character.prototype.updateFinSlapAttack = function () {
   if (this.currentImageNormalAttack >= this.IMAGES_ATTACK_FIN_SLAP.length) {
     this.isFinSlapAttacking = false;
     this.currentImageNormalAttack = 0;
+    this.world.applyFinSlapDamage();
   }
 };
 

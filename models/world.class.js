@@ -221,15 +221,36 @@ class World {
     });
   }
 
-  /**
-   * Checks collisions between characters fin slap and enemies
-   */
   handleFinSlapCollisions() {
     if (!this.character.isFinSlapAttacking) return;
 
+    if (this.character.finSlapHitDone) return;
+
+    const attackOffset = 10;
+
     this.enemies.forEach((enemy) => {
-      if (this.character.isColliding(enemy)) {
+      const overlapsY =
+        this.character.y < enemy.y + enemy.height &&
+        this.character.y + this.character.height > enemy.y;
+
+      const overlapsX = this.character.otherDirection
+        ? this.character.x - attackOffset < enemy.x + enemy.width
+        : this.character.x + this.character.width - attackOffset > enemy.x;
+
+      if (overlapsX && overlapsY) {
+        enemy.finSlapMarked = true;
+
+        this.character.finSlapHitDone = true;
+      }
+    });
+  }
+
+  applyFinSlapDamage() {
+    this.enemies.forEach((enemy) => {
+      if (enemy.finSlapMarked) {
         enemy.hit(10);
+
+        enemy.finSlapMarked = false;
       }
     });
   }

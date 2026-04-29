@@ -10,6 +10,13 @@ class PufferFish extends MovableObject {
   width = 60;
   health = 1;
 
+  offset = {
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  };
+
   currentImage = 0;
   frameCounter = 0;
   swimFrameDelay = 12;
