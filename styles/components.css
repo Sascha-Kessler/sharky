@@ -75,8 +75,6 @@
 
   border-radius: clamp(8px, 1.5vw, 14px);
   border: 1px solid rgba(0, 207, 255, 0.35);
-
-  overflow-y: auto;
 }
 
 .options-content h2 {
@@ -85,17 +83,17 @@
 }
 
 .options-content p {
-  font-size: clamp(11px, 1.8vw, 14px);
+  font-size: clamp(11px, 1.8vw, 16px);
 }
 
 .options-overlay-close-button {
   position: absolute;
 
-  top: clamp(8px, 2vw, 14px);
-  right: clamp(8px, 2vw, 14px);
+  top: clamp(6px, 1.5vw, 10px);
+  right: clamp(6px, 1.5vw, 10px);
 
-  width: clamp(34px, 7vw, 48px);
-  height: clamp(34px, 7vw, 48px);
+  width: clamp(28px, 5vw, 36px);
+  height: clamp(28px, 5vw, 36px);
 
   padding: 0;
 }
@@ -276,13 +274,15 @@
 
 @media (max-width: 768px) {
   #imprint .options-content {
-    width: 90vw;
-    max-height: 85vh;
+    width: 95vw;
 
-    padding: 16px;
-    padding-top: 50px;
+    max-height: 90vh;
 
-    gap: 12px;
+    padding: 20px;
+
+    padding-top: 60px;
+
+    gap: 16px;
   }
 
   #imprint p {

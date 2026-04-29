@@ -266,6 +266,7 @@ function endGame() {
  */
 function openOptions() {
   uiManager.openOptions();
+  document.getElementById("imprint-btn").classList.add("d-none");
 }
 
 /**
@@ -273,6 +274,7 @@ function openOptions() {
  */
 function closeOptions() {
   uiManager.closeOptions();
+  document.getElementById("imprint-btn").classList.remove("d-none");
 }
 
 function showRotateHint() {
