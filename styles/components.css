@@ -240,19 +240,40 @@
 
 .imprint-btn {
   position: fixed;
-  bottom: 10px;
-  right: 10px;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
 
-  font-size: 12px;
+  font-size: 24px;
   padding: 6px 12px;
 
   opacity: 0.8;
   z-index: 1000;
+  transition: all 0.2s ease;
 }
 
 .imprint-btn:hover {
-  opacity: 1;
+  transform: translateX(-50%) translateY(-5px) scale(1.08);
 }
+
+.imprint-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(10px, 2vw, 20px);
+
+  width: 100%;
+  font-size: clamp(16px, 2.8vw, 22px);
+  line-height: 1.5;
+}
+
+.imprint-grid p {
+  margin: 0;
+}
+
+.imprint-grid strong {
+  font-size: clamp(18px, 3vw, 24px);
+}
+
 @media (max-width: 768px) {
   #imprint .options-content {
     width: 90vw;
@@ -265,7 +286,7 @@
   }
 
   #imprint p {
-    font-size: 13px;
+    font-size: 16px;
     line-height: 1.4;
   }
   #imprint .imprint-grid {
