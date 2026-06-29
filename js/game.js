@@ -121,7 +121,6 @@ function resizeCanvas() {
   const displaySize = calculateDisplaySize(viewport, isMobile);
 
   applyCanvasStyles(displaySize);
-  updateStatusbarPositions();
 }
 
 /**
@@ -183,17 +182,6 @@ function applyCanvasStyles(size) {
 
   gameContainer.style.width = `${size.width}px`;
   gameContainer.style.height = `${size.height}px`;
-}
-
-/**
- * Updates responsive positions for status bars
- */
-function updateStatusbarPositions() {
-  if (!world) return;
-
-  world.healthbar?.setResponsivePosition();
-  world.coinbar?.setResponsivePosition();
-  world.poisonbar?.setResponsivePosition();
 }
 
 /**

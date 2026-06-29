@@ -82,8 +82,10 @@ class CollisionManager {
       ? char.x - attackOffset < enemy.x + enemy.width
       : char.x + char.width + attackOffset > enemy.x;
 
-    const overlapsY =
-      char.y < enemy.y + enemy.height && char.y + char.height > enemy.y;
+    const a = char.getHitbox();
+    const b = enemy.getHitbox();
+
+    const overlapsY = a.bottom > b.top && a.top < b.bottom;
 
     return overlapsX && overlapsY;
   }

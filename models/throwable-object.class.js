@@ -14,14 +14,14 @@ class ThrowableObject extends MovableObject {
    */
   constructor(x, y, otherDirection, type = "normal") {
     super();
-    this.x = x;
-    this.y = y;
-    this.height = 100;
-    this.width = 100;
+    this.x = x + 50;
+    this.y = y + 25;
+    this.height = 50;
+    this.width = 50;
     this.otherDirection = otherDirection;
     this.type = type;
     this.spawnTime = 0;
-    this.lifetime = 3000;
+    this.lifetime = 1000;
 
     const isPoison = type === "poison";
 

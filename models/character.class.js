@@ -72,6 +72,9 @@ class Character extends MovableObject {
     super();
     this.world = world;
     this.keyboard = keyboard;
+    this.movement = new CharacterMovement(this);
+    this.attack = new CharacterAttack(this);
+    this.animation = new CharacterAnimation(this);
 
     this.loadImage("../img/1.Sharkie/3.Swim/1.png");
     this.loadImages(this.IMAGES_IDLE);
@@ -91,12 +94,12 @@ class Character extends MovableObject {
     const boss = this.world.enemies.find((e) => e instanceof Endboss);
 
     if (!this.dead && !boss?.dead) {
-      this.handleMovementInput();
-      this.applyMovement();
-      this.clampToWorld();
+      this.movement.handleMovementInput();
+      this.movement.applyMovement();
+      this.movement.clampToWorld();
     }
 
-    this.updateAnimation();
+    this.animation.updateAnimation();
   }
 
   /**

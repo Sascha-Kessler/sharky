@@ -255,7 +255,6 @@
 }
 
 .imprint-grid {
-  display: grid;
   grid-template-columns: 1fr 1fr;
   gap: clamp(10px, 2vw, 20px);
 
