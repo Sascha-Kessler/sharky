@@ -1,26 +1,35 @@
-/**
- * Checks if the next animation frame should be updated
- * @param {number} delay
- * @returns {boolean}
- */
-PufferFish.prototype.shouldUpdateFrame = function (delay) {
-  this.frameCounter++;
+class PufferFishAnimation {
+  constructor(pufferFish) {
+    this.pufferFish = pufferFish;
+  }
 
-  if (this.frameCounter < delay) return false;
+  /**
+   * Checks if the next animation frame should be updated
+   * @param {number} delay
+   * @returns {boolean}
+   */
+  shouldUpdateFrame(delay) {
+    this.pufferFish.frameCounter++;
 
-  this.frameCounter = 0;
-  return true;
-};
+    if (this.pufferFish.frameCounter < delay) return false;
 
-/**
- * Updates the swimming animation of the puffer fish
- */
-PufferFish.prototype.updateSwimAnimation = function () {
-  if (!this.shouldUpdateFrame(this.swimFrameDelay)) return;
+    this.pufferFish.frameCounter = 0;
+    return true;
+  }
 
-  const i = this.currentImage % this.imagesSwimming.length;
-  const path = this.imagesSwimming[i];
+  /**
+   * Updates the swimming animation of the puffer fish
+   */
+  updateSwimAnimation() {
+    if (!this.shouldUpdateFrame(this.pufferFish.swimFrameDelay)) return;
 
-  this.img = this.imageCache[path];
-  this.currentImage++;
-};
+    const imageIndex =
+      this.pufferFish.currentImage % this.pufferFish.imagesSwimming.length;
+
+    const path = this.pufferFish.imagesSwimming[imageIndex];
+
+    this.pufferFish.img = this.pufferFish.imageCache[path];
+
+    this.pufferFish.currentImage++;
+  }
+}

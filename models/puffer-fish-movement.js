@@ -1,15 +1,25 @@
-/**
- * Activates the puffer fish when the character is within range
- */
-PufferFish.prototype.checkActivation = function () {
-  if (this.character.x + this.activationRange >= this.x) {
-    this.isActive = true;
+class PufferFishMovement {
+  constructor(pufferFish) {
+    this.pufferFish = pufferFish;
   }
-};
+  /**
+   * Activates the puffer fish when the character is within range
+   */
+  checkActivation() {
+    if (!this.pufferFish.character) return;
 
-/**
- * Moves the puffer fish horizontally
- */
-PufferFish.prototype.move = function () {
-  this.x += this.speedX;
-};
+    if (
+      this.pufferFish.character.x + this.pufferFish.activationRange >=
+      this.pufferFish.x
+    ) {
+      this.pufferFish.isActive = true;
+    }
+  }
+
+  /**
+   * Moves the puffer fish horizontally
+   */
+  move() {
+    this.pufferFish.x += this.pufferFish.speedX;
+  }
+}

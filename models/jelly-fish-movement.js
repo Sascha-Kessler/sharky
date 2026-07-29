@@ -1,39 +1,47 @@
-/**
- * Moves the jellyfish vertically
- */
-JellyFish.prototype.move = function () {
-  this.y += this.speedY;
-};
-
-/**
- * Keeps the jellyfish within world boundaries
- */
-JellyFish.prototype.clampToWorld = function () {
-  if (this.x < 150) {
-    this.x = 150;
+class JellyFishMovement {
+  constructor(jellyFish) {
+    this.jellyFish = jellyFish;
+  }
+  /**
+   * Moves the jellyfish vertically
+   */
+  move() {
+    this.jellyFish.y += this.jellyFish.speedY;
   }
 
-  if (this.x > this.world.level.level_end_x) {
-    this.x = this.world.level.level_end_x;
+  /**
+   * Keeps the jellyfish within world boundaries
+   */
+  clampToWorld() {
+    if (this.jellyFish.x < 150) {
+      this.jellyFish.x = 150;
+    }
+
+    if (this.jellyFish.x > this.jellyFish.world.level.level_end_x) {
+      this.jellyFish.x = this.jellyFish.world.level.level_end_x;
+    }
+
+    this.handleVerticalBounds();
   }
 
-  this.handleVerticalBounds();
-};
+  /**
+   * Handles vertical boundary collision and reverses direction
+   */
+  handleVerticalBounds() {
+    const topLimit = -this.jellyFish.offset.top;
+    const bottomLimit =
+      this.jellyFish.world.height -
+      this.jellyFish.height +
+      this.jellyFish.offset.bottom;
 
-/**
- * Handles vertical boundary collision and reverses direction
- */
-JellyFish.prototype.handleVerticalBounds = function () {
-  const topLimit = -this.offset.top;
-  const bottomLimit = this.world.height - this.height + this.offset.bottom;
+    if (this.jellyFish.y < topLimit) {
+      this.jellyFish.y = topLimit;
+      this.jellyFish.speedY *= -1;
+    }
 
-  if (this.y < topLimit) {
-    this.y = topLimit;
-    this.speedY *= -1;
+    if (this.jellyFish.y > bottomLimit) {
+      this.jellyFish.y = bottomLimit;
+      this.jellyFish.speedY *= -1;
+    }
   }
-
-  if (this.y > bottomLimit) {
-    this.y = bottomLimit;
-    this.speedY *= -1;
-  }
-};
+}

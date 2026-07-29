@@ -33,6 +33,8 @@ class PufferFish extends MovableObject {
    */
   constructor(x, y, color) {
     super();
+    this.movement = new PufferFishMovement(this);
+    this.animation = new PufferFishAnimation(this);
 
     this.imagesSwimming =
       color === "green"
@@ -63,10 +65,10 @@ class PufferFish extends MovableObject {
   update() {
     if (!this.world) return;
 
-    this.checkActivation();
+    this.movement.checkActivation();
     if (!this.isActive) return;
 
-    this.move();
-    this.updateSwimAnimation();
+    this.movement.move();
+    this.animation.updateSwimAnimation();
   }
 }

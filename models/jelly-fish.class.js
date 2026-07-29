@@ -32,6 +32,8 @@ class JellyFish extends MovableObject {
    */
   constructor(x, y, color) {
     super();
+    this.movement = new JellyFishMovement(this);
+    this.animation = new JellyFishAnimation(this);
 
     this.imagesSwimming =
       color === "pink" ? this.IMAGES_SWIMMING_PINK : this.IMAGES_SWIMMING_GREEN;
@@ -58,11 +60,11 @@ class JellyFish extends MovableObject {
   update() {
     if (!this.world) return;
 
-    this.checkActivation();
+    this.animation.checkActivation();
     if (!this.isActive) return;
 
-    this.move();
-    this.updateSwimAnimation();
-    this.clampToWorld();
+    this.movement.move();
+    this.animation.updateSwimAnimation();
+    this.movement.clampToWorld();
   }
 }

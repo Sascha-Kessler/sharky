@@ -1,25 +1,41 @@
-/**
- * Activates the jellyfish when the character is within range
- */
-JellyFish.prototype.checkActivation = function () {
-  if (this.character.x + this.activationRange >= this.x) {
-    this.isActive = true;
+class JellyFishAnimation {
+  constructor(jellyFish) {
+    this.jellyFish = jellyFish;
   }
-};
 
-/**
- * Updates the swimming animation frames
- */
-JellyFish.prototype.updateSwimAnimation = function () {
-  this.frameCounter++;
+  /**
+   * Activates the jellyfish when the character is within range
+   */
+  checkActivation() {
+    if (!this.jellyFish.character) return;
 
-  if (this.frameCounter < this.swimFrameDelay) return;
+    if (
+      this.jellyFish.character.x + this.jellyFish.activationRange >=
+      this.jellyFish.x
+    ) {
+      this.jellyFish.isActive = true;
+    }
+  }
 
-  this.frameCounter = 0;
+  /**
+   * Updates the swimming animation frames
+   */
+  updateSwimAnimation() {
+    this.jellyFish.frameCounter++;
 
-  const i = this.currentImage % this.imagesSwimming.length;
-  const path = this.imagesSwimming[i];
+    if (this.jellyFish.frameCounter < this.jellyFish.swimFrameDelay) {
+      return;
+    }
 
-  this.img = this.imageCache[path];
-  this.currentImage++;
-};
+    this.jellyFish.frameCounter = 0;
+
+    const imageIndex =
+      this.jellyFish.currentImage % this.jellyFish.imagesSwimming.length;
+
+    const path = this.jellyFish.imagesSwimming[imageIndex];
+
+    this.jellyFish.img = this.jellyFish.imageCache[path];
+
+    this.jellyFish.currentImage++;
+  }
+}
