@@ -60,6 +60,10 @@ class Endboss extends MovableObject {
    */
   constructor() {
     super();
+    this.attack = new EndbossAttack(this);
+    this.animation = new EndbossAnimation(this);
+    this.movement = new EndbossMovement(this);
+
     this.loadImage(this.IMAGES_SPAWNING[0]);
     this.loadImages(this.IMAGES_FLOATING);
     this.loadImages(this.IMAGES_SPAWNING);
@@ -82,18 +86,19 @@ class Endboss extends MovableObject {
    * Updates the endboss state each frame
    */
   update() {
-    if (this.dead) return this.updateDeadAnimation();
-    if (this.isHurt) return this.updateHurtAnimation();
+    this.movement.checkFirstContact();
+    if (!this.hadFirstContact) return;
 
-    this.checkFirstContact();
+    if (this.dead) return this.animation.updateDeadAnimation();
+    if (this.isHurt) return this.animation.updateHurtAnimation();
 
-    if (this.isSpawning) return this.updateSpawningAnimation();
-    if (this.isAttacking) return this.updateAttackMovement();
+    if (this.isSpawning) return this.animation.updateSpawningAnimation();
+    if (this.isAttacking) return this.attack.updateAttackMovement();
 
     this.handleAttackCooldown();
-    this.updateFloatingAnimation();
-    this.clampToWorld();
-    this.autoMove();
+    this.animation.updateFloatingAnimation();
+    this.movement.clampToWorld();
+    this.movement.autoMove();
   }
 
   /**
@@ -101,7 +106,7 @@ class Endboss extends MovableObject {
    */
   handleAttackCooldown() {
     if (Date.now() - this.lastAttack > this.attackCooldown) {
-      this.startAttack();
+      this.attack.startAttack();
       this.lastAttack = Date.now();
     }
   }
@@ -116,26 +121,6 @@ class Endboss extends MovableObject {
     this.currentImageDead = 0;
     this.deadAnimationCounter = 0;
     this.deadAnimationFinished = false;
-  }
-
-  /**
-   * Updates hurt animation while the endboss is damaged
-   */
-  updateHurtAnimation() {
-    this.hurtAnimationCounter++;
-
-    if (this.hurtAnimationCounter >= this.hurtAnimationDelay) {
-      this.hurtAnimationCounter = 0;
-
-      const path = this.IMAGES_HURT[this.currentImageHurt];
-      this.img = this.imageCache[path];
-      this.currentImageHurt++;
-
-      if (this.currentImageHurt >= this.IMAGES_HURT.length) {
-        this.isHurt = false;
-        this.currentImageHurt = 0;
-      }
-    }
   }
 
   /**

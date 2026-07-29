@@ -1,85 +1,136 @@
-/**
- * Checks if the next animation frame should be updated
- * @param {number} delay - Frame delay for the animation
- * @returns {boolean}
- */
-Endboss.prototype.shouldUpdateFrame = function (delay) {
-  this.frameCounter++;
-
-  if (this.frameCounter < delay) return false;
-
-  this.frameCounter = 0;
-  return true;
-};
-
-/**
- * Sets the current image from an image array
- * @param {string[]} images - Animation image paths
- * @param {number} index - Image index
- */
-Endboss.prototype.setImageFromArray = function (images, index) {
-  const path = images[index];
-  this.img = this.imageCache[path];
-};
-
-/**
- * Updates the spawning animation
- */
-Endboss.prototype.updateSpawningAnimation = function () {
-  if (this.spawnAnimationFinished) {
-    this.isSpawning = false;
-    return;
+class EndbossAnimation {
+  constructor(endboss) {
+    this.endboss = endboss;
   }
 
-  if (!this.shouldUpdateFrame(this.spawnFrameDelay)) return;
+  /**
+   * Checks if the next animation frame should be updated
+   * @param {number} delay - Frame delay for the animation
+   * @returns {boolean}
+   */
+  shouldUpdateFrame(delay) {
+    this.endboss.frameCounter++;
 
-  this.setImageFromArray(this.IMAGES_SPAWNING, this.spawningIndex);
-  this.spawningIndex++;
+    if (this.endboss.frameCounter < delay) return false;
 
-  if (this.spawningIndex >= this.IMAGES_SPAWNING.length) {
-    this.finishSpawning();
-  }
-};
-
-/**
- * Finishes the spawning animation and resets state
- */
-Endboss.prototype.finishSpawning = function () {
-  this.spawningIndex = this.IMAGES_SPAWNING.length - 1;
-  this.spawnAnimationFinished = true;
-  this.isSpawning = false;
-  this.currentImage = 0;
-  this.frameCounter = 0;
-};
-
-/**
- * Updates the floating animation
- */
-Endboss.prototype.updateFloatingAnimation = function () {
-  if (!this.shouldUpdateFrame(this.floatingFrameDelay)) return;
-
-  const i = this.currentImage % this.IMAGES_FLOATING.length;
-
-  this.setImageFromArray(this.IMAGES_FLOATING, i);
-  this.currentImage++;
-};
-
-/**
- * Updates the death animation until it finishes
- */
-Endboss.prototype.updateDeadAnimation = function () {
-  if (this.deadAnimationFinished) {
-    this.setImageFromArray(this.IMAGES_DEAD, this.IMAGES_DEAD.length - 1);
-    return;
+    this.endboss.frameCounter = 0;
+    return true;
   }
 
-  if (!this.shouldUpdateFrame(this.deadAnimationDelay)) return;
-
-  this.setImageFromArray(this.IMAGES_DEAD, this.currentImageDead);
-  this.currentImageDead++;
-
-  if (this.currentImageDead >= this.IMAGES_DEAD.length) {
-    this.currentImageDead = this.IMAGES_DEAD.length - 1;
-    this.deadAnimationFinished = true;
+  /**
+   * Sets the current image from an image array
+   * @param {string[]} images - Animation image paths
+   * @param {number} index - Image index
+   */
+  setImageFromArray(images, index) {
+    const path = images[index];
+    this.endboss.img = this.endboss.imageCache[path];
   }
-};
+
+  /**
+   * Updates the spawning animation
+   */
+  updateSpawningAnimation() {
+    if (this.endboss.spawnAnimationFinished) {
+      this.endboss.isSpawning = false;
+      return;
+    }
+
+    if (!this.shouldUpdateFrame(this.endboss.spawnFrameDelay)) return;
+
+    this.setImageFromArray(
+      this.endboss.IMAGES_SPAWNING,
+      this.endboss.spawningIndex,
+    );
+
+    this.endboss.spawningIndex++;
+
+    if (this.endboss.spawningIndex >= this.endboss.IMAGES_SPAWNING.length) {
+      this.finishSpawning();
+    }
+  }
+
+  /**
+   * Finishes the spawning animation and resets state
+   */
+  finishSpawning() {
+    this.endboss.spawningIndex = this.endboss.IMAGES_SPAWNING.length - 1;
+
+    this.endboss.spawnAnimationFinished = true;
+    this.endboss.isSpawning = false;
+    this.endboss.currentImage = 0;
+    this.endboss.frameCounter = 0;
+  }
+
+  /**
+   * Updates the floating animation
+   */
+  updateFloatingAnimation() {
+    if (!this.shouldUpdateFrame(this.endboss.floatingFrameDelay)) {
+      return;
+    }
+
+    const imageIndex =
+      this.endboss.currentImage % this.endboss.IMAGES_FLOATING.length;
+
+    this.setImageFromArray(this.endboss.IMAGES_FLOATING, imageIndex);
+
+    this.endboss.currentImage++;
+  }
+
+  /**
+   * Updates the death animation until it finishes
+   */
+  updateDeadAnimation() {
+    if (this.endboss.deadAnimationFinished) {
+      this.setImageFromArray(
+        this.endboss.IMAGES_DEAD,
+        this.endboss.IMAGES_DEAD.length - 1,
+      );
+
+      return;
+    }
+
+    if (!this.shouldUpdateFrame(this.endboss.deadAnimationDelay)) {
+      return;
+    }
+
+    this.setImageFromArray(
+      this.endboss.IMAGES_DEAD,
+      this.endboss.currentImageDead,
+    );
+
+    this.endboss.currentImageDead++;
+
+    if (this.endboss.currentImageDead >= this.endboss.IMAGES_DEAD.length) {
+      this.endboss.currentImageDead = this.endboss.IMAGES_DEAD.length - 1;
+
+      this.endboss.deadAnimationFinished = true;
+    }
+  }
+
+  /**
+   * Updates hurt animation while the endboss is damaged
+   */
+  updateHurtAnimation() {
+    this.endboss.hurtAnimationCounter++;
+
+    if (this.endboss.hurtAnimationCounter < this.endboss.hurtAnimationDelay) {
+      return;
+    }
+
+    this.endboss.hurtAnimationCounter = 0;
+
+    this.setImageFromArray(
+      this.endboss.IMAGES_HURT,
+      this.endboss.currentImageHurt,
+    );
+
+    this.endboss.currentImageHurt++;
+
+    if (this.endboss.currentImageHurt >= this.endboss.IMAGES_HURT.length) {
+      this.endboss.isHurt = false;
+      this.endboss.currentImageHurt = 0;
+    }
+  }
+}

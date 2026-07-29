@@ -1,48 +1,61 @@
-/**
- * Keeps the endboss within vertical world boundaries
- */
-Endboss.prototype.clampToWorld = function () {
-  if (this.y < -this.offset.top) {
-    this.y = -this.offset.top;
+class EndbossMovement {
+  constructor(endboss) {
+    this.endboss = endboss;
   }
 
-  if (this.y + this.height - this.offset.bottom > this.world.height) {
-    this.y = this.world.height - this.height + this.offset.bottom;
+  /**
+   * Keeps the endboss within vertical world boundaries
+   */
+  clampToWorld() {
+    if (this.endboss.y < -this.endboss.offset.top) {
+      this.endboss.y = -this.endboss.offset.top;
+    }
+
+    if (
+      this.endboss.y + this.endboss.height - this.endboss.offset.bottom >
+      this.endboss.world.height
+    ) {
+      this.endboss.y =
+        this.endboss.world.height -
+        this.endboss.height +
+        this.endboss.offset.bottom;
+    }
   }
-};
 
-/**
- * Moves the endboss automatically and reverses direction at bounds
- */
-Endboss.prototype.autoMove = function () {
-  if (
-    this.y <= -this.offset.top ||
-    this.y + this.height - this.offset.bottom >= this.world.height
-  ) {
-    this.speedY *= -1;
+  /**
+   * Moves the endboss automatically and reverses direction at bounds
+   */
+  autoMove() {
+    if (
+      this.endboss.y <= -this.endboss.offset.top ||
+      this.endboss.y + this.endboss.height - this.endboss.offset.bottom >=
+        this.endboss.world.height
+    ) {
+      this.endboss.speedY *= -1;
+    }
+
+    this.endboss.y += this.endboss.speedY;
   }
 
-  this.y += this.speedY;
-};
+  /**
+   * Checks if the player reached the trigger point for the first encounter
+   */
+  checkFirstContact() {
+    if (!this.endboss.world || !this.endboss.character) return;
 
-/**
- * Checks if the player reached the trigger point for the first encounter
- */
-Endboss.prototype.checkFirstContact = function () {
-  if (!this.world) return;
-
-  if (this.character.x > 1885 && !this.hadFirstContact) {
-    this.startFirstContact();
+    if (this.endboss.character.x > 1885 && !this.endboss.hadFirstContact) {
+      this.startFirstContact();
+    }
   }
-};
 
-/**
- * Initializes the first contact state and starts spawning
- */
-Endboss.prototype.startFirstContact = function () {
-  this.hadFirstContact = true;
-  this.isSpawning = true;
-  this.spawnAnimationFinished = false;
-  this.spawningIndex = 0;
-  this.frameCounter = 0;
-};
+  /**
+   * Initializes the first contact state and starts spawning
+   */
+  startFirstContact() {
+    this.endboss.hadFirstContact = true;
+    this.endboss.isSpawning = true;
+    this.endboss.spawnAnimationFinished = false;
+    this.endboss.spawningIndex = 0;
+    this.endboss.frameCounter = 0;
+  }
+}
