@@ -45,11 +45,53 @@ function startGame() {
   gameStarted = true;
   document.getElementById("imprint-btn").classList.add("d-none");
   uiManager.showGameScreen();
+  soundManager.soundOn = false;
 
+  soundManager.pauseMusic();
+
+  uiManager.updateSoundIcon(false);
+  uiManager.updatePauseIcon(false);
+
+  uiManager.setButtonDisabled("sound-btn", false);
   const level1 = createLevel1();
   world = new World(canvas, keyboard, level1, soundManager);
 
   requestAnimationFrame(gameLoop);
+}
+
+function restartGame() {
+  resetGameState();
+  resetGameScreens();
+
+  const level1 = createLevel1();
+  world = new World(canvas, keyboard, level1, soundManager);
+
+  uiManager.showGameScreen();
+  soundManager.pauseMusic();
+  soundManager.playMusic();
+
+  gameStarted = true;
+}
+
+function resetGameState() {
+  gameOver = false;
+
+  winGame = false;
+
+  gameOverSoundPlayed = false;
+
+  isPaused = false;
+}
+
+function resetGameScreens() {
+  document.getElementById("game-over-screen").classList.add("d-none");
+  document.getElementById("win-screen").classList.add("d-none");
+  document.getElementById("start-screen").classList.add("d-none");
+  document.getElementById("game-container").classList.remove("d-none");
+  document.getElementById("game-ui").classList.remove("d-none");
+  document.getElementById("imprint-btn").classList.add("d-none");
+  uiManager.updatePauseIcon(false);
+  uiManager.setButtonDisabled("sound-btn", false);
 }
 
 /**
@@ -238,6 +280,8 @@ function endGame() {
   winGame = false;
   gameOverSoundPlayed = false;
   isPaused = false;
+  soundManager.pauseMusic();
+  soundManager.soundOn = false;
   document.getElementById("imprint-btn").classList.remove("d-none");
   document.getElementById("game-container").classList.add("d-none");
   document.getElementById("game-over-screen").classList.add("d-none");
