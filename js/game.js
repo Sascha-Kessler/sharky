@@ -34,6 +34,24 @@ function init() {
   showRotateHint();
 }
 
+function resetGameControls() {
+  isPaused = false;
+
+  soundManager.reset();
+  uiManager.updateSoundIcon(false);
+  uiManager.updatePauseIcon(false);
+  uiManager.setButtonDisabled("sound-btn", false);
+}
+
+function createGameWorld() {
+  resetGameControls();
+
+  const level1 = createLevel1();
+  world = new World(canvas, keyboard, level1, soundManager);
+
+  uiManager.showGameScreen();
+}
+
 /**
  * Starts the game and creates the world
  */
@@ -43,55 +61,20 @@ function startGame() {
   if (gameStarted) return;
 
   gameStarted = true;
+
   document.getElementById("imprint-btn").classList.add("d-none");
-  uiManager.showGameScreen();
-  soundManager.soundOn = false;
 
-  soundManager.pauseMusic();
-
-  uiManager.updateSoundIcon(false);
-  uiManager.updatePauseIcon(false);
-
-  uiManager.setButtonDisabled("sound-btn", false);
-  const level1 = createLevel1();
-  world = new World(canvas, keyboard, level1, soundManager);
-
+  createGameWorld();
   requestAnimationFrame(gameLoop);
 }
 
 function restartGame() {
-  resetGameState();
-  resetGameScreens();
-
-  const level1 = createLevel1();
-  world = new World(canvas, keyboard, level1, soundManager);
-
-  uiManager.showGameScreen();
-  soundManager.pauseMusic();
-  soundManager.playMusic();
-
-  gameStarted = true;
-}
-
-function resetGameState() {
   gameOver = false;
-
   winGame = false;
-
   gameOverSoundPlayed = false;
 
-  isPaused = false;
-}
-
-function resetGameScreens() {
-  document.getElementById("game-over-screen").classList.add("d-none");
-  document.getElementById("win-screen").classList.add("d-none");
-  document.getElementById("start-screen").classList.add("d-none");
-  document.getElementById("game-container").classList.remove("d-none");
-  document.getElementById("game-ui").classList.remove("d-none");
-  document.getElementById("imprint-btn").classList.add("d-none");
-  uiManager.updatePauseIcon(false);
-  uiManager.setButtonDisabled("sound-btn", false);
+  createGameWorld();
+  uiManager.showGameScreen();
 }
 
 /**
@@ -201,15 +184,18 @@ function calculateDisplaySize(viewport, isMobile) {
       height: Math.floor(viewport.height),
     };
   }
-
-  const scaleX = (viewport.width - 2) / GAME_WIDTH;
-  const scaleY = (viewport.height - 2) / GAME_HEIGHT;
-  const scale = Math.min(scaleX, scaleY);
-
+  const scale = calculateScale(viewport);
   return {
     width: Math.floor(GAME_WIDTH * scale),
     height: Math.floor(GAME_HEIGHT * scale),
   };
+}
+
+function calculateScale(viewport) {
+  const scaleX = (viewport.width - 2) / GAME_WIDTH;
+  const scaleY = (viewport.height - 2) / GAME_HEIGHT;
+  const scale = Math.min(scaleX, scaleY);
+  return scale;
 }
 
 /**
@@ -244,17 +230,14 @@ function isTouchDevice() {
  */
 function togglePause() {
   soundManager.play("buttonKlick");
-
   isPaused = !isPaused;
 
   uiManager.updatePauseIcon(isPaused);
   uiManager.setButtonDisabled("sound-btn", isPaused);
 
-  if (isPaused) {
-    soundManager.pauseForGamePause();
-  } else {
-    soundManager.resumeFromGamePause();
-  }
+  isPaused
+    ? soundManager.pauseForGamePause()
+    : soundManager.resumeFromGamePause();
 
   uiManager.blurButton("pause-btn");
 }
@@ -282,15 +265,18 @@ function endGame() {
   isPaused = false;
   soundManager.pauseMusic();
   soundManager.soundOn = false;
+  showStartScreen();
+
+  world = null;
+}
+
+function showStartScreen() {
   document.getElementById("imprint-btn").classList.remove("d-none");
   document.getElementById("game-container").classList.add("d-none");
   document.getElementById("game-over-screen").classList.add("d-none");
   document.getElementById("win-screen").classList.add("d-none");
   document.getElementById("game-ui").classList.add("d-none");
-
   document.getElementById("start-screen").classList.remove("d-none");
-
-  world = null;
 }
 
 /**
@@ -317,7 +303,6 @@ function showRotateHint() {
 
   if (isPortrait) {
     warning.classList.remove("d-none");
-
     setTimeout(() => {
       warning.classList.add("d-none");
     }, 3000);

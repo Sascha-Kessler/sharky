@@ -91,6 +91,18 @@ class UIManager {
     document.getElementById("game-container").classList.remove("d-none");
     document.getElementById("start-screen").classList.add("d-none");
     document.getElementById("game-ui").classList.remove("d-none");
+    this.hideEndScreens();
+  }
+
+  hideEndScreens() {
+    this.hideScreen("game-over-screen");
+    this.hideScreen("win-screen");
+  }
+
+  hideScreen(id) {
+    const screen = document.getElementById(id);
+    screen.classList.add("d-none");
+    screen.classList.remove("slide-in");
   }
 
   /**

@@ -39,16 +39,13 @@ class CollisionManager {
    */
   handleBubbleCollisions() {
     const world = this.world;
-
     world.throwableObjects = world.throwableObjects.filter((bubble) => {
       const hitEnemy = world.enemies.find((enemy) => bubble.isColliding(enemy));
-
       if (hitEnemy) {
         hitEnemy.hit(bubble.damage);
         world.soundManager.play("bubblePop");
         return false;
       }
-
       return true;
     });
   }
@@ -58,9 +55,7 @@ class CollisionManager {
    */
   handleFinSlapCollisions() {
     const { character, enemies } = this.world;
-
     if (!character.isFinSlapAttacking || character.finSlapHitDone) return;
-
     enemies.forEach((enemy) => {
       if (this.isFinSlapHit(enemy)) {
         enemy.finSlapMarked = true;
@@ -77,14 +72,12 @@ class CollisionManager {
   isFinSlapHit(enemy) {
     const char = this.world.character;
     const attackOffset = 10;
-
     const overlapsX = char.otherDirection
       ? char.x - attackOffset < enemy.x + enemy.width
       : char.x + char.width + attackOffset > enemy.x;
 
     const a = char.getHitbox();
     const b = enemy.getHitbox();
-
     const overlapsY = a.bottom > b.top && a.top < b.bottom;
 
     return overlapsX && overlapsY;
@@ -99,14 +92,10 @@ class CollisionManager {
     world.poisonBottles = world.poisonBottles.filter((poisonBottle) => {
       if (world.character.isColliding(poisonBottle)) {
         world.soundManager.play("bottlePickup");
-
         world.character.poisonBottles++;
-
         world.poisonbar.updatePoison(world.character.poisonBottles);
-
         return false;
       }
-
       return true;
     });
   }
@@ -124,7 +113,6 @@ class CollisionManager {
         world.coinbar.updateCoin(world.character.coins);
         return false;
       }
-
       return true;
     });
   }

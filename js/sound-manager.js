@@ -110,4 +110,13 @@ class SoundManager {
       this.playMusic();
     }
   }
+
+  reset() {
+    this.soundOn = false;
+    this.wasMusicPlayingBeforePause = false;
+
+    this.pauseMusic();
+
+    this.sounds.levelMusic.currentTime = 0;
+  }
 }
