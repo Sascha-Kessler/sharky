@@ -14,31 +14,18 @@ class CharacterAttack {
   finSlapAttack() {
     const char = this.character;
 
-    if (
-      char.dead ||
-      char.isHurt ||
-      char.isAttacking ||
-      char.isAttackingPoison ||
-      char.isFinSlapAttacking
-    )
-      return;
+    if (char.isUnableToAct()) return;
 
     char.isFinSlapAttacking = true;
     char.finSlapHitDone = false;
+
     this.resetAttackState();
   }
 
   normalAttack() {
     const char = this.character;
 
-    if (
-      char.dead ||
-      char.isHurt ||
-      char.isAttacking ||
-      char.isAttackingPoison ||
-      char.isFinSlapAttacking
-    )
-      return;
+    if (char.isUnableToAct()) return;
 
     char.isAttacking = true;
     this.resetAttackState();
@@ -49,14 +36,7 @@ class CharacterAttack {
 
     if (char.poisonBottles === 0) return;
 
-    if (
-      char.dead ||
-      char.isHurt ||
-      char.isAttacking ||
-      char.isAttackingPoison ||
-      char.isFinSlapAttacking
-    )
-      return;
+    if (char.isUnableToAct()) return;
 
     char.isAttackingPoison = true;
     this.resetAttackState();
@@ -102,18 +82,14 @@ class CharacterAttack {
 
   updateAttackFrame(images, type) {
     const char = this.character;
-
     char.attackAnimationCounter++;
 
     if (char.attackAnimationCounter < char.attackAnimationDelay) return;
 
     char.attackAnimationCounter = 0;
-
     const path = images[char.currentImageNormalAttack];
     char.img = char.imageCache[path];
-
     this.tryThrowBubble(images, type);
-
     char.currentImageNormalAttack++;
   }
 
@@ -127,11 +103,14 @@ class CharacterAttack {
     if (!char.attackBubbleThrown && isLastFrame) {
       char.world.throwObject(type);
       char.attackBubbleThrown = true;
+      this.handleBubbleTypeEffects(type, char);
+    }
+  }
 
-      if (type === "poison") {
-        char.poisonBottles--;
-        char.world.poisonbar.updatePoison(char.poisonBottles);
-      }
+  handleBubbleTypeEffects(type, char) {
+    if (type === "poison") {
+      char.poisonBottles--;
+      char.world.poisonbar.updatePoison(char.poisonBottles);
     }
   }
 }

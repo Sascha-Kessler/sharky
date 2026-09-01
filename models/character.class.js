@@ -136,4 +136,14 @@ class Character extends MovableObject {
     this.currentImageHurt = 0;
     this.hurtAnimationCounter = 0;
   }
+
+  isUnableToAct() {
+    return (
+      this.dead ||
+      this.isHurt ||
+      this.isAttacking ||
+      this.isAttackingPoison ||
+      this.isFinSlapAttacking
+    );
+  }
 }

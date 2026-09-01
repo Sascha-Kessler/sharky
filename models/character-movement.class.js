@@ -49,6 +49,7 @@ class CharacterMovement {
    */
   handleAttackInput() {
     const char = this.character;
+    if (char.isUnableToAct()) return;
 
     if (char.keyboard.ATTACK) {
       char.attack.normalAttack();
