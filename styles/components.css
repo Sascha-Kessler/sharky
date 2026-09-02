@@ -131,7 +131,8 @@
   background: rgba(0, 200, 255, 0.1);
 }
 
-.keybind-btn {
+.keybind-btn,
+.keybind-input {
   min-width: 70px;
 
   padding: clamp(5px, 1.3vw, 8px) clamp(8px, 2vw, 12px);

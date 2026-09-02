@@ -157,43 +157,101 @@
         <h2>Controls</h2>
 
         <ul class="controls-list">
-          <li data-action="moveLeft">
-            <span>Move left</span>
-            <button class="keybind-btn">←</button>
-          </li>
-
-          <li data-action="moveRight">
-            <span>Move right</span>
-            <button class="keybind-btn">→</button>
-          </li>
-
-          <li data-action="moveUp">
-            <span>Move up</span>
-            <button class="keybind-btn">↑</button>
-          </li>
-
-          <li data-action="moveDown">
-            <span>Move down</span>
-            <button class="keybind-btn">↓</button>
-          </li>
-
-          <li data-action="FIN_SLAP">
-            <span>Fin Slap</span>
-            <button class="keybind-btn">V</button>
-          </li>
-
-          <li data-action="poisonAttack">
-            <span>Poison Attack</span>
-            <button class="keybind-btn">B</button>
-          </li>
-
-          <li data-action="normalAttack">
-            <span>Normal Attack</span>
-            <button class="keybind-btn">Space</button>
-          </li>
-        </ul>
-      </div>
+          <!-- Bewegungstasten -->
+  <li data-action="moveLeft">
+    <span>Move left</span>
+    <div class="keybind-input-container">
+      <input
+        id="input-moveLeft-key"
+        type="text"
+        class="keybind-input"
+        placeholder="Drücke eine Taste..."
+      >
+      <span id="current-moveLeft-key" class="current-key">←</span>
     </div>
+  </li>
+
+  <li data-action="moveRight">
+    <span>Move right</span>
+    <div class="keybind-input-container">
+      <input
+        id="input-moveRight-key"
+        type="text"
+        class="keybind-input"
+        placeholder="Drücke eine Taste..."
+      >
+      <span id="current-moveRight-key" class="current-key">→</span>
+    </div>
+  </li>
+
+  <li data-action="moveUp">
+    <span>Move up</span>
+    <div class="keybind-input-container">
+      <input
+        id="input-moveUp-key"
+        type="text"
+        class="keybind-input"
+        placeholder="Drücke eine Taste..."
+      >
+      <span id="current-moveUp-key" class="current-key">↑</span>
+    </div>
+  </li>
+
+  <li data-action="moveDown">
+    <span>Move down</span>
+    <div class="keybind-input-container">
+      <input
+        id="input-moveDown-key"
+        type="text"
+        class="keybind-input"
+        placeholder="Drücke eine Taste..."
+      >
+      <span id="current-moveDown-key" class="current-key">↓</span>
+    </div>
+  </li>
+
+  <!-- Aktionen -->
+  <li data-action="FIN_SLAP">
+    <span>Fin Slap</span>
+    <div class="keybind-input-container">
+      <input
+        id="input-FIN_SLAP-key"
+        type="text"
+        class="keybind-input"
+        placeholder="Drücke eine Taste..."
+      >
+      <span id="current-FIN_SLAP-key" class="current-key">V</span>
+    </div>
+  </li>
+
+  <li data-action="poisonAttack">
+    <span>Poison Attack</span>
+    <div class="keybind-input-container">
+      <input
+        id="input-poisonAttack-key"
+        type="text"
+        class="keybind-input"
+        placeholder="Drücke eine Taste..."
+      >
+      <span id="current-poisonAttack-key" class="current-key">B</span>
+    </div>
+  </li>
+
+  <li data-action="normalAttack">
+    <span>Normal Attack</span>
+    <div class="keybind-input-container">
+      <input
+        id="input-normalAttack-key"
+        type="text"
+        class="keybind-input"
+        placeholder="Drücke eine Taste..."
+      >
+      <span id="current-normalAttack-key" class="current-key">Space</span>
+    </div>
+  </li>
+</ul>
+
+<button onclick="saveAllKeyBindings()">Alle Keybindings speichern</button>
 
     <div id="rotate-warning" class="rotate-warning d-none">
       Rotate your device for the best experience

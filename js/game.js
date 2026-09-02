@@ -320,3 +320,41 @@ function closeImprint() {
 }
 window.addEventListener("resize", showRotateHint);
 window.addEventListener("load", showRotateHint);
+
+function saveAllKeyBindings() {
+  // 1. Alle Input-Felder auswählen (für alle Keybindings)
+  const keyInputs = document.querySelectorAll(".keybind-input");
+
+  // 2. Durch jedes Input-Feld iterieren
+  keyInputs.forEach((input) => {
+    // 3. Aktuellen Tastenwert aus dem Input-Feld auslesen
+    const currentKey = input.value.trim().toUpperCase();
+
+    // 4. Zugehörigen Container (parent <li>) finden, um die Aktion zu ermitteln
+    const container = input.closest("[data-action]");
+    const action = container.getAttribute("data-action");
+
+    // 5. Taste in die keyMap eintragen (je nach Tastentyp)
+    if (currentKey === "SPACE") {
+      inputManager.keyMap["Space"] = action.toUpperCase();
+    } else if (currentKey.length === 1) {
+      // Für Buchstaben wie "D", "W", etc.
+      inputManager.keyMap[`Key${currentKey}`] = action.toUpperCase();
+    } else if (currentKey === "ARROWLEFT") {
+      inputManager.keyMap["ArrowLeft"] = action.toUpperCase();
+    } else if (currentKey === "ARROWRIGHT") {
+      inputManager.keyMap["ArrowRight"] = action.toUpperCase();
+    } else if (currentKey === "ARROWUP") {
+      inputManager.keyMap["ArrowUp"] = action.toUpperCase();
+    } else if (currentKey === "ARROWDOWN") {
+      inputManager.keyMap["ArrowDown"] = action.toUpperCase();
+    }
+
+    // 6. Den zugehörigen Span mit der neuen Taste aktualisieren
+    const currentKeySpan = container.querySelector(".current-key");
+    currentKeySpan.textContent = currentKey;
+  });
+
+  // Optional: Rückmeldung geben
+  alert("Alle Keybindings wurden gespeichert!");
+}
