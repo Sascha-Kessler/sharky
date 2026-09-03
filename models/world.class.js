@@ -3,8 +3,6 @@ class World {
   healthbar;
   poisonbar;
   coinbar;
-
-  /** @type {BossHealthbar | undefined} */
   bossHealthbar;
 
   ctx;
@@ -238,7 +236,6 @@ class World {
       [this.character],
       this.throwableObjects,
     ].forEach((objects) => this.addObjectToMap(objects));
-
     this.ctx.restore();
   }
 
@@ -277,17 +274,13 @@ class World {
    */
   addToMap(mo) {
     if (!mo.img || !mo.img.complete) return;
-
     if (mo.otherDirection) {
       this.flipImage(mo);
     }
-
     mo.draw(this.ctx);
-
     if (mo.otherDirection) {
       this.flipImageBack(mo);
     }
-
     if (window.DEBUG.hitbox) {
       mo.drawFrame(this.ctx);
     }

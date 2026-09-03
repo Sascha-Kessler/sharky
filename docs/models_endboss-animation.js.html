@@ -27,90 +27,238 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
- * Checks if the next animation frame should be updated
- * @param {number} delay - Frame delay for the animation
- * @returns {boolean}
+ * Handles all animation-related functionality for the Endboss including:
+ * - Spawning animation
+ * - Floating animation
+ * - Hurt animation
+ * - Death animation
+ * - Frame timing and image updates
+ * @class
  */
-Endboss.prototype.shouldUpdateFrame = function (delay) {
-  this.frameCounter++;
-
-  if (this.frameCounter &lt; delay) return false;
-
-  this.frameCounter = 0;
-  return true;
-};
-
-/**
- * Sets the current image from an image array
- * @param {string[]} images - Animation image paths
- * @param {number} index - Image index
- */
-Endboss.prototype.setImageFromArray = function (images, index) {
-  const path = images[index];
-  this.img = this.imageCache[path];
-};
-
-/**
- * Updates the spawning animation
- */
-Endboss.prototype.updateSpawningAnimation = function () {
-  if (this.spawnAnimationFinished) {
-    this.isSpawning = false;
-    return;
+class EndbossAnimation {
+  /**
+   * Creates a new animation controller for an Endboss
+   * @param {Endboss} endboss - The Endboss instance to control animations for
+   */
+  constructor(endboss) {
+    this.endboss = endboss;
   }
 
-  if (!this.shouldUpdateFrame(this.spawnFrameDelay)) return;
+  /**
+   * Determines if the animation frame should be updated based on frame delay
+   * @param {number} delay - The number of frames to wait before updating
+   * @returns {boolean} True if the frame should be updated, false otherwise
+   */
+  shouldUpdateFrame(delay) {
+    this.endboss.frameCounter++;
 
-  this.setImageFromArray(this.IMAGES_SPAWNING, this.spawningIndex);
-  this.spawningIndex++;
+    if (this.endboss.frameCounter &lt; delay) return false;
 
-  if (this.spawningIndex >= this.IMAGES_SPAWNING.length) {
-    this.finishSpawning();
-  }
-};
-
-/**
- * Finishes the spawning animation and resets state
- */
-Endboss.prototype.finishSpawning = function () {
-  this.spawningIndex = this.IMAGES_SPAWNING.length - 1;
-  this.spawnAnimationFinished = true;
-  this.isSpawning = false;
-  this.currentImage = 0;
-  this.frameCounter = 0;
-};
-
-/**
- * Updates the floating animation
- */
-Endboss.prototype.updateFloatingAnimation = function () {
-  if (!this.shouldUpdateFrame(this.floatingFrameDelay)) return;
-
-  const i = this.currentImage % this.IMAGES_FLOATING.length;
-
-  this.setImageFromArray(this.IMAGES_FLOATING, i);
-  this.currentImage++;
-};
-
-/**
- * Updates the death animation until it finishes
- */
-Endboss.prototype.updateDeadAnimation = function () {
-  if (this.deadAnimationFinished) {
-    this.setImageFromArray(this.IMAGES_DEAD, this.IMAGES_DEAD.length - 1);
-    return;
+    this.endboss.frameCounter = 0;
+    return true;
   }
 
-  if (!this.shouldUpdateFrame(this.deadAnimationDelay)) return;
-
-  this.setImageFromArray(this.IMAGES_DEAD, this.currentImageDead);
-  this.currentImageDead++;
-
-  if (this.currentImageDead >= this.IMAGES_DEAD.length) {
-    this.currentImageDead = this.IMAGES_DEAD.length - 1;
-    this.deadAnimationFinished = true;
+  /**
+   * Sets the endboss's current image from an array of image paths
+   * @param {string[]} images - Array of image paths for the animation
+   * @param {number} index - Index of the image to set
+   * @returns {void}
+   */
+  setImageFromArray(images, index) {
+    const path = images[index];
+    this.endboss.img = this.endboss.imageCache[path];
   }
-};
+
+  /**
+   * Updates the spawning animation sequence until completion
+   * @returns {void}
+   */
+  updateSpawningAnimation() {
+    if (this.isSpawnAnimationFinished()) return;
+
+    if (!this.updateSpawnFrame()) return;
+
+    this.checkIfSpawnEnds();
+  }
+
+  /**
+   * Checks if the spawning animation has already finished
+   * @returns {boolean} True if spawning is finished, false otherwise
+   */
+  isSpawnAnimationFinished() {
+    if (this.endboss.spawnAnimationFinished) {
+      this.endboss.isSpawning = false;
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Updates a single frame of the spawning animation
+   * @returns {boolean} True if frame was updated, false otherwise
+   */
+  updateSpawnFrame() {
+    if (!this.shouldUpdateFrame(this.endboss.spawnFrameDelay)) return false;
+
+    this.setImageFromArray(
+      this.endboss.IMAGES_SPAWNING,
+      this.endboss.spawningIndex,
+    );
+    this.endboss.spawningIndex++;
+    return true;
+  }
+
+  /**
+   * Checks if the spawning animation has reached its final frame
+   * @returns {boolean} True if spawning has ended, false otherwise
+   */
+  checkIfSpawnEnds() {
+    if (this.endboss.spawningIndex >= this.endboss.IMAGES_SPAWNING.length) {
+      this.finishSpawning();
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Completes the spawning animation and resets related state
+   * @returns {void}
+   */
+  finishSpawning() {
+    this.endboss.spawningIndex = this.endboss.IMAGES_SPAWNING.length - 1;
+
+    this.endboss.spawnAnimationFinished = true;
+    this.endboss.isSpawning = false;
+    this.endboss.currentImage = 0;
+    this.endboss.frameCounter = 0;
+  }
+
+  /**
+   * Updates the floating animation loop
+   * @returns {void}
+   */
+  updateFloatingAnimation() {
+    if (!this.shouldUpdateFrame(this.endboss.floatingFrameDelay)) {
+      return;
+    }
+
+    const imageIndex =
+      this.endboss.currentImage % this.endboss.IMAGES_FLOATING.length;
+
+    this.setImageFromArray(this.endboss.IMAGES_FLOATING, imageIndex);
+
+    this.endboss.currentImage++;
+  }
+
+  /**
+   * Updates the death animation sequence until completion
+   * @returns {void}
+   */
+  updateDeadAnimation() {
+    if (this.isDeadAnimationFinished()) return;
+
+    if (!this.updateDeadFrame()) return;
+
+    this.checkDeadAnimationEnd();
+  }
+
+  /**
+   * Checks if the death animation has already finished
+   * @returns {boolean} True if death animation is finished, false otherwise
+   */
+  isDeadAnimationFinished() {
+    if (this.endboss.deadAnimationFinished) {
+      this.setImageFromArray(
+        this.endboss.IMAGES_DEAD,
+        this.endboss.IMAGES_DEAD.length - 1,
+      );
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Updates a single frame of the death animation
+   * @returns {boolean} True if frame was updated, false otherwise
+   */
+  updateDeadFrame() {
+    if (!this.shouldUpdateFrame(this.endboss.deadAnimationDelay)) {
+      return false;
+    }
+
+    this.setImageFromArray(
+      this.endboss.IMAGES_DEAD,
+      this.endboss.currentImageDead,
+    );
+    this.endboss.currentImageDead++;
+    return true;
+  }
+
+  /**
+   * Checks if the death animation has reached its final frame
+   * @returns {boolean} True if death animation has ended, false otherwise
+   */
+  checkDeadAnimationEnd() {
+    if (this.endboss.currentImageDead >= this.endboss.IMAGES_DEAD.length) {
+      this.endboss.currentImageDead = this.endboss.IMAGES_DEAD.length - 1;
+      this.endboss.deadAnimationFinished = true;
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Updates the hurt animation while the endboss is damaged
+   * @returns {void}
+   */
+  updateHurtAnimation() {
+    if (!this.updateHurtCounter()) return;
+
+    this.updateHurtFrame();
+
+    this.checkHurtAnimationEnd();
+  }
+
+  /**
+   * Updates the hurt animation counter and checks if it's time to update frame
+   * @returns {boolean} True if it's time to update the frame, false otherwise
+   */
+  updateHurtCounter() {
+    this.endboss.hurtAnimationCounter++;
+
+    if (this.endboss.hurtAnimationCounter &lt; this.endboss.hurtAnimationDelay) {
+      return false;
+    }
+
+    this.endboss.hurtAnimationCounter = 0;
+    return true;
+  }
+
+  /**
+   * Updates the current frame of the hurt animation
+   * @returns {void}
+   */
+  updateHurtFrame() {
+    this.setImageFromArray(
+      this.endboss.IMAGES_HURT,
+      this.endboss.currentImageHurt,
+    );
+    this.endboss.currentImageHurt++;
+  }
+
+  /**
+   * Checks if the hurt animation has reached its final frame
+   * @returns {boolean} True if hurt animation has ended, false otherwise
+   */
+  checkHurtAnimationEnd() {
+    if (this.endboss.currentImageHurt >= this.endboss.IMAGES_HURT.length) {
+      this.endboss.isHurt = false;
+      this.endboss.currentImageHurt = 0;
+      return true;
+    }
+    return false;
+  }
+}
 </code></pre>
         </article>
     </section>
@@ -121,13 +269,13 @@ Endboss.prototype.updateDeadAnimation = function () {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Character.html">Character</a></li><li><a href="Coin.html">Coin</a></li><li><a href="Coinbar.html">Coinbar</a></li><li><a href="DrawableObjects.html">DrawableObjects</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="Healthbar.html">Healthbar</a></li><li><a href="InputManager.html">InputManager</a></li><li><a href="JellyFish.html">JellyFish</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Level.html">Level</a></li><li><a href="PoisonBottle.html">PoisonBottle</a></li><li><a href="Poisonbar.html">Poisonbar</a></li><li><a href="PufferFish.html">PufferFish</a></li><li><a href="SoundManager.html">SoundManager</a></li><li><a href="Statusbar.html">Statusbar</a></li><li><a href="ThrowableObject.html">ThrowableObject</a></li><li><a href="UIManager.html">UIManager</a></li></ul><h3>Global</h3><ul><li><a href="global.html#applyCanvasStyles">applyCanvasStyles</a></li><li><a href="global.html#calculateDisplaySize">calculateDisplaySize</a></li><li><a href="global.html#checkGameOver">checkGameOver</a></li><li><a href="global.html#checkWinGame">checkWinGame</a></li><li><a href="global.html#closeOptions">closeOptions</a></li><li><a href="global.html#createCoinArc">createCoinArc</a></li><li><a href="global.html#createCoinRow">createCoinRow</a></li><li><a href="global.html#createLevel1">createLevel1</a></li><li><a href="global.html#endGame">endGame</a></li><li><a href="global.html#gameLoop">gameLoop</a></li><li><a href="global.html#getViewportSize">getViewportSize</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#isTouchDevice">isTouchDevice</a></li><li><a href="global.html#openOptions">openOptions</a></li><li><a href="global.html#playGameOverSound">playGameOverSound</a></li><li><a href="global.html#resizeCanvas">resizeCanvas</a></li><li><a href="global.html#setCanvasResolution">setCanvasResolution</a></li><li><a href="global.html#startGame">startGame</a></li><li><a href="global.html#togglePause">togglePause</a></li><li><a href="global.html#toggleSound">toggleSound</a></li><li><a href="global.html#updateGame">updateGame</a></li><li><a href="global.html#updateStatusbarPositions">updateStatusbarPositions</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BackgroundObject.html">BackgroundObject</a></li><li><a href="BossHealthbar.html">BossHealthbar</a></li><li><a href="Character.html">Character</a></li><li><a href="CharacterAnimation.html">CharacterAnimation</a></li><li><a href="CharacterAttack.html">CharacterAttack</a></li><li><a href="CharacterMovement.html">CharacterMovement</a></li><li><a href="Coin.html">Coin</a></li><li><a href="Coinbar.html">Coinbar</a></li><li><a href="CollisionManager.html">CollisionManager</a></li><li><a href="DrawableObjects.html">DrawableObjects</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="EndbossAnimation.html">EndbossAnimation</a></li><li><a href="EndbossAttack.html">EndbossAttack</a></li><li><a href="EndbossMovement.html">EndbossMovement</a></li><li><a href="Healthbar.html">Healthbar</a></li><li><a href="InputManager.html">InputManager</a></li><li><a href="JellyFish.html">JellyFish</a></li><li><a href="JellyFishAnimation.html">JellyFishAnimation</a></li><li><a href="JellyFishMovement.html">JellyFishMovement</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Level.html">Level</a></li><li><a href="MovableObject.html">MovableObject</a></li><li><a href="PoisonBottle.html">PoisonBottle</a></li><li><a href="Poisonbar.html">Poisonbar</a></li><li><a href="PufferFish.html">PufferFish</a></li><li><a href="PufferFishAnimation.html">PufferFishAnimation</a></li><li><a href="PufferFishMovement.html">PufferFishMovement</a></li><li><a href="SoundManager.html">SoundManager</a></li><li><a href="Statusbar.html">Statusbar</a></li><li><a href="ThrowableObject.html">ThrowableObject</a></li><li><a href="UIManager.html">UIManager</a></li><li><a href="World.html">World</a></li></ul><h3>Global</h3><ul><li><a href="global.html#IMAGES_BOSSBAR">IMAGES_BOSSBAR</a></li><li><a href="global.html#IMAGES_COINBAR">IMAGES_COINBAR</a></li><li><a href="global.html#IMAGES_HEALTHBAR">IMAGES_HEALTHBAR</a></li><li><a href="global.html#IMAGES_POISONBAR">IMAGES_POISONBAR</a></li><li><a href="global.html#applyCanvasStyles">applyCanvasStyles</a></li><li><a href="global.html#calculateDisplaySize">calculateDisplaySize</a></li><li><a href="global.html#calculateScale">calculateScale</a></li><li><a href="global.html#checkGameOver">checkGameOver</a></li><li><a href="global.html#checkWinGame">checkWinGame</a></li><li><a href="global.html#closeImprint">closeImprint</a></li><li><a href="global.html#closeOptions">closeOptions</a></li><li><a href="global.html#createCoinArc">createCoinArc</a></li><li><a href="global.html#createCoinRow">createCoinRow</a></li><li><a href="global.html#createGameWorld">createGameWorld</a></li><li><a href="global.html#createLevel1">createLevel1</a></li><li><a href="global.html#endGame">endGame</a></li><li><a href="global.html#gameLoop">gameLoop</a></li><li><a href="global.html#getViewportSize">getViewportSize</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#isTouchDevice">isTouchDevice</a></li><li><a href="global.html#openImprint">openImprint</a></li><li><a href="global.html#openOptions">openOptions</a></li><li><a href="global.html#playGameOverSound">playGameOverSound</a></li><li><a href="global.html#resetGameControls">resetGameControls</a></li><li><a href="global.html#resizeCanvas">resizeCanvas</a></li><li><a href="global.html#restartGame">restartGame</a></li><li><a href="global.html#setCanvasResolution">setCanvasResolution</a></li><li><a href="global.html#showRotateHint">showRotateHint</a></li><li><a href="global.html#showStartScreen">showStartScreen</a></li><li><a href="global.html#startGame">startGame</a></li><li><a href="global.html#togglePause">togglePause</a></li><li><a href="global.html#toggleSound">toggleSound</a></li><li><a href="global.html#updateGame">updateGame</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Mon Apr 27 2026 18:52:19 GMT+0200 (Central European Summer Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Thu Sep 03 2026 16:23:05 GMT+0200 (Central European Summer Time)
 </footer>
 
 <script> prettyPrint(); </script>

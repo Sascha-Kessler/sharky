@@ -1,3 +1,14 @@
+/**
+ * Base class for all movable game objects that extends DrawableObjects
+ * Provides core functionality for:
+ * - Movement and positioning
+ * - Collision detection and hitboxes
+ * - Health management and damage handling
+ * - Debug visualization
+ * @class
+ * @extends DrawableObjects
+ */
+
 class MovableObject extends DrawableObjects {
   speed = 0.15;
   speedX = 0;

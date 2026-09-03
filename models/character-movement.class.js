@@ -1,10 +1,24 @@
+/**
+ * Handles all movement-related functionality for the character including:
+ * - Input processing for movement and attacks
+ * - Position updates
+ * - World boundary clamping
+ * - Camera synchronization
+ * @class
+ */
 class CharacterMovement {
+  /**
+   * Creates a new movement controller for a character
+   * @param {Character} character - The character instance to control
+   */
   constructor(character) {
     this.character = character;
   }
 
   /**
-   * Handles all movement and attack input
+   * Processes all input for movement and attacks
+   * Calls the individual input handlers in sequence
+   * @returns {void}
    */
   handleMovementInput() {
     this.handleHorizontalInput();
@@ -13,7 +27,9 @@ class CharacterMovement {
   }
 
   /**
-   * Handles horizontal movement input (left/right)
+   * Processes horizontal movement input (left/right arrows)
+   * Sets the character's speedX and otherDirection based on input
+   * @returns {void}
    */
   handleHorizontalInput() {
     const char = this.character;
@@ -30,7 +46,9 @@ class CharacterMovement {
   }
 
   /**
-   * Handles vertical movement input (up/down)
+   * Processes vertical movement input (up/down arrows)
+   * Sets the character's speedY based on input
+   * @returns {void}
    */
   handleVerticalInput() {
     const char = this.character;
@@ -45,27 +63,28 @@ class CharacterMovement {
   }
 
   /**
-   * Handles attack input (normal, poison and fin slap attacks)
+   * Processes attack input (normal, poison, fin slap)
+   * Only processes attacks if the character is able to act
+   * @returns {void}
    */
   handleAttackInput() {
     const char = this.character;
     if (char.isUnableToAct()) return;
-
     if (char.keyboard.ATTACK) {
       char.attack.normalAttack();
     }
-
     if (char.keyboard.POISON) {
       char.attack.poisonAttack();
     }
-
     if (char.keyboard.FIN_SLAP) {
       char.attack.finSlapAttack();
     }
   }
 
   /**
-   * Applies movement to the character position and updates camera
+   * Applies the current movement to the character's position
+   * and updates the camera position accordingly
+   * @returns {void}
    */
   applyMovement() {
     const char = this.character;
@@ -76,25 +95,60 @@ class CharacterMovement {
   }
 
   /**
-   * Restricts the character within world boundaries
+   * Ensures the character stays within the world boundaries
+   * Calls all clamping methods to restrict movement
+   * @returns {void}
    */
   clampToWorld() {
-    const char = this.character;
+    this.clampXMin();
+    this.clampXMax();
+    this.clampYMin();
+    this.clampYMax();
+  }
 
-    if (char.x < 150) {
-      char.x = 150;
+  /**
+   * Prevents the character from moving beyond the left boundary
+   * @returns {void}
+   */
+  clampXMin() {
+    if (this.character.x < 150) {
+      this.character.x = 150;
     }
+  }
 
-    if (char.x > char.world.level.level_end_x) {
-      char.x = char.world.level.level_end_x;
+  /**
+   * Prevents the character from moving beyond the right boundary
+   * @returns {void}
+   */
+  clampXMax() {
+    if (this.character.x > this.character.world.level.level_end_x) {
+      this.character.x = this.character.world.level.level_end_x;
     }
+  }
 
-    if (char.y < -char.offset.top) {
-      char.y = -char.offset.top;
+  /**
+   * Prevents the character from moving above the top boundary
+   * @returns {void}
+   */
+  clampYMin() {
+    if (this.character.y < -this.character.offset.top) {
+      this.character.y = -this.character.offset.top;
     }
+  }
 
-    if (char.y + char.height - char.offset.bottom > char.world.height) {
-      char.y = char.world.height - char.height + char.offset.bottom;
+  /**
+   * Prevents the character from moving below the bottom boundary
+   * @returns {void}
+   */
+  clampYMax() {
+    if (
+      this.character.y + this.character.height - this.character.offset.bottom >
+      this.character.world.height
+    ) {
+      this.character.y =
+        this.character.world.height -
+        this.character.height +
+        this.character.offset.bottom;
     }
   }
 }

@@ -1,4 +1,10 @@
-class PufferFishAnimation {
+/**
+ * Controls all animation behavior for pufferfish enemies including:
+ * - Swimming animation cycles
+ * - Frame timing and image updates
+ * - Animation state management
+ * @class
+ */ class PufferFishAnimation {
   constructor(pufferFish) {
     this.pufferFish = pufferFish;
   }

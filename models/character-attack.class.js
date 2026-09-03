@@ -1,8 +1,23 @@
+/**
+ * Manages all attack-related functionality for the character including:
+ * - Attack state management
+ * - Animation updates
+ * - Bubble throwing mechanics
+ * @class
+ */
 class CharacterAttack {
+  /**
+   * Creates a new attack controller for a character
+   * @param {Character} character - The character instance to control attacks for
+   */
   constructor(character) {
     this.character = character;
   }
 
+  /**
+   * Resets all attack-related state variables to their default values
+   * @returns {void}
+   */
   resetAttackState() {
     const char = this.character;
 
@@ -11,6 +26,10 @@ class CharacterAttack {
     char.attackBubbleThrown = false;
   }
 
+  /**
+   * Initiates the fin slap attack animation and state
+   * @returns {void}
+   */
   finSlapAttack() {
     const char = this.character;
 
@@ -22,6 +41,10 @@ class CharacterAttack {
     this.resetAttackState();
   }
 
+  /**
+   * Initiates the normal bubble attack animation and state
+   * @returns {void}
+   */
   normalAttack() {
     const char = this.character;
 
@@ -31,6 +54,10 @@ class CharacterAttack {
     this.resetAttackState();
   }
 
+  /**
+   * Initiates the poison bubble attack if the character has poison bottles available
+   * @returns {void}
+   */
   poisonAttack() {
     const char = this.character;
 
@@ -42,6 +69,10 @@ class CharacterAttack {
     this.resetAttackState();
   }
 
+  /**
+   * Updates the fin slap attack animation and handles attack completion
+   * @returns {void}
+   */
   updateFinSlapAttack() {
     const char = this.character;
 
@@ -54,6 +85,10 @@ class CharacterAttack {
     }
   }
 
+  /**
+   * Updates the normal bubble attack animation and handles attack completion
+   * @returns {void}
+   */
   updateNormalAttack() {
     const char = this.character;
 
@@ -67,6 +102,10 @@ class CharacterAttack {
     }
   }
 
+  /**
+   * Updates the poison bubble attack animation and handles attack completion
+   * @returns {void}
+   */
   updatePoisonAttack() {
     const char = this.character;
 
@@ -80,6 +119,12 @@ class CharacterAttack {
     }
   }
 
+  /**
+   * Updates a single frame of the attack animation and handles bubble throwing
+   * @param {string[]} images - Array of image paths for the current attack animation
+   * @param {string} [type] - Optional bubble type ("normal", "poison")
+   * @returns {void}
+   */
   updateAttackFrame(images, type) {
     const char = this.character;
     char.attackAnimationCounter++;
@@ -93,6 +138,12 @@ class CharacterAttack {
     char.currentImageNormalAttack++;
   }
 
+  /**
+   * Attempts to throw a bubble on the last frame of an attack animation
+   * @param {string[]} images - Array of image paths for the current attack animation
+   * @param {string} [type] - Optional bubble type ("normal", "poison")
+   * @returns {void}
+   */
   tryThrowBubble(images, type) {
     const char = this.character;
 
@@ -107,6 +158,12 @@ class CharacterAttack {
     }
   }
 
+  /**
+   * Handles effects specific to different bubble types
+   * @param {string} type - The bubble type ("poison")
+   * @param {Character} char - The character instance
+   * @returns {void}
+   */
   handleBubbleTypeEffects(type, char) {
     if (type === "poison") {
       char.poisonBottles--;

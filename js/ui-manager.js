@@ -94,11 +94,19 @@ class UIManager {
     this.hideEndScreens();
   }
 
+  /**
+   * Hides both the game over and win screens
+   * Calls hideScreen() for each end screen element
+   */
   hideEndScreens() {
     this.hideScreen("game-over-screen");
     this.hideScreen("win-screen");
   }
 
+  /**
+   * Hides a specific screen element by ID
+   * @param {string} id - The ID of the screen element to hide
+   */
   hideScreen(id) {
     const screen = document.getElementById(id);
     screen.classList.add("d-none");

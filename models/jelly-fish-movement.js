@@ -1,7 +1,20 @@
+/**
+ * Controls all movement behavior for jellyfish enemies including:
+ * - Gentle floating/swimming motion
+ * - Activation-based movement patterns
+ * - Boundary clamping to stay within game world
+ * - Movement toward/away from player when active
+ * @class
+ */
 class JellyFishMovement {
   constructor(jellyFish) {
+    /**
+     * Creates a new movement controller for a jellyfish
+     * @param {JellyFish} jellyFish - The jellyfish instance to control movement for
+     */
     this.jellyFish = jellyFish;
   }
+
   /**
    * Moves the jellyfish vertically
    */
@@ -28,19 +41,38 @@ class JellyFishMovement {
    * Handles vertical boundary collision and reverses direction
    */
   handleVerticalBounds() {
-    const topLimit = -this.jellyFish.offset.top;
-    const bottomLimit =
+    this.updateVerticalLimits();
+    this.handleTopBoundary();
+    this.handleBottomBoundary();
+  }
+
+  /**
+   * Calculates and stores the vertical movement limits
+   */
+  updateVerticalLimits() {
+    this.topLimit = -this.jellyFish.offset.top;
+    this.bottomLimit =
       this.jellyFish.world.height -
       this.jellyFish.height +
       this.jellyFish.offset.bottom;
+  }
 
-    if (this.jellyFish.y < topLimit) {
-      this.jellyFish.y = topLimit;
+  /**
+   * Handles collision with the top boundary
+   */
+  handleTopBoundary() {
+    if (this.jellyFish.y < this.topLimit) {
+      this.jellyFish.y = this.topLimit;
       this.jellyFish.speedY *= -1;
     }
+  }
 
-    if (this.jellyFish.y > bottomLimit) {
-      this.jellyFish.y = bottomLimit;
+  /**
+   * Handles collision with the bottom boundary
+   */
+  handleBottomBoundary() {
+    if (this.jellyFish.y > this.bottomLimit) {
+      this.jellyFish.y = this.bottomLimit;
       this.jellyFish.speedY *= -1;
     }
   }

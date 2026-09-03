@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: models/character-animation.class.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: models/character-animation.class.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Manages all animation states and transitions for the character
+ * @class
+ */
+class CharacterAnimation {
+  /**
+   * Creates a new animation controller for a character
+   * @param {Character} character - The character instance to animate
+   */
+  constructor(character) {
+    this.character = character;
+  }
+
+  /**
+   * Determines and updates the appropriate animation based on character state
+   * Priority order: death > hurt > attack > movement
+   * @returns {void}
+   */
+  updateAnimation() {
+    const char = this.character;
+
+    if (char.dead) return this.updateDeadAnimation();
+    if (char.isHurt) return this.updateHurtAnimation();
+    if (this.updateAttackAnimation(char)) return;
+
+    this.updateMovementAnimation(char);
+  }
+
+  /**
+   * Handles attack animations based on current attack state
+   * @param {Character} char - The character instance
+   * @returns {boolean} True if an attack animation is playing, false otherwise
+   */
+  updateAttackAnimation(char) {
+    const attackAnimations = [
+      [char.isAttacking, "updateNormalAttack"],
+      [char.isAttackingPoison, "updatePoisonAttack"],
+      [char.isFinSlapAttacking, "updateFinSlapAttack"],
+    ];
+    const activeAttack = attackAnimations.find(([isActive]) => isActive);
+
+    if (!activeAttack) return false;
+    char.attack[activeAttack[1]]();
+
+    return true;
+  }
+
+  /**
+   * Updates animation based on movement state
+   * @param {Character} char - The character instance
+   */
+  updateMovementAnimation(char) {
+    const isIdle = char.speedX === 0 &amp;&amp; char.speedY === 0;
+
+    isIdle ? this.updateIdleAnimation() : this.updateSwimAnimation();
+  }
+
+  /**
+   * Updates idle animation when character is stationary
+   * @returns {void}
+   */
+  updateIdleAnimation() {
+    const char = this.character;
+
+    char.idleAnimationCounter++;
+
+    if (char.idleAnimationCounter >= char.idleAnimationDelay) {
+      char.idleAnimationCounter = 0;
+      const i = char.currentImageIdle % char.IMAGES_IDLE.length;
+      const path = char.IMAGES_IDLE[i];
+      char.img = char.imageCache[path];
+      char.currentImageIdle++;
+    }
+  }
+
+  /**
+   * Updates swimming animation when character is moving
+   * @returns {void}
+   */
+  updateSwimAnimation() {
+    const char = this.character;
+
+    if (char.speedX === 0 &amp;&amp; char.speedY === 0) return;
+
+    char.frameCounter++;
+
+    if (char.frameCounter >= char.swimFrameDelay) {
+      char.frameCounter = 0;
+
+      this.updateSwimFrame(char);
+    }
+  }
+
+  /**
+   * Updates a single frame of the swimming animation
+   * @param {Character} char - The character instance
+   * @returns {void}
+   */
+  updateSwimFrame(char) {
+    if (char.frameCounter &lt; char.swimFrameDelay) return;
+
+    char.frameCounter = 0;
+    const i = char.currentImage % char.IMAGES_SWIMMING.length;
+    const path = char.IMAGES_SWIMMING[i];
+    char.img = char.imageCache[path];
+    char.currentImage++;
+  }
+
+  /**
+   * Updates hurt animation when character takes damage
+   * @returns {void}
+   */
+  updateHurtAnimation() {
+    const char = this.character;
+    char.hurtAnimationCounter++;
+    if (char.hurtAnimationCounter &lt; char.hurtAnimationDelay) return;
+    char.hurtAnimationCounter = 0;
+    const path = char.IMAGES_HURT[char.currentImageHurt];
+    char.img = char.imageCache[path];
+    char.currentImageHurt++;
+    if (char.currentImageHurt >= char.IMAGES_HURT.length) {
+      this.finishHurtAnimation(char);
+    }
+  }
+
+  /**
+   * Resets character state after hurt animation completes
+   * @param {Character} char - The character instance
+   * @returns {void}
+   */
+  finishHurtAnimation(char) {
+    char.isHurt = false;
+    char.currentImageHurt = 0;
+    char.currentImageIdle = 0;
+    const path = char.IMAGES_IDLE[0];
+    char.img = char.imageCache[path];
+  }
+
+  /**
+   * Updates death animation sequence until completion
+   * @returns {void}
+   */
+  updateDeadAnimation() {
+    const char = this.character;
+    if (char.deadAnimationFinished) return;
+    char.deadAnimationCounter++;
+    if (char.deadAnimationCounter &lt; char.deadAnimationDelay) return;
+    char.deadAnimationCounter = 0;
+    this.updateDeadFrame(char);
+  }
+
+  /**
+   * Updates a single frame of the death animation
+   * @param {Character} char - The character instance
+   * @returns {void}
+   */
+  updateDeadFrame(char) {
+    const path = char.IMAGES_DEAD[char.currentImageDead];
+    char.img = char.imageCache[path];
+    char.currentImageDead++;
+    if (char.currentImageDead >= char.IMAGES_DEAD.length) {
+      this.finishDeadAnimation(char);
+    }
+  }
+
+  /**
+   * Finalizes the death animation and sets character state
+   * @param {Character} char - The character instance
+   * @returns {void}
+   */
+  finishDeadAnimation(char) {
+    char.currentImageDead = char.IMAGES_DEAD.length - 1;
+    char.deadAnimationFinished = true;
+  }
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BackgroundObject.html">BackgroundObject</a></li><li><a href="BossHealthbar.html">BossHealthbar</a></li><li><a href="Character.html">Character</a></li><li><a href="CharacterAnimation.html">CharacterAnimation</a></li><li><a href="CharacterAttack.html">CharacterAttack</a></li><li><a href="CharacterMovement.html">CharacterMovement</a></li><li><a href="Coin.html">Coin</a></li><li><a href="Coinbar.html">Coinbar</a></li><li><a href="CollisionManager.html">CollisionManager</a></li><li><a href="DrawableObjects.html">DrawableObjects</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="EndbossAnimation.html">EndbossAnimation</a></li><li><a href="EndbossAttack.html">EndbossAttack</a></li><li><a href="EndbossMovement.html">EndbossMovement</a></li><li><a href="Healthbar.html">Healthbar</a></li><li><a href="InputManager.html">InputManager</a></li><li><a href="JellyFish.html">JellyFish</a></li><li><a href="JellyFishAnimation.html">JellyFishAnimation</a></li><li><a href="JellyFishMovement.html">JellyFishMovement</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Level.html">Level</a></li><li><a href="MovableObject.html">MovableObject</a></li><li><a href="PoisonBottle.html">PoisonBottle</a></li><li><a href="Poisonbar.html">Poisonbar</a></li><li><a href="PufferFish.html">PufferFish</a></li><li><a href="PufferFishAnimation.html">PufferFishAnimation</a></li><li><a href="PufferFishMovement.html">PufferFishMovement</a></li><li><a href="SoundManager.html">SoundManager</a></li><li><a href="Statusbar.html">Statusbar</a></li><li><a href="ThrowableObject.html">ThrowableObject</a></li><li><a href="UIManager.html">UIManager</a></li><li><a href="World.html">World</a></li></ul><h3>Global</h3><ul><li><a href="global.html#IMAGES_BOSSBAR">IMAGES_BOSSBAR</a></li><li><a href="global.html#IMAGES_COINBAR">IMAGES_COINBAR</a></li><li><a href="global.html#IMAGES_HEALTHBAR">IMAGES_HEALTHBAR</a></li><li><a href="global.html#IMAGES_POISONBAR">IMAGES_POISONBAR</a></li><li><a href="global.html#applyCanvasStyles">applyCanvasStyles</a></li><li><a href="global.html#calculateDisplaySize">calculateDisplaySize</a></li><li><a href="global.html#calculateScale">calculateScale</a></li><li><a href="global.html#checkGameOver">checkGameOver</a></li><li><a href="global.html#checkWinGame">checkWinGame</a></li><li><a href="global.html#closeImprint">closeImprint</a></li><li><a href="global.html#closeOptions">closeOptions</a></li><li><a href="global.html#createCoinArc">createCoinArc</a></li><li><a href="global.html#createCoinRow">createCoinRow</a></li><li><a href="global.html#createGameWorld">createGameWorld</a></li><li><a href="global.html#createLevel1">createLevel1</a></li><li><a href="global.html#endGame">endGame</a></li><li><a href="global.html#gameLoop">gameLoop</a></li><li><a href="global.html#getViewportSize">getViewportSize</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#isTouchDevice">isTouchDevice</a></li><li><a href="global.html#openImprint">openImprint</a></li><li><a href="global.html#openOptions">openOptions</a></li><li><a href="global.html#playGameOverSound">playGameOverSound</a></li><li><a href="global.html#resetGameControls">resetGameControls</a></li><li><a href="global.html#resizeCanvas">resizeCanvas</a></li><li><a href="global.html#restartGame">restartGame</a></li><li><a href="global.html#setCanvasResolution">setCanvasResolution</a></li><li><a href="global.html#showRotateHint">showRotateHint</a></li><li><a href="global.html#showStartScreen">showStartScreen</a></li><li><a href="global.html#startGame">startGame</a></li><li><a href="global.html#togglePause">togglePause</a></li><li><a href="global.html#toggleSound">toggleSound</a></li><li><a href="global.html#updateGame">updateGame</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Thu Sep 03 2026 16:23:05 GMT+0200 (Central European Summer Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

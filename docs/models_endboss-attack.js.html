@@ -27,96 +27,160 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
- * Starts the attack sequence
+ * Controls all attack behavior for the Endboss including:
+ * - Attack initiation and phase management
+ * - Forward movement toward player
+ * - Attack animation display
+ * - Return movement to starting position
+ * @class
  */
-Endboss.prototype.startAttack = function () {
-  this.isAttacking = true;
-  this.attackPhase = "forward";
-
-  this.attackStartX = this.x;
-  this.attackTargetX = this.x - this.attackDistance;
-
-  this.currentImageAttack = 0;
-  this.attackAnimationCounter = 0;
-};
-
-/**
- * Updates attack movement based on current phase
- */
-Endboss.prototype.updateAttackMovement = function () {
-  if (this.attackPhase === "forward") return this.handleAttackForward();
-  if (this.attackPhase === "animate") return this.updateAttackAnimation();
-  if (this.attackPhase === "backward") return this.handleAttackBackward();
-};
-
-/**
- * Handles forward attack movement
- */
-Endboss.prototype.handleAttackForward = function () {
-  this.x -= this.attackSpeedX;
-  this.setImageFromArray(this.IMAGES_ATTACKING, 0);
-
-  if (this.x &lt;= this.attackTargetX) {
-    this.x = this.attackTargetX;
-    this.attackPhase = "animate";
+class EndbossAttack {
+  /**
+   * Creates a new attack controller for an Endboss
+   * @param {Endboss} endboss - The Endboss instance to control attacks for
+   */
+  constructor(endboss) {
+    this.endboss = endboss;
   }
-};
 
-/**
- * Updates attack animation frames
- */
-Endboss.prototype.updateAttackAnimation = function () {
-  if (!this.shouldUpdateFrame(this.attackAnimationDelay)) return;
+  /**
+   * Initiates a new attack sequence
+   * Sets up initial attack parameters and transitions to forward phase
+   * @returns {void}
+   */
+  startAttack() {
+    this.endboss.isAttacking = true;
+    this.endboss.attackPhase = "forward";
 
-  const i = this.currentImageAttack % this.IMAGES_ATTACKING.length;
-  this.setImageFromArray(this.IMAGES_ATTACKING, i);
+    this.endboss.attackStartX = this.endboss.x;
+    this.endboss.attackTargetX = this.endboss.x - this.endboss.attackDistance;
 
-  this.currentImageAttack++;
-
-  if (this.isAttackAnimationFinished()) {
-    this.resetAttackAnimation();
-    this.attackPhase = "backward";
+    this.endboss.currentImageAttack = 0;
   }
-};
 
-/**
- * Checks if attack animation reached the end
- */
-Endboss.prototype.isAttackAnimationFinished = function () {
-  return (
-    this.attackPhase === "animate" &amp;&amp;
-    this.currentImageAttack >= this.IMAGES_ATTACKING.length
-  );
-};
-
-/**
- * Resets attack animation index
- */
-Endboss.prototype.resetAttackAnimation = function () {
-  this.currentImageAttack = 0;
-};
-
-/**
- * Handles backward movement after attack
- */
-Endboss.prototype.handleAttackBackward = function () {
-  this.x += this.attackSpeedX;
-
-  if (this.x >= this.attackStartX) {
-    this.finishAttack();
+  /**
+   * Updates the attack movement based on current attack phase
+   * Routes to appropriate phase handler:
+   * - "forward": Movement toward player
+   * - "animate": Animation display
+   * - "backward": Return to starting position
+   * @returns {void}
+   */
+  updateAttackMovement() {
+    if (this.endboss.attackPhase === "forward")
+      return this.handleAttackForward();
+    if (this.endboss.attackPhase === "animate")
+      return this.updateAttackAnimation();
+    if (this.endboss.attackPhase === "backward")
+      return this.handleAttackBackward();
   }
-};
 
-/**
- * Resets attack state after finishing
- */
-Endboss.prototype.finishAttack = function () {
-  this.x = this.attackStartX;
-  this.isAttacking = false;
-  this.attackPhase = "none";
-  this.currentImageAttack = 0;
-  this.frameCounter = 0;
-};
+  /**
+   * Handles the forward movement phase of the attack
+   * Moves the endboss toward the player's position at attack speed
+   * @returns {void}
+   */
+  handleAttackForward() {
+    this.endboss.x -= this.endboss.attackSpeedX;
+    this.endboss.animation.setImageFromArray(this.endboss.IMAGES_ATTACKING, 0);
+
+    if (this.endboss.x &lt;= this.endboss.attackTargetX) {
+      this.endboss.x = this.endboss.attackTargetX;
+      this.endboss.attackPhase = "animate";
+    }
+  }
+
+  /**
+   * Updates the attack animation frames during the animation phase
+   * @returns {void}
+   */
+  updateAttackAnimation() {
+    if (!this.shouldUpdateAttackFrame()) return;
+
+    this.updateAttackFrame();
+
+    this.checkAttackAnimationEnd();
+  }
+
+  /**
+   * Determines if the attack animation frame should be updated
+   * @returns {boolean} True if frame should be updated, false otherwise
+   */
+  shouldUpdateAttackFrame() {
+    return this.endboss.animation.shouldUpdateFrame(
+      this.endboss.attackAnimationDelay,
+    );
+  }
+
+  /**
+   * Updates to the next frame in the attack animation sequence
+   * @returns {void}
+   */
+  updateAttackFrame() {
+    const i =
+      this.endboss.currentImageAttack % this.endboss.IMAGES_ATTACKING.length;
+    this.endboss.animation.setImageFromArray(this.endboss.IMAGES_ATTACKING, i);
+    this.endboss.currentImageAttack++;
+  }
+
+  /**
+   * Checks if the attack animation has completed and transitions to backward phase if so
+   * @returns {boolean} True if animation finished and phase changed, false otherwise
+   */
+  checkAttackAnimationEnd() {
+    if (this.isAttackAnimationFinished()) {
+      this.resetAttackAnimation();
+      this.endboss.attackPhase = "backward";
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Determines if the attack animation has reached its final frame
+   * @returns {boolean} True if animation is finished, false otherwise
+   */
+  isAttackAnimationFinished() {
+    return (
+      this.endboss.attackPhase === "animate" &amp;&amp;
+      this.endboss.currentImageAttack >= this.endboss.IMAGES_ATTACKING.length
+    );
+  }
+
+  /**
+   * Resets the attack animation index to prepare for next sequence
+   * @returns {void}
+   */
+  resetAttackAnimation() {
+    this.endboss.currentImageAttack = 0;
+  }
+
+  /**
+   * Handles the backward movement phase after the attack animation completes
+   * Moves the endboss back to its starting position
+   * @returns {void}
+   */
+  handleAttackBackward() {
+    this.endboss.x += this.endboss.attackSpeedX;
+
+    if (this.endboss.x >= this.endboss.attackStartX) {
+      this.finishAttack();
+    }
+  }
+
+  /**
+   * Completes the attack sequence and resets attack state
+   * Returns the endboss to its original position and clears attack flags
+   * @returns {void}
+   */
+  finishAttack() {
+    this.endboss.x = this.endboss.attackStartX;
+    this.endboss.isAttacking = false;
+    this.endboss.attackPhase = "none";
+    this.endboss.currentImageAttack = 0;
+    this.endboss.frameCounter = 0;
+  }
+}
 </code></pre>
         </article>
     </section>
@@ -127,13 +191,13 @@ Endboss.prototype.finishAttack = function () {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Character.html">Character</a></li><li><a href="Coin.html">Coin</a></li><li><a href="Coinbar.html">Coinbar</a></li><li><a href="DrawableObjects.html">DrawableObjects</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="Healthbar.html">Healthbar</a></li><li><a href="InputManager.html">InputManager</a></li><li><a href="JellyFish.html">JellyFish</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Level.html">Level</a></li><li><a href="PoisonBottle.html">PoisonBottle</a></li><li><a href="Poisonbar.html">Poisonbar</a></li><li><a href="PufferFish.html">PufferFish</a></li><li><a href="SoundManager.html">SoundManager</a></li><li><a href="Statusbar.html">Statusbar</a></li><li><a href="ThrowableObject.html">ThrowableObject</a></li><li><a href="UIManager.html">UIManager</a></li></ul><h3>Global</h3><ul><li><a href="global.html#applyCanvasStyles">applyCanvasStyles</a></li><li><a href="global.html#calculateDisplaySize">calculateDisplaySize</a></li><li><a href="global.html#checkGameOver">checkGameOver</a></li><li><a href="global.html#checkWinGame">checkWinGame</a></li><li><a href="global.html#closeOptions">closeOptions</a></li><li><a href="global.html#createCoinArc">createCoinArc</a></li><li><a href="global.html#createCoinRow">createCoinRow</a></li><li><a href="global.html#createLevel1">createLevel1</a></li><li><a href="global.html#endGame">endGame</a></li><li><a href="global.html#gameLoop">gameLoop</a></li><li><a href="global.html#getViewportSize">getViewportSize</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#isTouchDevice">isTouchDevice</a></li><li><a href="global.html#openOptions">openOptions</a></li><li><a href="global.html#playGameOverSound">playGameOverSound</a></li><li><a href="global.html#resizeCanvas">resizeCanvas</a></li><li><a href="global.html#setCanvasResolution">setCanvasResolution</a></li><li><a href="global.html#startGame">startGame</a></li><li><a href="global.html#togglePause">togglePause</a></li><li><a href="global.html#toggleSound">toggleSound</a></li><li><a href="global.html#updateGame">updateGame</a></li><li><a href="global.html#updateStatusbarPositions">updateStatusbarPositions</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BackgroundObject.html">BackgroundObject</a></li><li><a href="BossHealthbar.html">BossHealthbar</a></li><li><a href="Character.html">Character</a></li><li><a href="CharacterAnimation.html">CharacterAnimation</a></li><li><a href="CharacterAttack.html">CharacterAttack</a></li><li><a href="CharacterMovement.html">CharacterMovement</a></li><li><a href="Coin.html">Coin</a></li><li><a href="Coinbar.html">Coinbar</a></li><li><a href="CollisionManager.html">CollisionManager</a></li><li><a href="DrawableObjects.html">DrawableObjects</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="EndbossAnimation.html">EndbossAnimation</a></li><li><a href="EndbossAttack.html">EndbossAttack</a></li><li><a href="EndbossMovement.html">EndbossMovement</a></li><li><a href="Healthbar.html">Healthbar</a></li><li><a href="InputManager.html">InputManager</a></li><li><a href="JellyFish.html">JellyFish</a></li><li><a href="JellyFishAnimation.html">JellyFishAnimation</a></li><li><a href="JellyFishMovement.html">JellyFishMovement</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Level.html">Level</a></li><li><a href="MovableObject.html">MovableObject</a></li><li><a href="PoisonBottle.html">PoisonBottle</a></li><li><a href="Poisonbar.html">Poisonbar</a></li><li><a href="PufferFish.html">PufferFish</a></li><li><a href="PufferFishAnimation.html">PufferFishAnimation</a></li><li><a href="PufferFishMovement.html">PufferFishMovement</a></li><li><a href="SoundManager.html">SoundManager</a></li><li><a href="Statusbar.html">Statusbar</a></li><li><a href="ThrowableObject.html">ThrowableObject</a></li><li><a href="UIManager.html">UIManager</a></li><li><a href="World.html">World</a></li></ul><h3>Global</h3><ul><li><a href="global.html#IMAGES_BOSSBAR">IMAGES_BOSSBAR</a></li><li><a href="global.html#IMAGES_COINBAR">IMAGES_COINBAR</a></li><li><a href="global.html#IMAGES_HEALTHBAR">IMAGES_HEALTHBAR</a></li><li><a href="global.html#IMAGES_POISONBAR">IMAGES_POISONBAR</a></li><li><a href="global.html#applyCanvasStyles">applyCanvasStyles</a></li><li><a href="global.html#calculateDisplaySize">calculateDisplaySize</a></li><li><a href="global.html#calculateScale">calculateScale</a></li><li><a href="global.html#checkGameOver">checkGameOver</a></li><li><a href="global.html#checkWinGame">checkWinGame</a></li><li><a href="global.html#closeImprint">closeImprint</a></li><li><a href="global.html#closeOptions">closeOptions</a></li><li><a href="global.html#createCoinArc">createCoinArc</a></li><li><a href="global.html#createCoinRow">createCoinRow</a></li><li><a href="global.html#createGameWorld">createGameWorld</a></li><li><a href="global.html#createLevel1">createLevel1</a></li><li><a href="global.html#endGame">endGame</a></li><li><a href="global.html#gameLoop">gameLoop</a></li><li><a href="global.html#getViewportSize">getViewportSize</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#isTouchDevice">isTouchDevice</a></li><li><a href="global.html#openImprint">openImprint</a></li><li><a href="global.html#openOptions">openOptions</a></li><li><a href="global.html#playGameOverSound">playGameOverSound</a></li><li><a href="global.html#resetGameControls">resetGameControls</a></li><li><a href="global.html#resizeCanvas">resizeCanvas</a></li><li><a href="global.html#restartGame">restartGame</a></li><li><a href="global.html#setCanvasResolution">setCanvasResolution</a></li><li><a href="global.html#showRotateHint">showRotateHint</a></li><li><a href="global.html#showStartScreen">showStartScreen</a></li><li><a href="global.html#startGame">startGame</a></li><li><a href="global.html#togglePause">togglePause</a></li><li><a href="global.html#toggleSound">toggleSound</a></li><li><a href="global.html#updateGame">updateGame</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Mon Apr 27 2026 18:52:19 GMT+0200 (Central European Summer Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Thu Sep 03 2026 16:23:05 GMT+0200 (Central European Summer Time)
 </footer>
 
 <script> prettyPrint(); </script>

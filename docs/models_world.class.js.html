@@ -31,18 +31,27 @@
   healthbar;
   poisonbar;
   coinbar;
+  bossHealthbar;
 
   ctx;
   camera_x = 0;
-
   throwableObjects = [];
 
+  /**
+   * Creates a new game world.
+   * @param {HTMLCanvasElement} canvas - Game canvas element
+   * @param {Keyboard} keyboard - Keyboard input state
+   * @param {Level} level - Current level data
+   * @param {SoundManager} soundManager - Sound manager instance
+   */
   constructor(canvas, keyboard, level, soundManager) {
     this.canvas = canvas;
     this.keyboard = keyboard;
     this.ctx = canvas.getContext("2d");
     this.level = level;
     this.soundManager = soundManager;
+    this.throwableObjects = [];
+    this.collisionManager = new CollisionManager(this);
 
     this.backgroundObjects = level.backgroundObjects;
     this.enemies = level.enemies;
@@ -55,11 +64,17 @@
     this.poisonbar = new Poisonbar();
     this.coinbar = new Coinbar();
 
+    const boss = this.enemies.find((enemy) => enemy instanceof Endboss);
+
+    if (boss) {
+      this.bossHealthbar = new BossHealthbar(boss);
+    }
+
     this.enemies.forEach((enemy) => enemy.setWorld(this));
   }
 
   /**
-   * Returns the height of the world
+   * Returns the height of the world.
    * @returns {number}
    */
   get height() {
@@ -67,16 +82,17 @@
   }
 
   /**
-   * Updates the entire game world
+   * Updates the entire game world.
    */
   update() {
     this.handleEntities();
     this.handleProjectiles();
     this.handleCollisions();
+    this.updateUI();
   }
 
   /**
-   * Updates all entities like character, enemies and coins
+   * Updates all entities like character, enemies and coins.
    */
   handleEntities() {
     this.character.update();
@@ -85,7 +101,7 @@
   }
 
   /**
-   * Updates all enemies and removes dead/off-screen ones
+   * Updates all enemies and removes dead/off-screen enemies.
    */
   updateEnemies() {
     this.enemies.forEach((enemy) => enemy.update());
@@ -97,7 +113,7 @@
   }
 
   /**
-   * Updates all projectile objects
+   * Updates all projectile objects.
    */
   handleProjectiles() {
     this.throwableObjects.forEach((bubble) => bubble.update());
@@ -105,7 +121,7 @@
   }
 
   /**
-   * Removes expired or distant throwable objects
+   * Removes expired or distant throwable objects.
    */
   updateThrowableObjects() {
     this.throwableObjects = this.throwableObjects.filter(
@@ -115,141 +131,165 @@
   }
 
   /**
-   * Creates and throws a new projectile
-   * @param {string} type - Type of bubble
-   */
-  throwObject(type) {
-    const x = this.character.x + (this.character.otherDirection ? -20 : 120);
-    const y = this.character.y + 80;
-
-    const bubble = new ThrowableObject(
-      x,
-      y,
-      this.character.otherDirection,
-      type,
-    );
-
-    bubble.throw();
-    this.throwableObjects.push(bubble);
-  }
-
-  /**
-   * Handles all collision checks
+   * Handles all collision checks through the collision manager.
    */
   handleCollisions() {
-    this.handleEnemyCollisions();
-    this.handleBubbleCollisions();
-    this.handlePoisonBottlesCollisions();
-    this.handleCoinCollisions();
+    this.collisionManager.handleAll();
   }
 
   /**
-   * Checks collisions between character and enemies
+   * Updates all UI elements.
    */
-  handleEnemyCollisions() {
-    this.enemies.forEach((enemy) => {
-      if (this.character.isColliding(enemy)) {
-        this.handleCharacterHit(20);
-      }
-    });
+  updateUI() {
+    this.healthbar.updateHealth(this.character.health);
+    this.poisonbar.updatePoison(this.character.poisonBottles);
+    this.coinbar.updateCoin(this.character.coins);
+    this.updateBossHealthbar();
   }
 
   /**
-   * Handles damage taken by the character
-   * @param {number} damage - Damage amount
+   * Updates the boss health bar if a boss exists.
+   */
+  updateBossHealthbar() {
+    const boss = this.enemies.find((enemy) => enemy instanceof Endboss);
+
+    if (boss &amp;&amp; this.bossHealthbar) {
+      this.bossHealthbar.updateBossHealth(boss.health);
+    }
+  }
+
+  /**
+   * Handles damage taken by the character.
+   * @param {number} [damage=20] - Damage amount
    */
   handleCharacterHit(damage = 20) {
-    if (this.character.isHurtCooldownActive()) return;
+    if (
+      this.character.isHurtCooldownActive() ||
+      this.character.isFinSlapAttacking
+    )
+      return;
 
+    this.applyDamage(damage);
+  }
+
+  /**
+   * Applies damage to the character.
+   * @param {number} damage - Damage amount
+   */
+  applyDamage(damage) {
     this.soundManager.play("getsHit");
 
     this.character.lastHit = Date.now();
-
     this.character.health -= damage;
-
     this.character.hurt();
 
-    this.healthbar.healthbarUpdate(this.character.health);
+    this.updateCharacterUI();
+    this.checkCharacterDeath();
+  }
 
+  /**
+   * Updates character-related UI elements.
+   */
+  updateCharacterUI() {
+    this.healthbar.updateHealth(this.character.health);
+  }
+
+  /**
+   * Checks if the character should die.
+   */
+  checkCharacterDeath() {
     if (this.character.health &lt;= 0) {
       this.character.die();
     }
   }
 
   /**
-   * Checks collisions between bubbles and enemies
+   * Applies delayed fin slap damage to marked enemies.
    */
-  handleBubbleCollisions() {
-    this.throwableObjects = this.throwableObjects.filter((bubble) => {
-      const hitEnemy = this.enemies.find((enemy) => bubble.isColliding(enemy));
+  applyFinSlapDamage() {
+    this.enemies.forEach((enemy) => {
+      if (enemy.finSlapMarked) {
+        enemy.hit(10);
 
-      if (hitEnemy) {
-        hitEnemy.hit(bubble.damage);
-        this.soundManager.play("bubblePop");
-        return false;
+        enemy.finSlapMarked = false;
       }
-
-      return true;
     });
   }
 
   /**
-   * Checks collisions between character and coins
+   * Creates and throws a new projectile.
+   * @param {string} type - Type of bubble
    */
-  handleCoinCollisions() {
-    this.coins = this.coins.filter((coin) => {
-      if (this.character.isColliding(coin)) {
-        this.soundManager.play("coinPickup");
-        this.character.coins++;
-        this.coinbar.coinbarUpdate(this.character.coins);
-        return false;
-      }
-
-      return true;
-    });
+  throwObject(type) {
+    const x = this.character.x + (this.character.otherDirection ? -20 : 120);
+    const y = this.character.y + 80;
+    const bubble = new ThrowableObject(
+      x,
+      y,
+      this.character.otherDirection,
+      type,
+    );
+    bubble.throw();
+    this.throwableObjects.push(bubble);
   }
 
   /**
-   * Checks collisions between character and poison bottles
-   */
-  handlePoisonBottlesCollisions() {
-    this.poisonBottles = this.poisonBottles.filter((poisonBottle) => {
-      if (this.character.isColliding(poisonBottle)) {
-        this.soundManager.play("bottlePickup");
-        this.character.poisonBottles++;
-        this.poisonbar.poisonbarUpdate(this.character.poisonBottles);
-        return false;
-      }
-
-      return true;
-    });
-  }
-
-  /**
-   * Draws the entire world
+   * Draws the entire world.
    */
   draw() {
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.clearCanvas();
+    this.drawGameObjects();
+    this.drawUI();
+  }
 
+  /**
+   * Clears the canvas.
+   */
+  clearCanvas() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  }
+
+  /**
+   * Draws all game objects affected by camera movement.
+   */
+  drawGameObjects() {
     this.ctx.save();
     this.ctx.translate(this.camera_x, 0);
 
-    this.addObjectToMap(this.backgroundObjects);
-    this.addObjectToMap(this.coins);
-    this.addObjectToMap(this.enemies);
-    this.addObjectToMap(this.poisonBottles);
-    this.addToMap(this.character);
-    this.addObjectToMap(this.throwableObjects);
-
+    [
+      this.backgroundObjects,
+      this.coins,
+      this.enemies,
+      this.poisonBottles,
+      [this.character],
+      this.throwableObjects,
+    ].forEach((objects) => this.addObjectToMap(objects));
     this.ctx.restore();
-
-    this.addToMap(this.healthbar);
-    this.addToMap(this.poisonbar);
-    this.addToMap(this.coinbar);
   }
 
   /**
-   * Draws multiple objects
+   * Draws all fixed UI elements.
+   */
+  drawUI() {
+    this.addToMap(this.healthbar);
+    this.addToMap(this.poisonbar);
+    this.addToMap(this.coinbar);
+    this.drawBossHealthbar();
+  }
+
+  /**
+   * Draws the boss health bar after first contact.
+   */
+  drawBossHealthbar() {
+    const boss = this.enemies.find((enemy) => enemy instanceof Endboss);
+
+    if (boss &amp;&amp; boss.hadFirstContact &amp;&amp; this.bossHealthbar) {
+      this.addToMap(this.bossHealthbar);
+    }
+  }
+
+  /**
+   * Draws multiple objects.
    * @param {Array} objects - Objects to draw
    */
   addObjectToMap(objects) {
@@ -257,29 +297,25 @@
   }
 
   /**
-   * Draws one object
+   * Draws one object.
    * @param {Object} mo - Drawable object
    */
   addToMap(mo) {
     if (!mo.img || !mo.img.complete) return;
-
     if (mo.otherDirection) {
       this.flipImage(mo);
     }
-
     mo.draw(this.ctx);
-
     if (mo.otherDirection) {
       this.flipImageBack(mo);
     }
-
     if (window.DEBUG.hitbox) {
       mo.drawFrame(this.ctx);
     }
   }
 
   /**
-   * Flips an object horizontally
+   * Flips an object horizontally.
    * @param {Object} mo - Object to flip
    */
   flipImage(mo) {
@@ -290,7 +326,7 @@
   }
 
   /**
-   * Restores flipped object position
+   * Restores flipped object position.
    * @param {Object} mo - Object to restore
    */
   flipImageBack(mo) {
@@ -308,13 +344,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Character.html">Character</a></li><li><a href="Coin.html">Coin</a></li><li><a href="Coinbar.html">Coinbar</a></li><li><a href="DrawableObjects.html">DrawableObjects</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="Healthbar.html">Healthbar</a></li><li><a href="InputManager.html">InputManager</a></li><li><a href="JellyFish.html">JellyFish</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Level.html">Level</a></li><li><a href="PoisonBottle.html">PoisonBottle</a></li><li><a href="Poisonbar.html">Poisonbar</a></li><li><a href="PufferFish.html">PufferFish</a></li><li><a href="SoundManager.html">SoundManager</a></li><li><a href="Statusbar.html">Statusbar</a></li><li><a href="ThrowableObject.html">ThrowableObject</a></li><li><a href="UIManager.html">UIManager</a></li></ul><h3>Global</h3><ul><li><a href="global.html#applyCanvasStyles">applyCanvasStyles</a></li><li><a href="global.html#calculateDisplaySize">calculateDisplaySize</a></li><li><a href="global.html#checkGameOver">checkGameOver</a></li><li><a href="global.html#checkWinGame">checkWinGame</a></li><li><a href="global.html#closeOptions">closeOptions</a></li><li><a href="global.html#createCoinArc">createCoinArc</a></li><li><a href="global.html#createCoinRow">createCoinRow</a></li><li><a href="global.html#createLevel1">createLevel1</a></li><li><a href="global.html#endGame">endGame</a></li><li><a href="global.html#gameLoop">gameLoop</a></li><li><a href="global.html#getViewportSize">getViewportSize</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#isTouchDevice">isTouchDevice</a></li><li><a href="global.html#openOptions">openOptions</a></li><li><a href="global.html#playGameOverSound">playGameOverSound</a></li><li><a href="global.html#resizeCanvas">resizeCanvas</a></li><li><a href="global.html#setCanvasResolution">setCanvasResolution</a></li><li><a href="global.html#startGame">startGame</a></li><li><a href="global.html#togglePause">togglePause</a></li><li><a href="global.html#toggleSound">toggleSound</a></li><li><a href="global.html#updateGame">updateGame</a></li><li><a href="global.html#updateStatusbarPositions">updateStatusbarPositions</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BackgroundObject.html">BackgroundObject</a></li><li><a href="BossHealthbar.html">BossHealthbar</a></li><li><a href="Character.html">Character</a></li><li><a href="CharacterAnimation.html">CharacterAnimation</a></li><li><a href="CharacterAttack.html">CharacterAttack</a></li><li><a href="CharacterMovement.html">CharacterMovement</a></li><li><a href="Coin.html">Coin</a></li><li><a href="Coinbar.html">Coinbar</a></li><li><a href="CollisionManager.html">CollisionManager</a></li><li><a href="DrawableObjects.html">DrawableObjects</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="EndbossAnimation.html">EndbossAnimation</a></li><li><a href="EndbossAttack.html">EndbossAttack</a></li><li><a href="EndbossMovement.html">EndbossMovement</a></li><li><a href="Healthbar.html">Healthbar</a></li><li><a href="InputManager.html">InputManager</a></li><li><a href="JellyFish.html">JellyFish</a></li><li><a href="JellyFishAnimation.html">JellyFishAnimation</a></li><li><a href="JellyFishMovement.html">JellyFishMovement</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Level.html">Level</a></li><li><a href="MovableObject.html">MovableObject</a></li><li><a href="PoisonBottle.html">PoisonBottle</a></li><li><a href="Poisonbar.html">Poisonbar</a></li><li><a href="PufferFish.html">PufferFish</a></li><li><a href="PufferFishAnimation.html">PufferFishAnimation</a></li><li><a href="PufferFishMovement.html">PufferFishMovement</a></li><li><a href="SoundManager.html">SoundManager</a></li><li><a href="Statusbar.html">Statusbar</a></li><li><a href="ThrowableObject.html">ThrowableObject</a></li><li><a href="UIManager.html">UIManager</a></li><li><a href="World.html">World</a></li></ul><h3>Global</h3><ul><li><a href="global.html#IMAGES_BOSSBAR">IMAGES_BOSSBAR</a></li><li><a href="global.html#IMAGES_COINBAR">IMAGES_COINBAR</a></li><li><a href="global.html#IMAGES_HEALTHBAR">IMAGES_HEALTHBAR</a></li><li><a href="global.html#IMAGES_POISONBAR">IMAGES_POISONBAR</a></li><li><a href="global.html#applyCanvasStyles">applyCanvasStyles</a></li><li><a href="global.html#calculateDisplaySize">calculateDisplaySize</a></li><li><a href="global.html#calculateScale">calculateScale</a></li><li><a href="global.html#checkGameOver">checkGameOver</a></li><li><a href="global.html#checkWinGame">checkWinGame</a></li><li><a href="global.html#closeImprint">closeImprint</a></li><li><a href="global.html#closeOptions">closeOptions</a></li><li><a href="global.html#createCoinArc">createCoinArc</a></li><li><a href="global.html#createCoinRow">createCoinRow</a></li><li><a href="global.html#createGameWorld">createGameWorld</a></li><li><a href="global.html#createLevel1">createLevel1</a></li><li><a href="global.html#endGame">endGame</a></li><li><a href="global.html#gameLoop">gameLoop</a></li><li><a href="global.html#getViewportSize">getViewportSize</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#isTouchDevice">isTouchDevice</a></li><li><a href="global.html#openImprint">openImprint</a></li><li><a href="global.html#openOptions">openOptions</a></li><li><a href="global.html#playGameOverSound">playGameOverSound</a></li><li><a href="global.html#resetGameControls">resetGameControls</a></li><li><a href="global.html#resizeCanvas">resizeCanvas</a></li><li><a href="global.html#restartGame">restartGame</a></li><li><a href="global.html#setCanvasResolution">setCanvasResolution</a></li><li><a href="global.html#showRotateHint">showRotateHint</a></li><li><a href="global.html#showStartScreen">showStartScreen</a></li><li><a href="global.html#startGame">startGame</a></li><li><a href="global.html#togglePause">togglePause</a></li><li><a href="global.html#toggleSound">toggleSound</a></li><li><a href="global.html#updateGame">updateGame</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Mon Apr 27 2026 18:52:19 GMT+0200 (Central European Summer Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Thu Sep 03 2026 16:23:05 GMT+0200 (Central European Summer Time)
 </footer>
 
 <script> prettyPrint(); </script>

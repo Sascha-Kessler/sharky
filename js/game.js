@@ -20,6 +20,7 @@ let uiManager;
 
 /**
  * Initializes game systems and canvas setup
+ * Sets up event listeners and initial UI elements
  */
 function init() {
   canvas = document.getElementById("canvas");
@@ -34,6 +35,10 @@ function init() {
   showRotateHint();
 }
 
+/**
+ * Resets game control states and managers
+ * Used when restarting the game or creating a new world
+ */
 function resetGameControls() {
   isPaused = false;
 
@@ -43,6 +48,10 @@ function resetGameControls() {
   uiManager.setButtonDisabled("sound-btn", false);
 }
 
+/**
+ * Creates a new game world with level 1
+ * Resets game controls and initializes the world
+ */
 function createGameWorld() {
   resetGameControls();
 
@@ -53,7 +62,8 @@ function createGameWorld() {
 }
 
 /**
- * Starts the game and creates the world
+ * Starts the game if not already started
+ * Plays sound effect, hides imprint button, creates world and starts game loop
  */
 function startGame() {
   soundManager.play("buttonKlick");
@@ -68,6 +78,10 @@ function startGame() {
   requestAnimationFrame(gameLoop);
 }
 
+/**
+ * Restarts the game completely
+ * Resets game state flags and creates a new game world
+ */
 function restartGame() {
   gameOver = false;
   winGame = false;
@@ -78,7 +92,8 @@ function restartGame() {
 }
 
 /**
- * Main game loop
+ * Main game loop that runs continuously
+ * Handles game updates and rendering
  */
 function gameLoop() {
   if (!world) return;
@@ -93,7 +108,8 @@ function gameLoop() {
 }
 
 /**
- * Updates the world if the game is active
+ * Updates the game world if game is active and not paused
+ * Only updates when game is running and not in pause state
  */
 function updateGame() {
   if (!isPaused && !gameOver && !winGame) {
@@ -102,7 +118,8 @@ function updateGame() {
 }
 
 /**
- * Checks if the character death animation finished
+ * Checks if the character death animation has finished
+ * Shows game over screen when character dies
  */
 function checkGameOver() {
   if (world.character.deadAnimationFinished && !gameOver) {
@@ -112,7 +129,8 @@ function checkGameOver() {
 }
 
 /**
- * Checks if the endboss death animation finished
+ * Checks if the endboss death animation has finished
+ * Shows win screen when endboss is defeated
  */
 function checkWinGame() {
   const boss = world.enemies.find((enemy) => enemy instanceof Endboss);
@@ -124,7 +142,10 @@ function checkWinGame() {
 }
 
 /**
- * Plays the game over sound once
+ * Plays the game over sound effect once when game ends
+ * @param {boolean} gameOver - Whether the game is over
+ * @param {boolean} gameOverSoundPlayed - Flag to track if sound was played
+ * @param {SoundManager} soundManager - The sound manager instance
  */
 function playGameOverSound() {
   if (gameOver && !gameOverSoundPlayed && soundManager.soundOn) {
@@ -135,7 +156,8 @@ function playGameOverSound() {
 }
 
 /**
- * Resizes canvas and game container responsively
+ * Handles canvas resizing and responsive layout adjustments
+ * Updates both internal resolution and display size
  */
 function resizeCanvas() {
   const viewport = getViewportSize();
@@ -149,8 +171,8 @@ function resizeCanvas() {
 }
 
 /**
- * Returns the current viewport size
- * @returns {{width: number, height: number}}
+ * Gets the current viewport size considering different browser APIs
+ * @returns {{width: number, height: number}} The viewport dimensions
  */
 function getViewportSize() {
   return {
@@ -164,7 +186,8 @@ function getViewportSize() {
 }
 
 /**
- * Sets the internal canvas resolution
+ * Sets the internal canvas resolution to the game's base resolution
+ * This defines the game's logical coordinate system
  */
 function setCanvasResolution() {
   canvas.width = GAME_WIDTH;
@@ -172,10 +195,10 @@ function setCanvasResolution() {
 }
 
 /**
- * Calculates displayed canvas size
- * @param {{width: number, height: number}} viewport
- * @param {boolean} isMobile
- * @returns {{width: number, height: number}}
+ * Calculates the display size for the canvas based on viewport and device type
+ * @param {{width: number, height: number}} viewport - The viewport dimensions
+ * @param {boolean} isMobile - Whether the device is a mobile/touch device
+ * @returns {{width: number, height: number}} The calculated display size
  */
 function calculateDisplaySize(viewport, isMobile) {
   if (isMobile) {
@@ -191,6 +214,11 @@ function calculateDisplaySize(viewport, isMobile) {
   };
 }
 
+/**
+ * Calculates the scale factor to maintain aspect ratio
+ * @param {{width: number, height: number}} viewport - The viewport dimensions
+ * @returns {number} The scale factor
+ */
 function calculateScale(viewport) {
   const scaleX = (viewport.width - 2) / GAME_WIDTH;
   const scaleY = (viewport.height - 2) / GAME_HEIGHT;
@@ -199,8 +227,8 @@ function calculateScale(viewport) {
 }
 
 /**
- * Applies display size to canvas and game container
- * @param {{width: number, height: number}} size
+ * Applies the calculated display size to canvas and game container elements
+ * @param {{width: number, height: number}} size - The display size to apply
  */
 function applyCanvasStyles(size) {
   const gameContainer = document.getElementById("game-container");
@@ -213,8 +241,8 @@ function applyCanvasStyles(size) {
 }
 
 /**
- * Checks if the device likely uses touch input
- * @returns {boolean}
+ * Detects if the device is likely using touch input
+ * @returns {boolean} True if the device appears to be touch-based
  */
 function isTouchDevice() {
   return (
@@ -226,7 +254,8 @@ function isTouchDevice() {
 }
 
 /**
- * Toggles pause state
+ * Toggles the pause state of the game
+ * Updates UI and sound accordingly
  */
 function togglePause() {
   soundManager.play("buttonKlick");
@@ -243,7 +272,8 @@ function togglePause() {
 }
 
 /**
- * Toggles sound state
+ * Toggles the sound on/off state
+ * Updates UI and sound manager accordingly
  */
 function toggleSound() {
   soundManager.play("buttonKlick");
@@ -255,7 +285,8 @@ function toggleSound() {
 }
 
 /**
- * Resets the game state and returns to the start screen without reloading the page
+ * Resets the game state and returns to the start screen
+ * Cleans up game state and hides game UI elements
  */
 function endGame() {
   gameStarted = false;
@@ -270,6 +301,10 @@ function endGame() {
   world = null;
 }
 
+/**
+ * Shows the start screen and hides all other game screens
+ * Resets UI elements to their initial state
+ */
 function showStartScreen() {
   document.getElementById("imprint-btn").classList.remove("d-none");
   document.getElementById("game-container").classList.add("d-none");
@@ -281,6 +316,7 @@ function showStartScreen() {
 
 /**
  * Opens the options overlay
+ * Hides the imprint button while options are shown
  */
 function openOptions() {
   uiManager.openOptions();
@@ -289,12 +325,17 @@ function openOptions() {
 
 /**
  * Closes the options overlay
+ * Restores the imprint button visibility
  */
 function closeOptions() {
   uiManager.closeOptions();
   document.getElementById("imprint-btn").classList.remove("d-none");
 }
 
+/**
+ * Shows a rotate hint for mobile portrait orientation
+ * Automatically hides after 3 seconds if in portrait mode
+ */
 function showRotateHint() {
   if (!isTouchDevice()) return;
 
@@ -309,52 +350,20 @@ function showRotateHint() {
   }
 }
 
+/**
+ * Opens the imprint overlay
+ * Hides the imprint button while imprint is shown
+ */
 function openImprint() {
   document.getElementById("imprint").classList.remove("d-none");
   document.getElementById("imprint-btn").classList.add("d-none");
 }
 
+/**
+ * Closes the imprint overlay
+ * Restores the imprint button visibility
+ */
 function closeImprint() {
   document.getElementById("imprint").classList.add("d-none");
   document.getElementById("imprint-btn").classList.remove("d-none");
-}
-window.addEventListener("resize", showRotateHint);
-window.addEventListener("load", showRotateHint);
-
-function saveAllKeyBindings() {
-  // 1. Alle Input-Felder auswählen (für alle Keybindings)
-  const keyInputs = document.querySelectorAll(".keybind-input");
-
-  // 2. Durch jedes Input-Feld iterieren
-  keyInputs.forEach((input) => {
-    // 3. Aktuellen Tastenwert aus dem Input-Feld auslesen
-    const currentKey = input.value.trim().toUpperCase();
-
-    // 4. Zugehörigen Container (parent <li>) finden, um die Aktion zu ermitteln
-    const container = input.closest("[data-action]");
-    const action = container.getAttribute("data-action");
-
-    // 5. Taste in die keyMap eintragen (je nach Tastentyp)
-    if (currentKey === "SPACE") {
-      inputManager.keyMap["Space"] = action.toUpperCase();
-    } else if (currentKey.length === 1) {
-      // Für Buchstaben wie "D", "W", etc.
-      inputManager.keyMap[`Key${currentKey}`] = action.toUpperCase();
-    } else if (currentKey === "ARROWLEFT") {
-      inputManager.keyMap["ArrowLeft"] = action.toUpperCase();
-    } else if (currentKey === "ARROWRIGHT") {
-      inputManager.keyMap["ArrowRight"] = action.toUpperCase();
-    } else if (currentKey === "ARROWUP") {
-      inputManager.keyMap["ArrowUp"] = action.toUpperCase();
-    } else if (currentKey === "ARROWDOWN") {
-      inputManager.keyMap["ArrowDown"] = action.toUpperCase();
-    }
-
-    // 6. Den zugehörigen Span mit der neuen Taste aktualisieren
-    const currentKeySpan = container.querySelector(".current-key");
-    currentKeySpan.textContent = currentKey;
-  });
-
-  // Optional: Rückmeldung geben
-  alert("Alle Keybindings wurden gespeichert!");
 }

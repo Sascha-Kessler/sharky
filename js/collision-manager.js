@@ -79,7 +79,6 @@ class CollisionManager {
     const a = char.getHitbox();
     const b = enemy.getHitbox();
     const overlapsY = a.bottom > b.top && a.top < b.bottom;
-
     return overlapsX && overlapsY;
   }
 

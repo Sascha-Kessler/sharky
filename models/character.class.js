@@ -64,9 +64,9 @@ class Character extends MovableObject {
   attackBubbleThrown = false;
 
   /**
-   * Creates a new Character instance
-   * @param {Keyboard} keyboard - Input handler
-   * @param {World} world - Game world reference
+   * Creates a new Character instance with initial position and state
+   * @param {Keyboard} keyboard - Input handler for processing player controls
+   * @param {World} world - Reference to the game world containing level and enemies
    */
   constructor(keyboard, world) {
     super();
@@ -88,7 +88,9 @@ class Character extends MovableObject {
   }
 
   /**
-   * Updates character logic each frame (movement + animation)
+   * Updates character state each frame including movement, attacks, and animations
+   * Only processes updates if character is alive and boss is not dead
+   * @returns {void}
    */
   update() {
     const boss = this.world.enemies.find((e) => e instanceof Endboss);
@@ -103,8 +105,8 @@ class Character extends MovableObject {
   }
 
   /**
-   * Checks if the character is still in the hurt cooldown phase
-   * @returns {boolean}
+   * Checks if the character is still in the invincibility period after taking damage
+   * @returns {boolean} True if invincibility period is active, false otherwise
    */
   isHurtCooldownActive() {
     const now = Date.now();
@@ -112,7 +114,9 @@ class Character extends MovableObject {
   }
 
   /**
-   * Triggers the death state and resets animation values
+   * Transitions the character to the dead state
+   * Resets movement and prepares death animation
+   * @returns {void}
    */
   die() {
     if (this.dead) return;
@@ -126,7 +130,9 @@ class Character extends MovableObject {
   }
 
   /**
-   * Triggers the hurt state and starts hurt animation
+   * Transitions the character to the hurt state
+   * Starts the hurt animation sequence
+   * @returns {void}
    */
   hurt() {
     if (this.dead) return;
@@ -137,6 +143,13 @@ class Character extends MovableObject {
     this.hurtAnimationCounter = 0;
   }
 
+  /**
+   * Determines if the character is currently unable to act due to:
+   * - Being dead
+   * - Being hurt
+   * - Performing an attack
+   * @returns {boolean} True if character cannot act, false otherwise
+   */
   isUnableToAct() {
     return (
       this.dead ||

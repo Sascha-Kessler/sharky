@@ -16,7 +16,7 @@ class Endboss extends MovableObject {
   health = 100;
   speedY = 2;
 
-  attackSpeedX = 8;
+  attackSpeedX = 10;
   attackDistance = 200;
   attackStartX = 0;
   attackTargetX = 0;
@@ -88,10 +88,8 @@ class Endboss extends MovableObject {
   update() {
     this.movement.checkFirstContact();
     if (!this.hadFirstContact) return;
-
     if (this.dead) return this.animation.updateDeadAnimation();
     if (this.isHurt) return this.animation.updateHurtAnimation();
-
     if (this.isSpawning) return this.animation.updateSpawningAnimation();
     if (this.isAttacking) return this.attack.updateAttackMovement();
 

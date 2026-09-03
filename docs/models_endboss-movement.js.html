@@ -27,53 +27,91 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
- * Keeps the endboss within vertical world boundaries
+ * Controls all movement behavior for the Endboss including:
+ * - Basic floating movement patterns
+ * - Position clamping within game boundaries
+ * - Movement toward/away from player
+ * - Special movement states and transitions
+ * @class
  */
-Endboss.prototype.clampToWorld = function () {
-  if (this.y &lt; -this.offset.top) {
-    this.y = -this.offset.top;
+class EndbossMovement {
+  /**
+   * Creates a new movement controller for an Endboss
+   * @param {Endboss} endboss - The Endboss instance to control movement for
+   */
+  constructor(endboss) {
+    this.endboss = endboss;
   }
 
-  if (this.y + this.height - this.offset.bottom > this.world.height) {
-    this.y = this.world.height - this.height + this.offset.bottom;
-  }
-};
-
-/**
- * Moves the endboss automatically and reverses direction at bounds
- */
-Endboss.prototype.autoMove = function () {
-  if (
-    this.y &lt;= -this.offset.top ||
-    this.y + this.height - this.offset.bottom >= this.world.height
-  ) {
-    this.speedY *= -1;
+  /**
+   * Clamps the endboss position to stay within world boundaries
+   */
+  clampToWorld() {
+    this.clampTopBoundary();
+    this.clampBottomBoundary();
   }
 
-  this.y += this.speedY;
-};
-
-/**
- * Checks if the player reached the trigger point for the first encounter
- */
-Endboss.prototype.checkFirstContact = function () {
-  if (!this.world) return;
-
-  if (this.character.x > 1885 &amp;&amp; !this.hadFirstContact) {
-    this.startFirstContact();
+  /**
+   * Clamps the endboss to the top boundary
+   */
+  clampTopBoundary() {
+    if (this.endboss.y &lt; -this.endboss.offset.top) {
+      this.endboss.y = -this.endboss.offset.top;
+    }
   }
-};
 
-/**
- * Initializes the first contact state and starts spawning
- */
-Endboss.prototype.startFirstContact = function () {
-  this.hadFirstContact = true;
-  this.isSpawning = true;
-  this.spawnAnimationFinished = false;
-  this.spawningIndex = 0;
-  this.frameCounter = 0;
-};
+  /**
+   * Clamps the endboss to the bottom boundary
+   */
+  clampBottomBoundary() {
+    if (
+      this.endboss.y + this.endboss.height - this.endboss.offset.bottom >
+      this.endboss.world.height
+    ) {
+      this.endboss.y =
+        this.endboss.world.height -
+        this.endboss.height +
+        this.endboss.offset.bottom;
+    }
+  }
+
+  /**
+   * Moves the endboss automatically and reverses direction at bounds
+   */
+  autoMove() {
+    if (
+      this.endboss.y &lt;= -this.endboss.offset.top ||
+      this.endboss.y + this.endboss.height - this.endboss.offset.bottom >=
+        this.endboss.world.height
+    ) {
+      this.endboss.speedY *= -1;
+    }
+
+    this.endboss.y += this.endboss.speedY;
+  }
+
+  /**
+   * Checks if the player reached the trigger point for the first encounter
+   */
+  checkFirstContact() {
+    if (!this.endboss.world || !this.endboss.character) return;
+
+    if (this.endboss.character.x > 1885 &amp;&amp; !this.endboss.hadFirstContact) {
+      this.startFirstContact();
+    }
+  }
+
+  /**
+   * Initializes the first contact state and starts spawning
+   */
+  startFirstContact() {
+    this.endboss.hadFirstContact = true;
+    this.endboss.isSpawning = true;
+    this.endboss.spawnAnimationFinished = false;
+    this.endboss.spawningIndex = 0;
+    this.endboss.frameCounter = 0;
+  }
+}
 </code></pre>
         </article>
     </section>
@@ -84,13 +122,13 @@ Endboss.prototype.startFirstContact = function () {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Character.html">Character</a></li><li><a href="Coin.html">Coin</a></li><li><a href="Coinbar.html">Coinbar</a></li><li><a href="DrawableObjects.html">DrawableObjects</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="Healthbar.html">Healthbar</a></li><li><a href="InputManager.html">InputManager</a></li><li><a href="JellyFish.html">JellyFish</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Level.html">Level</a></li><li><a href="PoisonBottle.html">PoisonBottle</a></li><li><a href="Poisonbar.html">Poisonbar</a></li><li><a href="PufferFish.html">PufferFish</a></li><li><a href="SoundManager.html">SoundManager</a></li><li><a href="Statusbar.html">Statusbar</a></li><li><a href="ThrowableObject.html">ThrowableObject</a></li><li><a href="UIManager.html">UIManager</a></li></ul><h3>Global</h3><ul><li><a href="global.html#applyCanvasStyles">applyCanvasStyles</a></li><li><a href="global.html#calculateDisplaySize">calculateDisplaySize</a></li><li><a href="global.html#checkGameOver">checkGameOver</a></li><li><a href="global.html#checkWinGame">checkWinGame</a></li><li><a href="global.html#closeOptions">closeOptions</a></li><li><a href="global.html#createCoinArc">createCoinArc</a></li><li><a href="global.html#createCoinRow">createCoinRow</a></li><li><a href="global.html#createLevel1">createLevel1</a></li><li><a href="global.html#endGame">endGame</a></li><li><a href="global.html#gameLoop">gameLoop</a></li><li><a href="global.html#getViewportSize">getViewportSize</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#isTouchDevice">isTouchDevice</a></li><li><a href="global.html#openOptions">openOptions</a></li><li><a href="global.html#playGameOverSound">playGameOverSound</a></li><li><a href="global.html#resizeCanvas">resizeCanvas</a></li><li><a href="global.html#setCanvasResolution">setCanvasResolution</a></li><li><a href="global.html#startGame">startGame</a></li><li><a href="global.html#togglePause">togglePause</a></li><li><a href="global.html#toggleSound">toggleSound</a></li><li><a href="global.html#updateGame">updateGame</a></li><li><a href="global.html#updateStatusbarPositions">updateStatusbarPositions</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BackgroundObject.html">BackgroundObject</a></li><li><a href="BossHealthbar.html">BossHealthbar</a></li><li><a href="Character.html">Character</a></li><li><a href="CharacterAnimation.html">CharacterAnimation</a></li><li><a href="CharacterAttack.html">CharacterAttack</a></li><li><a href="CharacterMovement.html">CharacterMovement</a></li><li><a href="Coin.html">Coin</a></li><li><a href="Coinbar.html">Coinbar</a></li><li><a href="CollisionManager.html">CollisionManager</a></li><li><a href="DrawableObjects.html">DrawableObjects</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="EndbossAnimation.html">EndbossAnimation</a></li><li><a href="EndbossAttack.html">EndbossAttack</a></li><li><a href="EndbossMovement.html">EndbossMovement</a></li><li><a href="Healthbar.html">Healthbar</a></li><li><a href="InputManager.html">InputManager</a></li><li><a href="JellyFish.html">JellyFish</a></li><li><a href="JellyFishAnimation.html">JellyFishAnimation</a></li><li><a href="JellyFishMovement.html">JellyFishMovement</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Level.html">Level</a></li><li><a href="MovableObject.html">MovableObject</a></li><li><a href="PoisonBottle.html">PoisonBottle</a></li><li><a href="Poisonbar.html">Poisonbar</a></li><li><a href="PufferFish.html">PufferFish</a></li><li><a href="PufferFishAnimation.html">PufferFishAnimation</a></li><li><a href="PufferFishMovement.html">PufferFishMovement</a></li><li><a href="SoundManager.html">SoundManager</a></li><li><a href="Statusbar.html">Statusbar</a></li><li><a href="ThrowableObject.html">ThrowableObject</a></li><li><a href="UIManager.html">UIManager</a></li><li><a href="World.html">World</a></li></ul><h3>Global</h3><ul><li><a href="global.html#IMAGES_BOSSBAR">IMAGES_BOSSBAR</a></li><li><a href="global.html#IMAGES_COINBAR">IMAGES_COINBAR</a></li><li><a href="global.html#IMAGES_HEALTHBAR">IMAGES_HEALTHBAR</a></li><li><a href="global.html#IMAGES_POISONBAR">IMAGES_POISONBAR</a></li><li><a href="global.html#applyCanvasStyles">applyCanvasStyles</a></li><li><a href="global.html#calculateDisplaySize">calculateDisplaySize</a></li><li><a href="global.html#calculateScale">calculateScale</a></li><li><a href="global.html#checkGameOver">checkGameOver</a></li><li><a href="global.html#checkWinGame">checkWinGame</a></li><li><a href="global.html#closeImprint">closeImprint</a></li><li><a href="global.html#closeOptions">closeOptions</a></li><li><a href="global.html#createCoinArc">createCoinArc</a></li><li><a href="global.html#createCoinRow">createCoinRow</a></li><li><a href="global.html#createGameWorld">createGameWorld</a></li><li><a href="global.html#createLevel1">createLevel1</a></li><li><a href="global.html#endGame">endGame</a></li><li><a href="global.html#gameLoop">gameLoop</a></li><li><a href="global.html#getViewportSize">getViewportSize</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#isTouchDevice">isTouchDevice</a></li><li><a href="global.html#openImprint">openImprint</a></li><li><a href="global.html#openOptions">openOptions</a></li><li><a href="global.html#playGameOverSound">playGameOverSound</a></li><li><a href="global.html#resetGameControls">resetGameControls</a></li><li><a href="global.html#resizeCanvas">resizeCanvas</a></li><li><a href="global.html#restartGame">restartGame</a></li><li><a href="global.html#setCanvasResolution">setCanvasResolution</a></li><li><a href="global.html#showRotateHint">showRotateHint</a></li><li><a href="global.html#showStartScreen">showStartScreen</a></li><li><a href="global.html#startGame">startGame</a></li><li><a href="global.html#togglePause">togglePause</a></li><li><a href="global.html#toggleSound">toggleSound</a></li><li><a href="global.html#updateGame">updateGame</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Mon Apr 27 2026 18:52:19 GMT+0200 (Central European Summer Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Thu Sep 03 2026 16:23:05 GMT+0200 (Central European Summer Time)
 </footer>
 
 <script> prettyPrint(); </script>

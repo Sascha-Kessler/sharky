@@ -1,16 +1,41 @@
+/**
+ * Controls all movement behavior for the Endboss including:
+ * - Basic floating movement patterns
+ * - Position clamping within game boundaries
+ * - Movement toward/away from player
+ * - Special movement states and transitions
+ * @class
+ */
 class EndbossMovement {
+  /**
+   * Creates a new movement controller for an Endboss
+   * @param {Endboss} endboss - The Endboss instance to control movement for
+   */
   constructor(endboss) {
     this.endboss = endboss;
   }
 
   /**
-   * Keeps the endboss within vertical world boundaries
+   * Clamps the endboss position to stay within world boundaries
    */
   clampToWorld() {
+    this.clampTopBoundary();
+    this.clampBottomBoundary();
+  }
+
+  /**
+   * Clamps the endboss to the top boundary
+   */
+  clampTopBoundary() {
     if (this.endboss.y < -this.endboss.offset.top) {
       this.endboss.y = -this.endboss.offset.top;
     }
+  }
 
+  /**
+   * Clamps the endboss to the bottom boundary
+   */
+  clampBottomBoundary() {
     if (
       this.endboss.y + this.endboss.height - this.endboss.offset.bottom >
       this.endboss.world.height

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: models/character-movement.class.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: models/character-movement.class.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Handles all movement-related functionality for the character including:
+ * - Input processing for movement and attacks
+ * - Position updates
+ * - World boundary clamping
+ * - Camera synchronization
+ * @class
+ */
+class CharacterMovement {
+  /**
+   * Creates a new movement controller for a character
+   * @param {Character} character - The character instance to control
+   */
+  constructor(character) {
+    this.character = character;
+  }
+
+  /**
+   * Processes all input for movement and attacks
+   * Calls the individual input handlers in sequence
+   * @returns {void}
+   */
+  handleMovementInput() {
+    this.handleHorizontalInput();
+    this.handleVerticalInput();
+    this.handleAttackInput();
+  }
+
+  /**
+   * Processes horizontal movement input (left/right arrows)
+   * Sets the character's speedX and otherDirection based on input
+   * @returns {void}
+   */
+  handleHorizontalInput() {
+    const char = this.character;
+
+    if (char.keyboard.RIGHT) {
+      char.speedX = 5;
+      char.otherDirection = false;
+    } else if (char.keyboard.LEFT) {
+      char.speedX = -5;
+      char.otherDirection = true;
+    } else {
+      char.speedX = 0;
+    }
+  }
+
+  /**
+   * Processes vertical movement input (up/down arrows)
+   * Sets the character's speedY based on input
+   * @returns {void}
+   */
+  handleVerticalInput() {
+    const char = this.character;
+
+    if (char.keyboard.UP) {
+      char.speedY = -5;
+    } else if (char.keyboard.DOWN) {
+      char.speedY = 5;
+    } else {
+      char.speedY = 0;
+    }
+  }
+
+  /**
+   * Processes attack input (normal, poison, fin slap)
+   * Only processes attacks if the character is able to act
+   * @returns {void}
+   */
+  handleAttackInput() {
+    const char = this.character;
+    if (char.isUnableToAct()) return;
+    if (char.keyboard.ATTACK) {
+      char.attack.normalAttack();
+    }
+    if (char.keyboard.POISON) {
+      char.attack.poisonAttack();
+    }
+    if (char.keyboard.FIN_SLAP) {
+      char.attack.finSlapAttack();
+    }
+  }
+
+  /**
+   * Applies the current movement to the character's position
+   * and updates the camera position accordingly
+   * @returns {void}
+   */
+  applyMovement() {
+    const char = this.character;
+
+    char.x += char.speedX;
+    char.y += char.speedY;
+    char.world.camera_x = -char.x + 100;
+  }
+
+  /**
+   * Ensures the character stays within the world boundaries
+   * Calls all clamping methods to restrict movement
+   * @returns {void}
+   */
+  clampToWorld() {
+    this.clampXMin();
+    this.clampXMax();
+    this.clampYMin();
+    this.clampYMax();
+  }
+
+  /**
+   * Prevents the character from moving beyond the left boundary
+   * @returns {void}
+   */
+  clampXMin() {
+    if (this.character.x &lt; 150) {
+      this.character.x = 150;
+    }
+  }
+
+  /**
+   * Prevents the character from moving beyond the right boundary
+   * @returns {void}
+   */
+  clampXMax() {
+    if (this.character.x > this.character.world.level.level_end_x) {
+      this.character.x = this.character.world.level.level_end_x;
+    }
+  }
+
+  /**
+   * Prevents the character from moving above the top boundary
+   * @returns {void}
+   */
+  clampYMin() {
+    if (this.character.y &lt; -this.character.offset.top) {
+      this.character.y = -this.character.offset.top;
+    }
+  }
+
+  /**
+   * Prevents the character from moving below the bottom boundary
+   * @returns {void}
+   */
+  clampYMax() {
+    if (
+      this.character.y + this.character.height - this.character.offset.bottom >
+      this.character.world.height
+    ) {
+      this.character.y =
+        this.character.world.height -
+        this.character.height +
+        this.character.offset.bottom;
+    }
+  }
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BackgroundObject.html">BackgroundObject</a></li><li><a href="BossHealthbar.html">BossHealthbar</a></li><li><a href="Character.html">Character</a></li><li><a href="CharacterAnimation.html">CharacterAnimation</a></li><li><a href="CharacterAttack.html">CharacterAttack</a></li><li><a href="CharacterMovement.html">CharacterMovement</a></li><li><a href="Coin.html">Coin</a></li><li><a href="Coinbar.html">Coinbar</a></li><li><a href="CollisionManager.html">CollisionManager</a></li><li><a href="DrawableObjects.html">DrawableObjects</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="EndbossAnimation.html">EndbossAnimation</a></li><li><a href="EndbossAttack.html">EndbossAttack</a></li><li><a href="EndbossMovement.html">EndbossMovement</a></li><li><a href="Healthbar.html">Healthbar</a></li><li><a href="InputManager.html">InputManager</a></li><li><a href="JellyFish.html">JellyFish</a></li><li><a href="JellyFishAnimation.html">JellyFishAnimation</a></li><li><a href="JellyFishMovement.html">JellyFishMovement</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Level.html">Level</a></li><li><a href="MovableObject.html">MovableObject</a></li><li><a href="PoisonBottle.html">PoisonBottle</a></li><li><a href="Poisonbar.html">Poisonbar</a></li><li><a href="PufferFish.html">PufferFish</a></li><li><a href="PufferFishAnimation.html">PufferFishAnimation</a></li><li><a href="PufferFishMovement.html">PufferFishMovement</a></li><li><a href="SoundManager.html">SoundManager</a></li><li><a href="Statusbar.html">Statusbar</a></li><li><a href="ThrowableObject.html">ThrowableObject</a></li><li><a href="UIManager.html">UIManager</a></li><li><a href="World.html">World</a></li></ul><h3>Global</h3><ul><li><a href="global.html#IMAGES_BOSSBAR">IMAGES_BOSSBAR</a></li><li><a href="global.html#IMAGES_COINBAR">IMAGES_COINBAR</a></li><li><a href="global.html#IMAGES_HEALTHBAR">IMAGES_HEALTHBAR</a></li><li><a href="global.html#IMAGES_POISONBAR">IMAGES_POISONBAR</a></li><li><a href="global.html#applyCanvasStyles">applyCanvasStyles</a></li><li><a href="global.html#calculateDisplaySize">calculateDisplaySize</a></li><li><a href="global.html#calculateScale">calculateScale</a></li><li><a href="global.html#checkGameOver">checkGameOver</a></li><li><a href="global.html#checkWinGame">checkWinGame</a></li><li><a href="global.html#closeImprint">closeImprint</a></li><li><a href="global.html#closeOptions">closeOptions</a></li><li><a href="global.html#createCoinArc">createCoinArc</a></li><li><a href="global.html#createCoinRow">createCoinRow</a></li><li><a href="global.html#createGameWorld">createGameWorld</a></li><li><a href="global.html#createLevel1">createLevel1</a></li><li><a href="global.html#endGame">endGame</a></li><li><a href="global.html#gameLoop">gameLoop</a></li><li><a href="global.html#getViewportSize">getViewportSize</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#isTouchDevice">isTouchDevice</a></li><li><a href="global.html#openImprint">openImprint</a></li><li><a href="global.html#openOptions">openOptions</a></li><li><a href="global.html#playGameOverSound">playGameOverSound</a></li><li><a href="global.html#resetGameControls">resetGameControls</a></li><li><a href="global.html#resizeCanvas">resizeCanvas</a></li><li><a href="global.html#restartGame">restartGame</a></li><li><a href="global.html#setCanvasResolution">setCanvasResolution</a></li><li><a href="global.html#showRotateHint">showRotateHint</a></li><li><a href="global.html#showStartScreen">showStartScreen</a></li><li><a href="global.html#startGame">startGame</a></li><li><a href="global.html#togglePause">togglePause</a></li><li><a href="global.html#toggleSound">toggleSound</a></li><li><a href="global.html#updateGame">updateGame</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Thu Sep 03 2026 16:23:05 GMT+0200 (Central European Summer Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

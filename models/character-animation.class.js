@@ -1,10 +1,20 @@
+/**
+ * Manages all animation states and transitions for the character
+ * @class
+ */
 class CharacterAnimation {
+  /**
+   * Creates a new animation controller for a character
+   * @param {Character} character - The character instance to animate
+   */
   constructor(character) {
     this.character = character;
   }
 
   /**
-   * Controls which animation should be played based on the current state
+   * Determines and updates the appropriate animation based on character state
+   * Priority order: death > hurt > attack > movement
+   * @returns {void}
    */
   updateAnimation() {
     const char = this.character;
@@ -16,6 +26,11 @@ class CharacterAnimation {
     this.updateMovementAnimation(char);
   }
 
+  /**
+   * Handles attack animations based on current attack state
+   * @param {Character} char - The character instance
+   * @returns {boolean} True if an attack animation is playing, false otherwise
+   */
   updateAttackAnimation(char) {
     const attackAnimations = [
       [char.isAttacking, "updateNormalAttack"],
@@ -30,6 +45,10 @@ class CharacterAnimation {
     return true;
   }
 
+  /**
+   * Updates animation based on movement state
+   * @param {Character} char - The character instance
+   */
   updateMovementAnimation(char) {
     const isIdle = char.speedX === 0 && char.speedY === 0;
 
@@ -37,7 +56,8 @@ class CharacterAnimation {
   }
 
   /**
-   * Updates idle animation when character is not moving
+   * Updates idle animation when character is stationary
+   * @returns {void}
    */
   updateIdleAnimation() {
     const char = this.character;
@@ -54,7 +74,8 @@ class CharacterAnimation {
   }
 
   /**
-   * Updates swimming animation while character is moving
+   * Updates swimming animation when character is moving
+   * @returns {void}
    */
   updateSwimAnimation() {
     const char = this.character;
@@ -70,6 +91,11 @@ class CharacterAnimation {
     }
   }
 
+  /**
+   * Updates a single frame of the swimming animation
+   * @param {Character} char - The character instance
+   * @returns {void}
+   */
   updateSwimFrame(char) {
     if (char.frameCounter < char.swimFrameDelay) return;
 
@@ -81,7 +107,8 @@ class CharacterAnimation {
   }
 
   /**
-   * Updates hurt animation when character is damaged
+   * Updates hurt animation when character takes damage
+   * @returns {void}
    */
   updateHurtAnimation() {
     const char = this.character;
@@ -96,6 +123,11 @@ class CharacterAnimation {
     }
   }
 
+  /**
+   * Resets character state after hurt animation completes
+   * @param {Character} char - The character instance
+   * @returns {void}
+   */
   finishHurtAnimation(char) {
     char.isHurt = false;
     char.currentImageHurt = 0;
@@ -105,7 +137,8 @@ class CharacterAnimation {
   }
 
   /**
-   * Updates death animation until it finishes
+   * Updates death animation sequence until completion
+   * @returns {void}
    */
   updateDeadAnimation() {
     const char = this.character;
@@ -116,6 +149,11 @@ class CharacterAnimation {
     this.updateDeadFrame(char);
   }
 
+  /**
+   * Updates a single frame of the death animation
+   * @param {Character} char - The character instance
+   * @returns {void}
+   */
   updateDeadFrame(char) {
     const path = char.IMAGES_DEAD[char.currentImageDead];
     char.img = char.imageCache[path];
@@ -123,5 +161,15 @@ class CharacterAnimation {
     if (char.currentImageDead >= char.IMAGES_DEAD.length) {
       this.finishDeadAnimation(char);
     }
+  }
+
+  /**
+   * Finalizes the death animation and sets character state
+   * @param {Character} char - The character instance
+   * @returns {void}
+   */
+  finishDeadAnimation(char) {
+    char.currentImageDead = char.IMAGES_DEAD.length - 1;
+    char.deadAnimationFinished = true;
   }
 }

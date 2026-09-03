@@ -22,10 +22,7 @@ class Statusbar extends DrawableObjects {
     this.x = x;
     this.y = y;
 
-    /** @type {number} Base x position (used for responsive scaling) */
     this.baseX = x;
-
-    /** @type {number} Base y position (used for responsive scaling) */
     this.baseY = y;
 
     this.width = width;
