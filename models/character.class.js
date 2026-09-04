@@ -19,9 +19,9 @@ class Character extends MovableObject {
 
   offset = {
     top: 120,
-    left: 35,
-    right: 40,
-    bottom: 45,
+    left: 45,
+    right: 50,
+    bottom: 55,
   };
 
   currentImageIdle = 0;

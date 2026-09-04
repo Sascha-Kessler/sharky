@@ -349,7 +349,6 @@ document.addEventListener("DOMContentLoaded", function() {
     dialogOverlay.addEventListener("click", function(e) {
       
       if (!optionsContent.contains(e.target)) {
-        console.log("geht");
         
         closeOptions();
       }
@@ -368,8 +367,7 @@ document.addEventListener("DOMContentLoaded", function() {
     dialogOverlay.addEventListener("click", function(e) {
       
       if (!imprint.contains(e.target)) {
-        console.log("geht");
-        
+   
         closeImprint();
       }
     });

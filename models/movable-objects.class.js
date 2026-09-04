@@ -25,7 +25,9 @@ class MovableObject extends DrawableObjects {
       this instanceof PufferFish ||
       this instanceof JellyFish ||
       this instanceof Endboss ||
-      this instanceof Coin
+      this instanceof Coin ||
+      this instanceof ThrowableObject ||
+      this instanceof PoisonBottle
     ) {
       const left = this.offset?.left || 0;
       const top = this.offset?.top || 0;

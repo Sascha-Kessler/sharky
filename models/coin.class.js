@@ -16,6 +16,13 @@ class Coin extends MovableObject {
   frameCounter = 0;
   coinFrameDelay = 12;
 
+  offset = {
+    top: 5,
+    left: 5,
+    right: 5,
+    bottom: 5,
+  };
+
   /**
    * Creates a new coin at a random position
    */

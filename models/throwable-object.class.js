@@ -1,9 +1,17 @@
 /**
  * Represents a throwable object (normal or poison bubble)
  */
+
 class ThrowableObject extends MovableObject {
   speedX = 0;
   isThrown = false;
+
+  offset = {
+    top: 8,
+    left: 8,
+    right: 8,
+    bottom: 8,
+  };
 
   /**
    * Creates a throwable object at a given position

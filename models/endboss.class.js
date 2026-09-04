@@ -23,10 +23,10 @@ class Endboss extends MovableObject {
   attackCooldown = 5000;
 
   offset = {
-    top: 150,
-    left: 20,
-    right: 0,
-    bottom: 65,
+    top: 160,
+    left: 40,
+    right: 5,
+    bottom: 70,
   };
 
   currentImage = 0;

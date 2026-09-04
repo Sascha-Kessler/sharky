@@ -7,6 +7,13 @@ class PoisonBottle extends MovableObject {
   height = 60;
   width = 60;
 
+  offset = {
+    top: 28,
+    left: 23,
+    right: 8,
+    bottom: 8,
+  };
+
   /**
    * Creates a poison bottle at a given position
    * @param {number} x
