@@ -22,23 +22,21 @@
     <script src="./models/character-attack.class.js"></script>
     <script src="./models/character-animation.class.js"></script>
     <script src="./models/character.class.js"></script>
-    
-    
+
     <script src="./assets/puffer-fish.images.js"></script>
-    
+
     <script src="./models/puffer-fish-movement.js"></script>
     <script src="./models/puffer-fish-animation.js"></script>
     <script src="./models/puffer-fish.class.js"></script>
 
-    
     <script src="./assets/jelly-fish.images.js"></script>
-    
+
     <script src="./models/jelly-fish-movement.js"></script>
     <script src="./models/jelly-fish-animation.js"></script>
     <script src="./models/jelly-fish.class.js"></script>
     <script src="./assets/endboss.images.js"></script>
     <script src="./models/boss-healthbar.class.js"></script>
-    
+
     <script src="./models/endboss-movement.js"></script>
     <script src="./models/endboss-animation.js"></script>
     <script src="./models/endboss-attack.js"></script>
@@ -145,8 +143,8 @@
       </div>
     </div>
 
-    <div id="options-overlay" class="options-overlay d-none">
-      <div class="options-content">
+    <dialog id="options-overlay" class="options-overlay d-none">
+      <div id="options-content" class="options-content">
         <button
           id="options-overlay-close-button"
           class="options-overlay-close-button ocean-btn"
@@ -194,43 +192,60 @@
           </li>
         </ul>
       </div>
-    </div>
+    </dialog>
 
     <div id="rotate-warning" class="rotate-warning d-none">
       Rotate your device for the best experience
     </div>
 
-    <div id="imprint" class="options-overlay d-none">
-      <div class="options-content">
-        <button
-          class="ocean-btn options-overlay-close-button"
-          onclick="closeImprint()"
-        >
-          ✕
-        </button>
+    <dialog id="imprint-overlay" class="imprint-overlay d-none">
+      <div id="imprint" class="imprint-content d-none">
+        <div class="imprint">
+          <button
+            class="ocean-btn options-overlay-close-button"
+            onclick="closeImprint()"
+          >
+            ✕
+          </button>
 
-        <h2>Imprint</h2>
+          <h2>Imprint</h2>
 
-        <div class="imprint-grid">
-  <p>Sascha Kessler<br />
-Sharky Project<br />
-Zum Waldweiher 17<br />
-66606 St.Wendel</p>
+          <div class="imprint-grid">
+            <div class="left-column">
+              <p>
+                Sascha Kessler<br />
+                Zum Waldweiher 17<br />
+                66606 St.Wendel<br />
+                Telefon: +49 (0) 467435<br />
+                E-Mail: sascha.k1809@gmail.com
+              </p>
 
-<h3>Kontakt</h3>
-<p>Telefon: +49 (0) 467435<br />
-E-Mail: sascha.k1809@gmail.com</p>
+              
+              <h3>Berufsbezeichnung und berufsrechtliche Regelungen</h3>
+              <p>
+                Berufsbezeichnung:<br />
+                Software Developer
+              </p>
+            </div>
+<div class="right-column">
+            <h3>
+              Verbraucher&shy;streit&shy;beilegung/Universal&shy;schlichtungs&shy;stelle
+            </h3>
+            <p>
+              Wir sind nicht bereit oder verpflichtet, an
+              Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle
+              teilzunehmen.
+            </p>
 
-<h3>Berufsbezeichnung und berufsrechtliche Regelungen</h3>
-<p>Berufsbezeichnung:<br />
-Software Developer</p>
-<p>Verliehen in:<br />
-Deutschland</p>
-<h3>Verbraucher&shy;streit&shy;beilegung/Universal&shy;schlichtungs&shy;stelle</h3>
-<p>Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.</p>
-
-<p>Quelle: <a href="https://www.e-recht24.de/impressum-generator.html">https://www.e-recht24.de/impressum-generator.html</a></p>
-</div>
-    </div>
+            <p>
+              Quelle:
+              <a href="https://www.e-recht24.de/impressum-generator.html"
+                >https://www.e-recht24.de/impressum-generator.html</a
+              >
+            </p>
+          </div>
+        </div>
+      </div>
+    </dialog>
   </body>
 </html>

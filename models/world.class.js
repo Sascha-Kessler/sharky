@@ -281,7 +281,7 @@ class World {
     if (mo.otherDirection) {
       this.flipImageBack(mo);
     }
-    if (window.DEBUG.hitbox) {
+    if (window.DEBUG.hitbox && typeof mo.drawFrame === "function") {
       mo.drawFrame(this.ctx);
     }
   }

@@ -7,6 +7,7 @@ class SoundManager {
    */
   constructor() {
     this.soundOn = false;
+    this.soundWasOn = false;
     this.wasMusicPlayingBeforePause = false;
 
     this.sounds = {

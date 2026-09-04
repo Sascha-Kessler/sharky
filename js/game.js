@@ -43,7 +43,6 @@ function resetGameControls() {
   isPaused = false;
 
   soundManager.reset();
-  uiManager.updateSoundIcon(false);
   uiManager.updatePauseIcon(false);
   uiManager.setButtonDisabled("sound-btn", false);
 }
@@ -57,6 +56,10 @@ function createGameWorld() {
 
   const level1 = createLevel1();
   world = new World(canvas, keyboard, level1, soundManager);
+  if (soundManager.soundWasOn) {
+    soundManager.soundOn = true;
+    soundManager.playMusic();
+  }
 
   uiManager.showGameScreen();
 }
@@ -279,7 +282,7 @@ function toggleSound() {
   soundManager.play("buttonKlick");
 
   const soundOn = soundManager.toggleSound(isPaused);
-
+  soundManager.soundWasOn = soundOn;
   uiManager.updateSoundIcon(soundOn);
   uiManager.blurButton("sound-btn");
 }
@@ -295,7 +298,6 @@ function endGame() {
   gameOverSoundPlayed = false;
   isPaused = false;
   soundManager.pauseMusic();
-  soundManager.soundOn = false;
   showStartScreen();
 
   world = null;
@@ -332,6 +334,44 @@ function closeOptions() {
   document.getElementById("imprint-btn").classList.remove("d-none");
 }
 
+// prettier-ignore
+document.addEventListener("DOMContentLoaded", function() {
+  const dialogOverlay = document.getElementById("options-overlay");
+  const optionsContent = document.getElementById("options-content");
+
+
+  // Event-Listener auf das OVERLAY-Element
+  if (dialogOverlay && optionsContent) {
+    dialogOverlay.addEventListener("click", function(e) {
+      
+      if (!optionsContent.contains(e.target)) {
+        console.log("geht");
+        
+        closeOptions();
+      }
+    });
+  }
+});
+
+// prettier-ignore
+document.addEventListener("DOMContentLoaded", function() {
+  const dialogOverlay = document.getElementById("imprint-overlay");
+  const optionsContent = document.getElementById("imprint-content");
+
+
+  // Event-Listener auf das OVERLAY-Element
+  if (dialogOverlay && imprint) {
+    dialogOverlay.addEventListener("click", function(e) {
+      
+      if (!imprint.contains(e.target)) {
+        console.log("geht");
+        
+        closeImprint();
+      }
+    });
+  }
+});
+
 /**
  * Shows a rotate hint for mobile portrait orientation
  * Automatically hides after 3 seconds if in portrait mode
@@ -355,6 +395,7 @@ function showRotateHint() {
  * Hides the imprint button while imprint is shown
  */
 function openImprint() {
+  document.getElementById("imprint-overlay").classList.remove("d-none");
   document.getElementById("imprint").classList.remove("d-none");
   document.getElementById("imprint-btn").classList.add("d-none");
 }
@@ -364,6 +405,6 @@ function openImprint() {
  * Restores the imprint button visibility
  */
 function closeImprint() {
-  document.getElementById("imprint").classList.add("d-none");
+  document.getElementById("imprint-overlay").classList.add("d-none");
   document.getElementById("imprint-btn").classList.remove("d-none");
 }

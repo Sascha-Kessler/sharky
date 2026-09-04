@@ -41,7 +41,10 @@
   border-radius: clamp(8px, 1.5vw, 14px);
 }
 
-.options-overlay {
+.options-overlay,
+.imprint-overlay {
+  height: 100vh;
+  width: 100vw;
   position: fixed;
   inset: 0;
 
@@ -56,7 +59,8 @@
   background: rgba(0, 0, 0, 0.8);
 }
 
-.options-content {
+.options-content,
+.imprint {
   position: relative;
 
   width: clamp(240px, 75vw, 460px);
@@ -75,6 +79,11 @@
 
   border-radius: clamp(8px, 1.5vw, 14px);
   border: 1px solid rgba(0, 207, 255, 0.35);
+}
+
+.imprint {
+  color: white;
+  padding: 0 5px;
 }
 
 .options-content h2 {
@@ -100,7 +109,7 @@
 
 .controls-list {
   width: 100%;
-
+  border-radius: 1em;
   list-style: none;
 
   padding: 0;
@@ -119,7 +128,7 @@
 
   font-size: clamp(12px, 2.2vw, 16px);
 
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.6);
   border-radius: clamp(8px, 1.5vw, 12px);
 }
 
@@ -285,14 +294,28 @@
     gap: 16px;
   }
 
-  #imprint p {
+  #imprint p,
+  h3 {
     font-size: 16px;
-    line-height: 1.4;
   }
+
+  .imprint-content,
+  .imprint {
+    width: 100%;
+  }
+}
+
+@media (max-height: 600px) {
   #imprint .imprint-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 10px;
     width: 100%;
+  }
+
+  #imprint p,
+  h3 {
+    font-size: 16px;
+    margin: 0;
   }
 }

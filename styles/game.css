@@ -110,7 +110,7 @@
   opacity: 0;
   transition: opacity 0.3s ease;
 
-  padding: 10px 20px;
+  padding: 15px 25px;
 
   border-radius: 10px;
   border: 1px solid #ffcc00;
@@ -119,6 +119,7 @@
   color: #ffcc00;
 
   font-weight: bold;
+  font-size: 25px;
   letter-spacing: 1px;
 
   z-index: 999;
@@ -126,4 +127,10 @@
 
 .rotate-warning:not(.d-none) {
   opacity: 1;
+}
+
+@media (max-width: 600px) {
+  .rotate-warning {
+    font-size: 20px;
+  }
 }
