@@ -61,6 +61,7 @@ class World {
     this.handleProjectiles();
     this.handleCollisions();
     this.updateUI();
+    showRotateHint();
   }
 
   /**

@@ -397,6 +397,9 @@ function handleOrientationChange() {
   const isPortrait = window.innerHeight > window.innerWidth;
 
   if (!isPortrait) {
+    if (gameStarted) {
+      togglePause();
+    }
     warning.classList.add("d-none");
     document.getElementById("start-btn").disabled = false;
   } else {

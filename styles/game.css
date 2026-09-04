@@ -52,10 +52,14 @@
   gap: 50px;
 }
 
-.game-over-screen img,
-.win-screen img {
-  width: 60%;
+.game-over-screen img {
+  width: 100vw;
   height: auto;
+}
+
+.win-screen img {
+  width: 100vw;
+  height: 100vh;
 }
 
 .mobile-controls {
@@ -103,8 +107,10 @@
 }
 
 .rotate-warning {
+  display: flex;
+  align-items: center;
   position: absolute;
-  top: 70px; /* unter deinem Titel */
+  top: 10%;
   left: 50%;
   transform: translateX(-50%);
   opacity: 0;
@@ -132,5 +138,20 @@
 @media (max-width: 600px) {
   .rotate-warning {
     font-size: 20px;
+    width: 80vw;
+    height: 80vh;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
   }
+}
+
+.rotate-warning-container {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  pointer-events: none;
 }

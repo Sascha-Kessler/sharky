@@ -83,6 +83,10 @@
     >
       Imprint
     </button>
+    <div class="rotate-warning-container">
+    <div id="rotate-warning" class="rotate-warning d-none">
+      Rotate your device for the best experience
+    </div></div>
 
     <div id="game-container" class="game-container d-none">
       <canvas id="canvas" class="canvas"></canvas>
@@ -132,14 +136,18 @@
 
       <div id="game-over-screen" class="game-over-screen d-none">
         <img src="../img/6.Botones/Tittles/Game Over/Recurso 9.png" alt="" />
-        <button class="ocean-btn" onclick="endGame()">Menu</button>
+        <div class="winscreen-btn">
+          <button class="ocean-btn" onclick="endGame()">Menu</button>
         <button class="ocean-btn" onclick="restartGame()">Retry</button>
       </div>
 
       <div id="win-screen" class="win-screen d-none">
         <img src="../img/6.Botones/Try again/Mesa de trabajo 1.png" alt="" />
-        <button class="ocean-btn" onclick="endGame()">Menu</button>
+        <div class="winscreen-btn">
+          <button class="ocean-btn" onclick="endGame()">Menu</button>
         <button class="ocean-btn" onclick="restartGame()">Retry</button>
+      </div>
+        
       </div>
     </div>
 
@@ -194,9 +202,7 @@
       </div>
     </dialog>
 
-    <div id="rotate-warning" class="rotate-warning d-none">
-      Rotate your device for the best experience
-    </div>
+    
 
     <dialog id="imprint-overlay" class="imprint-overlay d-none">
       <div id="imprint" class="imprint-content d-none">
