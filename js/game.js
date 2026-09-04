@@ -69,12 +69,15 @@ function createGameWorld() {
  * Plays sound effect, hides imprint button, creates world and starts game loop
  */
 function startGame() {
+  const soundOn = localStorage.getItem("soundOn") === "true";
   soundManager.play("buttonKlick");
 
   if (gameStarted) return;
 
   gameStarted = true;
-
+  if (soundOn) {
+    uiManager.updateSoundIcon(soundOn);
+  }
   document.getElementById("imprint-btn").classList.add("d-none");
 
   createGameWorld();
@@ -314,6 +317,7 @@ function showStartScreen() {
   document.getElementById("win-screen").classList.add("d-none");
   document.getElementById("game-ui").classList.add("d-none");
   document.getElementById("start-screen").classList.remove("d-none");
+  document.getElementById("game-ui").classList.remove("d-none");
 }
 
 /**
@@ -384,9 +388,20 @@ function showRotateHint() {
 
   if (isPortrait) {
     warning.classList.remove("d-none");
-    setTimeout(() => {
-      warning.classList.add("d-none");
-    }, 3000);
+    document.getElementById("start-btn").disabled = true;
+    window.addEventListener("resize", handleOrientationChange);
+    window.addEventListener("orientationchange", handleOrientationChange);
+  }
+}
+
+function handleOrientationChange() {
+  const warning = document.getElementById("rotate-warning");
+  const isPortrait = window.innerHeight > window.innerWidth;
+  if (!isPortrait) {
+    warning.classList.add("d-none");
+    document.getElementById("start-btn").disabled = false;
+    window.removeEventListener("resize", handleOrientationChange);
+    window.removeEventListener("orientationchange", handleOrientationChange);
   }
 }
 

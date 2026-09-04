@@ -7,10 +7,9 @@
   padding: 10px 20px;
 
   border-radius: 10px;
-  border: 1px solid #00cfff;
 
   background: rgba(0, 0, 0, 0.8);
-  color: #00cfff;
+  color: #ff00ee;
 
   cursor: pointer;
 
@@ -19,7 +18,7 @@
 }
 
 .ocean-btn:hover {
-  background: #00cfff;
+  background: #00ff00;
   color: black;
 
   box-shadow:
@@ -136,10 +135,6 @@
   white-space: nowrap;
 }
 
-.controls-list li:hover {
-  background: rgba(0, 200, 255, 0.1);
-}
-
 .keybind-btn,
 .keybind-input {
   min-width: 70px;
@@ -151,7 +146,7 @@
   border-radius: 8px;
   border: 1px solid rgba(0, 200, 255, 0.5);
 
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.3);
   color: #00cfff;
 
   font-weight: bold;
@@ -162,7 +157,7 @@
 }
 
 .keybind-btn:hover {
-  background: rgba(0, 200, 255, 0.2);
+  background: rgba(34, 1, 165, 0.2);
 }
 
 .keybind-btn.waiting {

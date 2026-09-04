@@ -6,8 +6,8 @@ class SoundManager {
    * Creates a new sound manager and loads all audio files
    */
   constructor() {
-    this.soundOn = false;
-    this.soundWasOn = false;
+    this.soundOn = localStorage.getItem("soundOn") === "true";
+    this.soundWasOn = this.soundOn;
     this.wasMusicPlayingBeforePause = false;
 
     this.sounds = {
@@ -85,7 +85,8 @@ class SoundManager {
    */
   toggleSound(isPaused) {
     this.soundOn = !this.soundOn;
-
+    this.soundWasOn = this.soundOn;
+    localStorage.setItem("soundOn", this.soundOn.toString());
     if (this.soundOn && !isPaused) {
       this.playMusic();
     } else {
@@ -117,6 +118,23 @@ class SoundManager {
     this.wasMusicPlayingBeforePause = false;
 
     this.pauseMusic();
+
+    this.sounds.levelMusic.currentTime = 0;
+  }
+
+  /**
+   * Resets the sound manager (called when game restarts)
+   */
+  reset() {
+    this.soundOn = localStorage.getItem("soundOn") === "true";
+    this.soundWasOn = this.soundOn;
+    this.wasMusicPlayingBeforePause = false;
+
+    if (this.soundOn) {
+      this.playMusic();
+    } else {
+      this.pauseMusic();
+    }
 
     this.sounds.levelMusic.currentTime = 0;
   }
