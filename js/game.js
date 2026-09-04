@@ -395,11 +395,13 @@ function showRotateHint() {
 function handleOrientationChange() {
   const warning = document.getElementById("rotate-warning");
   const isPortrait = window.innerHeight > window.innerWidth;
+
   if (!isPortrait) {
     warning.classList.add("d-none");
     document.getElementById("start-btn").disabled = false;
-    window.removeEventListener("resize", handleOrientationChange);
-    window.removeEventListener("orientationchange", handleOrientationChange);
+  } else {
+    warning.classList.remove("d-none");
+    document.getElementById("start-btn").disabled = true;
   }
 }
 

@@ -40,6 +40,10 @@
   border-radius: clamp(8px, 1.5vw, 14px);
 }
 
+#start-btn:disabled:hover {
+  pointer-events: none !important;
+}
+
 .options-overlay,
 .imprint-overlay {
   height: 100vh;
