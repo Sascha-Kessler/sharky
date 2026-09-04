@@ -12,9 +12,9 @@ class PufferFish extends MovableObject {
 
   offset = {
     top: 10,
-    left: 5,
+    left: 8,
     right: 10,
-    bottom: 15,
+    bottom: 20,
   };
 
   currentImage = 0;
